@@ -1,0 +1,9 @@
+services:
+  frontend:
+    build: .
+    volumes:
+      - ./data:/data
+      - ./logs:/logs
+    command: bash -c "streamlit run frontend/streamlit_gui.py"
+    ports:
+      - "8501:8501"
