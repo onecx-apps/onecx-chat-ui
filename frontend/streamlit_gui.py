@@ -1,9 +1,9 @@
 """The main gui."""
 import streamlit as st
 from loguru import logger
-import dotenv
 import requests
 import os
+import dotenv
 
 dotenv.load_dotenv()
 
@@ -15,6 +15,8 @@ PDF_FILE_TYPE = "pdf"
 META_DATA_HEIGHT = 500
 EXPLANATION_HEIGHT = 300
 
+CHAT_URL = os.getenv("CHAT_URL")
+CHAT_PORT = os.getenv("CHAT_PORT")
 
 logger.info("Starting Application.")
 
@@ -24,6 +26,24 @@ st.set_page_config(page_title="Chatbot", page_icon=":mag:", layout="wide")
 # Create title
 st.title("💬 OneCX Chatbot")
 
+def upload_files(uploaded_files):
+    if len(uploaded_files) == 0:
+        return "No file submitted!"
+    files = []
+    for file in uploaded_files:
+        file_tuple = ("documents", (file.name, file.getvalue(), file.type))
+        files.append(file_tuple)
+
+    try:
+        with st.spinner(text="Upload in progess..."):
+            response = requests.post("http://" + CHAT_URL + ":" + CHAT_PORT + "/document/uploadMultiple/0", files=files)
+            response.raise_for_status()
+            st.toast(response.json())
+        return "File upload successful!"
+    except Exception as e:
+        logger.error(e)
+        return e
+    
 def get_conversation_id(conv_type = "Q_AND_A", return_sys_message = False):
     if "conversation_id" in st.session_state:
         return st.session_state.conversation_id
@@ -60,7 +80,6 @@ def send_chat(message):
     except Exception as e:
         return False, e
     
-
 if "messages" not in st.session_state:
     try:
         conversation_id, first_message = get_conversation_id(return_sys_message=True)
@@ -79,9 +98,21 @@ if prompt := st.chat_input():
     success, response = send_chat(prompt)
     
     #check response 
-    
     st.session_state.messages.append({"role": "assistant", "content": response})
     if success:
         st.chat_message("assistant").write(response)
     else:
         st.chat_message("assistant").error(response)
+    
+with st.sidebar:
+    st.subheader("Expend the bots knowledge with your pdfs:")
+    # # Upload PDF files
+    with st.form ("Upload Form", clear_on_submit=True):
+        uploaded_files = st.file_uploader("Upload PDF Files", type=PDF_FILE_TYPE, accept_multiple_files=True)
+        for file in uploaded_files:
+            bytes_data = file.read()
+
+        submitted = st.form_submit_button("Upload")
+        if submitted:
+            logger.info("Started Upload")
+            st.toast(upload_files(uploaded_files=uploaded_files), icon="🚨")
