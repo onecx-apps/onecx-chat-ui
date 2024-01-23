@@ -5,6 +5,8 @@ import requests
 import os
 import dotenv
 
+from frontend.markdown_utility import convert_json_to_markdown_list, MD_HEADER
+
 dotenv.load_dotenv()
 
 CHAT_URL = os.getenv("CHAT_URL")
@@ -56,8 +58,8 @@ def send_chat(message):
         response = requests.post(url="http://" + CHAT_URL + ":" + CHAT_PORT + "/chat", json=body)    
         response.raise_for_status()
         response_json = response.json()
-        
-        return True, response_json["message"]
+
+        return True, convert_json_to_markdown_list(response_json["message"])
     except Exception as e:
         return False, e
 
@@ -67,21 +69,24 @@ if "messages" not in st.session_state:
                                      "content": "Wie kann ich dir helfen?"}]
 
 for msg in st.session_state.messages:
-    # limit parsing HTML tags to only "assistant" or "ai"
-    if msg["role"] in ["assistant", "ai"]:
-        st.chat_message(msg["role"]).write(msg["content"], unsafe_allow_html=True)
-    else:
-        st.chat_message(msg["role"]).write(msg["content"])
+    st.chat_message(msg["role"]).markdown(msg["content"])
 
 if prompt := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
     # send request
-    success, response = send_chat(prompt)
-    
-    # check response
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    success, response_list = send_chat(prompt)
+
+    assistant_message = st.chat_message("assistant")
     if success:
-        st.chat_message("assistant").write(response, unsafe_allow_html=True)
+        if "kein passender Eintrag" not in response_list[0]:
+            assistant_message.markdown(MD_HEADER)
+        for response in response_list:
+            # check response
+            st.session_state.messages.append(
+                {"role": "assistant", "content": response})
+            assistant_message.markdown(response)
     else:
-        st.chat_message("assistant").error(response)
+        st.session_state.messages.append(
+            {"role": "assistant", "content": response_list})
+        assistant_message.error(response_list)
