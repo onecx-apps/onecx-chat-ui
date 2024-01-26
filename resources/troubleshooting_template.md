@@ -1,9 +1,9 @@
-## Solution {}:
+## Issue {}:
 
 ### Headline:
 {}
 
-### Summary:
+### Solution Overview:
 {}
 
 ### Images:
