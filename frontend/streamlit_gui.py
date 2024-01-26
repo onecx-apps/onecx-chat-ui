@@ -16,14 +16,24 @@ CHAT_PORT = os.getenv("CHAT_PORT")
 PDF_FILE_TYPE = "pdf"
 META_DATA_HEIGHT = 500
 EXPLANATION_HEIGHT = 300
+RESOURCES_DIR = "./resources/"
 
 logger.info("Starting Application.")
 
 # Set small icon in the tab bar
-st.set_page_config(page_title="Chatbot", page_icon=":mag:", layout="wide")
+st.set_page_config(page_title="Chatbot",
+                   page_icon=RESOURCES_DIR + "favicon.ico", layout="wide")
 
 # Create title
 st.title("💬 OneCX Chatbot")
+
+# loading UI from html file
+try:
+    with open(RESOURCES_DIR + "style.html", 'r') as file:
+        html = file.read()
+        st.write(html, unsafe_allow_html=True)
+except FileNotFoundError as e:
+    print(f"File not found: {e}")
 
 
 def get_conversation_id(conv_type = "Q_AND_A", return_sys_message = False):
@@ -37,7 +47,7 @@ def get_conversation_id(conv_type = "Q_AND_A", return_sys_message = False):
     response_json = response.json()
     st.session_state.conversation_id = response_json["conversationId"]
     logger.info(f"Started conversation: {st.session_state.conversation_id}")
-    
+
     if return_sys_message:
         return st.session_state.conversation_id, response_json["history"][0]["message"]
     return st.session_state.conversation_id
@@ -46,7 +56,7 @@ def get_conversation_id(conv_type = "Q_AND_A", return_sys_message = False):
 def send_chat(message):
     try:
         conversation_id = get_conversation_id()
-        
+
         body = {
             "conversationId": conversation_id,
             "correlationId": "StreamlitUI",
