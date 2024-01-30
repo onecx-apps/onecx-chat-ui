@@ -89,13 +89,16 @@ if prompt := st.chat_input():
 
     assistant_message = st.chat_message("assistant")
     if success:
+        # checks if there was response found
         if "kein passender Eintrag" not in response_list[0]:
             assistant_message.markdown(MD_HEADER)
         for response in response_list:
             # check response
             st.session_state.messages.append(
                 {"role": "assistant", "content": response})
-            assistant_message.markdown(response)
+            # replace new line with HTML tag
+            response = response.replace('\n\n', '\n<br>')
+            assistant_message.markdown(response, unsafe_allow_html=True)
     else:
         st.session_state.messages.append(
             {"role": "assistant", "content": response_list})

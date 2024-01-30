@@ -28,7 +28,7 @@ def markdown_list(items: list, numbered=False) -> str:
     return list_str
 
 
-def markdown_image(image_url, alt_text="Image"):
+def markdown_image(image_url, alt_text="Image") -> str:
     """
     Embeds an image into Markdown content.
     Args:
@@ -36,6 +36,31 @@ def markdown_image(image_url, alt_text="Image"):
       alt_text (str): The alternative text for the image.
     """
     return f"![{alt_text}]({image_url})"
+
+
+def markdown_row_grid(data) -> str:
+    """
+    Generate a Markdown row grid with given data list.
+    Args:
+     data (list): List representing the grid cells.
+    """
+    row_length = len(data)
+
+    # Create the header row
+    header_row = "|".join(f"Image {i+1}" for i in range(row_length))
+    header_row = f"|{header_row}|"
+
+    # Create the separator row
+    separator = "|".join([":-:"] * row_length)
+    separator = f"|{separator}|"
+
+    # Create the data row
+    row_str = "|".join(img for img in data)
+    row_str = f"|{row_str}|"
+
+    # Combine all parts to form the grid
+    grid = "\n".join([header_row, separator, row_str])
+    return grid
 
 
 def convert_json_to_markdown_list(response_str: str) -> list:
@@ -62,11 +87,12 @@ def convert_json_to_markdown_list(response_str: str) -> list:
     for index, solution in enumerate(response_dict):
         image_list = [markdown_image(image["image_url"], alt_text=f"Image {i+1}")
                       for i, image in enumerate(solution["images"])]
-        images_markdown = markdown_list(image_list, numbered=True)
+        images_markdown = markdown_row_grid(data=image_list)
         url_markdown = markdown_link(text=solution["url"], url=solution["url"])
         solution_markdown = markdown_template.format(
-            index + 1, solution["headline"], solution["summary"],
-            images_markdown, url_markdown)
+            index=index + 1, headline=solution["headline"],
+            summary=solution["summary"],
+            url=url_markdown, images=images_markdown)
         solution_list.append(solution_markdown)
 
     return solution_list

@@ -1,13 +1,8 @@
-## Issue {}:
-
-### Headline:
-{}
-
+## {index}. {headline}
 ### Solution Overview:
-{}
+{summary}
 
+> :link: **Source:** {url}
 ### Images:
-{}
+{images}
 
-### More Details:
-{}
