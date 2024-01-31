@@ -24,9 +24,6 @@ logger.info("Starting Application.")
 st.set_page_config(page_title="Chatbot",
                    page_icon=RESOURCES_DIR + "favicon.ico", layout="wide")
 
-# Create title
-st.title("💬 OneCX Chatbot")
-
 # loading UI from html file
 try:
     with open(RESOURCES_DIR + "style.html", 'r') as file:
@@ -34,6 +31,9 @@ try:
         st.write(html, unsafe_allow_html=True)
 except FileNotFoundError as e:
     print(f"File not found: {e}")
+
+# Create title
+st.title("💬 OneCX Chatbot")
 
 
 def get_conversation_id(conv_type = "Q_AND_A", return_sys_message = False):
@@ -74,6 +74,30 @@ def send_chat(message):
         return False, e
 
 
+def display_response(success_flag: bool, responses: list):
+    placeholder = st.empty()
+    if success_flag:
+        markdown_response = ''
+        # checks if entries are found
+        entry_found = False if "kein passender Eintrag" in responses[0] else True
+        if entry_found:
+            markdown_response += MD_HEADER
+            for response in response_list:
+                markdown_response += response + "\n<br>"
+                placeholder.markdown(markdown_response, unsafe_allow_html=True)
+        else:
+            markdown_response = responses[0]
+            placeholder.warning(markdown_response)
+        st.session_state.messages.append(
+            {"role": "assistant", "content": markdown_response})
+        # replace new line with HTML tag
+        # response = full_response.replace('\n\n', '\n<br>')
+    else:
+        st.session_state.messages.append(
+            {"role": "assistant", "content": responses})
+        placeholder.exception(responses)
+
+
 if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant",
                                      "content": "Wie kann ich dir helfen?"}]
@@ -81,25 +105,14 @@ if "messages" not in st.session_state:
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).markdown(msg["content"])
 
-if prompt := st.chat_input():
+if prompt := st.chat_input("Ihre Nachricht"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
-    # send request
-    success, response_list = send_chat(prompt)
 
-    assistant_message = st.chat_message("assistant")
-    if success:
-        # checks if there was response found
-        if "kein passender Eintrag" not in response_list[0]:
-            assistant_message.markdown(MD_HEADER)
-        for response in response_list:
-            # check response
-            st.session_state.messages.append(
-                {"role": "assistant", "content": response})
-            # replace new line with HTML tag
-            response = response.replace('\n\n', '\n<br>')
-            assistant_message.markdown(response, unsafe_allow_html=True)
-    else:
-        st.session_state.messages.append(
-            {"role": "assistant", "content": response_list})
-        assistant_message.error(response_list)
+# Generate a new response if last message is not from assistant
+if st.session_state.messages[-1]["role"] != "assistant":
+    with st.chat_message("assistant"):
+        with st.spinner("Denken...", ):
+            # send request
+            http_success, response_list = send_chat(prompt)
+            display_response(success_flag=http_success, responses=response_list)

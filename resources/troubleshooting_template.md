@@ -1,8 +1,10 @@
-## {index}. {headline}
-### Solution Overview:
-{summary}
+**{index}. {headline}**
 
+{summary}
 > :link: **Source:** {url}
-### Images:
+
+**Images:**
+
 {images}
 
+---

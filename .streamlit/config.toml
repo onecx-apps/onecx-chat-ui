@@ -6,3 +6,4 @@ hideTopBar = true
 
 [theme]
 base="light"
+primaryColor = "#FFBD45"

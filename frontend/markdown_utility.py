@@ -1,6 +1,6 @@
 import json
 
-MD_HEADER = "# Troubleshooting Solutions"
+MD_HEADER = "Ich habe folgende mögliche Lösungen gefunden:  \n\n"
 
 
 def markdown_link(text, url) -> str:
