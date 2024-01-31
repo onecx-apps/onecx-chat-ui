@@ -5,7 +5,7 @@ import requests
 import os
 import dotenv
 
-from frontend.markdown_utility import convert_json_to_markdown_list, MD_HEADER
+from markdown_utility import convert_json_to_markdown_list, MD_HEADER
 
 dotenv.load_dotenv()
 
