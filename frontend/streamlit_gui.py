@@ -65,11 +65,13 @@ def send_chat(message):
         conversation_id = get_conversation_id()
         
         body = {
-            "conversationId": conversation_id,
-            "correlationId": "StreamlitUI",
-            "message": message,
-            "type": "user",
-            "creationDate": 0
+                "chat_message": {
+                    "conversationId": conversation_id,
+                    "correlationId": "StreamlitUI",
+                    "message": message,
+                    "type": "user",
+                    "creationDate": 0
+                }
         }
         
         response = requests.post(url="http://" + CHAT_URL + ":" + CHAT_PORT + "/chat", json=body)    
