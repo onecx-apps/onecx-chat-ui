@@ -1,3 +1,6 @@
+[server]
+enableStaticServing = true
+
 [client]
 toolbarMode = "minimal"
 
@@ -7,3 +10,4 @@ hideTopBar = true
 [theme]
 base="light"
 primaryColor = "#FFBD45"
+
