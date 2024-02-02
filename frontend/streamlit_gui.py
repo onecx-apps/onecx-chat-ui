@@ -115,7 +115,7 @@ if prompt := st.chat_input("Ihre Nachricht"):
 # Generate a new response if last message is not from assistant
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
-        with st.spinner("Denken...", ):
+        with st.spinner("Tippe...", ):
             # send request
             http_success, response_list = send_chat(prompt)
             display_response(success_flag=http_success, responses=response_list)
