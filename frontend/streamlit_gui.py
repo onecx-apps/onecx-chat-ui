@@ -56,15 +56,18 @@ def get_conversation_id(conv_type = "Q_AND_A", return_sys_message = False):
 def send_chat(message):
     try:
         conversation_id = get_conversation_id()
-
-        body = {
-            "conversationId": conversation_id,
-            "correlationId": "StreamlitUI",
-            "message": message,
-            "type": "user",
-            "creationDate": 0
-        }
         
+        body = {
+                "chat_message": {
+                    "conversationId": conversation_id,
+                    "correlationId": "StreamlitUI",
+                    "message": message,
+                    "type": "user",
+                    "creationDate": 0
+                }
+        }
+
+
         response = requests.post(url="http://" + CHAT_URL + ":" + CHAT_PORT + "/chat", json=body)    
         response.raise_for_status()
         response_json = response.json()
