@@ -1,7 +1,5 @@
 import json
 
-MD_HEADER = "Ich habe folgende mögliche Lösungen gefunden:  \n\n"
-
 
 def markdown_link(text, url) -> str:
     """
@@ -71,8 +69,12 @@ def convert_json_to_markdown_list(response_str: str) -> list:
     Returns:
         list: A list of Markdown formatted solutions.
     """
+    # convert response to dict
     try:
-        response_dict = json.loads(response_str)[0]["solutions"]
+        response_dict = json.loads(response_str)
+        # return general answer if no solution found
+        if not response_dict["solutions"]:
+            return [response_dict["general_answer"]]
     except ValueError:
         return [response_str]
     # loading markdown template
@@ -83,8 +85,8 @@ def convert_json_to_markdown_list(response_str: str) -> list:
         print(f"File not found: {e}")
         return [response_str]
 
-    solution_list = []
-    for index, solution in enumerate(response_dict):
+    solution_list = [response_dict["general_answer"]]
+    for index, solution in enumerate(response_dict["solutions"]):
         image_list = [markdown_image(image["image_url"], alt_text=f"Image {i+1}")
                       for i, image in enumerate(solution["images"])]
         images_markdown = markdown_row_grid(data=image_list)

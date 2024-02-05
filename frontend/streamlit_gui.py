@@ -1,11 +1,12 @@
 """The main gui."""
 import streamlit as st
+from PIL import Image
 from loguru import logger
 import requests
 import os
 import dotenv
 
-from markdown_utility import convert_json_to_markdown_list, MD_HEADER
+from markdown_utility import convert_json_to_markdown_list
 
 dotenv.load_dotenv()
 
@@ -17,6 +18,7 @@ PDF_FILE_TYPE = "pdf"
 META_DATA_HEIGHT = 500
 EXPLANATION_HEIGHT = 300
 RESOURCES_DIR = "./resources/"
+ASSISTANT_AVATAR = None
 
 logger.info("Starting Application.")
 
@@ -24,8 +26,10 @@ logger.info("Starting Application.")
 st.set_page_config(page_title="Chatbot",
                    page_icon=RESOURCES_DIR + "favicon.ico", layout="wide")
 
-# loading UI from html file
+
 try:
+    ASSISTANT_AVATAR = Image.open("resources/assistant_avatar.png")
+    # loading UI from html file
     with open(RESOURCES_DIR + "style.html", 'r') as file:
         html = file.read()
         st.write(html, unsafe_allow_html=True)
@@ -81,24 +85,16 @@ def display_response(success_flag: bool, responses: list):
     placeholder = st.empty()
     if success_flag:
         markdown_response = ''
-        # checks if entries are found
-        entry_found = False if "kein passender Eintrag" in responses[0] else True
-        if entry_found:
-            markdown_response += MD_HEADER
-            for response in response_list:
-                markdown_response += response + "\n<br>"
-                placeholder.markdown(markdown_response, unsafe_allow_html=True)
-        else:
-            markdown_response = responses[0]
-            placeholder.warning(markdown_response)
+        for response in response_list:
+            # insert line break between responses
+            markdown_response += response + "\n<br>"
+            placeholder.markdown(markdown_response, unsafe_allow_html=True)
         st.session_state.messages.append(
-            {"role": "assistant", "content": markdown_response})
-        # replace new line with HTML tag
-        # response = full_response.replace('\n\n', '\n<br>')
+            {"role": "assistant", "content": "\n".join(responses)})
     else:
         st.session_state.messages.append(
             {"role": "assistant", "content": responses})
-        placeholder.exception(responses)
+        placeholder.error(responses)
 
 
 if "messages" not in st.session_state:
@@ -106,7 +102,11 @@ if "messages" not in st.session_state:
                                      "content": "Wie kann ich dir helfen?"}]
 
 for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).markdown(msg["content"])
+    if msg["role"] == "assistant":
+        st.chat_message(msg["role"], avatar=ASSISTANT_AVATAR).markdown(
+            msg["content"])
+    else:
+        st.chat_message(msg["role"]).markdown(msg["content"])
 
 if prompt := st.chat_input("Ihre Nachricht"):
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -114,8 +114,8 @@ if prompt := st.chat_input("Ihre Nachricht"):
 
 # Generate a new response if last message is not from assistant
 if st.session_state.messages[-1]["role"] != "assistant":
-    with st.chat_message("assistant"):
-        with st.spinner("Tippe...", ):
+    with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
+        with st.spinner("Tippe..."):
             # send request
             http_success, response_list = send_chat(prompt)
             display_response(success_flag=http_success, responses=response_list)
