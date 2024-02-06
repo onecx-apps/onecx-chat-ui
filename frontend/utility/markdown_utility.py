@@ -1,3 +1,6 @@
+"""
+This file contains functions for generating Markdown content from various data.
+"""
 import json
 
 

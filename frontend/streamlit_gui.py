@@ -1,12 +1,12 @@
 """The main gui."""
 import streamlit as st
-from PIL import Image
 from loguru import logger
 import requests
 import os
 import dotenv
 
-from markdown_utility import convert_json_to_markdown_list
+import utility.markdown_utility as md
+import utility.frontend_utility as ui
 
 dotenv.load_dotenv()
 
@@ -17,27 +17,19 @@ CHAT_PORT = os.getenv("CHAT_PORT")
 PDF_FILE_TYPE = "pdf"
 META_DATA_HEIGHT = 500
 EXPLANATION_HEIGHT = 300
-RESOURCES_DIR = "./resources/"
-ASSISTANT_AVATAR = None
+ASSISTANT_AVATAR = ui.load_custom_avatar("assistant_avatar.png")
 
 logger.info("Starting Application.")
 
 # Set small icon in the tab bar
 st.set_page_config(page_title="Chatbot",
-                   page_icon=RESOURCES_DIR + "favicon.ico", layout="wide")
-
-
-try:
-    ASSISTANT_AVATAR = Image.open("resources/assistant_avatar.png")
-    # loading UI from html file
-    with open(RESOURCES_DIR + "style.html", 'r') as file:
-        html = file.read()
-        st.write(html, unsafe_allow_html=True)
-except FileNotFoundError as e:
-    print(f"File not found: {e}")
+                   page_icon="./resources/favicon.ico", layout="wide")
 
 # Create title
 st.title("💬 OneCX Chatbot")
+
+# loading UI from html file
+ui.load_ui_from_html()
 
 
 def get_conversation_id(conv_type = "Q_AND_A", return_sys_message = False):
@@ -71,30 +63,14 @@ def send_chat(message):
                 }
         }
 
-
-        response = requests.post(url="http://" + CHAT_URL + ":" + CHAT_PORT + "/chat", json=body)    
+        response = requests.post(url=f"http://{CHAT_URL}:{CHAT_PORT}/chat",
+                                 json=body)
         response.raise_for_status()
         response_json = response.json()
 
-        return True, convert_json_to_markdown_list(response_json["message"])
+        return True, md.convert_json_to_markdown_list(response_json["message"])
     except Exception as e:
         return False, e
-
-
-def display_response(success_flag: bool, responses: list):
-    placeholder = st.empty()
-    if success_flag:
-        markdown_response = ''
-        for response in response_list:
-            # insert line break between responses
-            markdown_response += response + "\n<br>"
-            placeholder.markdown(markdown_response, unsafe_allow_html=True)
-        st.session_state.messages.append(
-            {"role": "assistant", "content": "\n".join(responses)})
-    else:
-        st.session_state.messages.append(
-            {"role": "assistant", "content": responses})
-        placeholder.error(responses)
 
 
 if "messages" not in st.session_state:
@@ -118,4 +94,5 @@ if st.session_state.messages[-1]["role"] != "assistant":
         with st.spinner("Tippe..."):
             # send request
             http_success, response_list = send_chat(prompt)
-            display_response(success_flag=http_success, responses=response_list)
+            ui.display_response(success_flag=http_success,
+                                responses=response_list)
