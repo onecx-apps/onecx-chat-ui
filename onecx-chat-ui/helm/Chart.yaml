@@ -1,0 +1,17 @@
+apiVersion: v2
+name: onecx-chat-ui-ui
+version: 0.0.0
+description: onecx-chat-ui UI
+home: https://github.com/onecx/onecx-chat-ui-ui
+keywords:
+  - onecx-chat-ui
+sources:
+  - https://github.com/onecx/onecx-chat-ui-ui
+maintainers:
+  - name: Matthias Janssen
+    email: matthias.janssen@capgemini.com
+dependencies:
+  - name: helm-angular-app
+    version: ^0
+    repository: oci://ghcr.io/onecx/charts
+    alias: app

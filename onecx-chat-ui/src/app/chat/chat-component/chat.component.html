@@ -1,0 +1,70 @@
+<div class="chatUi">
+    <div class="chatOverview">
+        <div class="newChat">   
+            New Chat
+            <button pButton icon="pi pi-external-link" (click)="selectChat('-1')"></button>
+        </div>
+        <div class="chat" *ngFor="let chat of chats">
+            <button pButton class="chat" label="{{chat.summary}}" (click)="selectChat(chat.id)"></button>                
+        </div>
+    </div>
+    <div class="currentChat">
+        <div id="newChat" *ngIf="selectedChat.id == '-1'">
+            <p-dropdown [options]="topics"></p-dropdown>
+
+        </div>
+
+        <div *ngIf="selectedChat.id != '-1'" class="selectedChat">
+            <!-- {{selectedChat.id}} -->
+            
+            <span id="message" *ngFor="let message of selectedChat.messages">
+                <h4>{{ message.userName }}</h4>
+                {{ message.text }}
+            </span>
+        </div>
+        
+        <div id="actionBar">
+            <textarea
+            rows="1"
+            pInputTextarea
+            autoResize="autoResize"
+            [(ngModel)]="messageText"
+            (keydown)="keyDownFunction($event)"
+            id="textarea"
+            ></textarea>
+            <button pButton icon="pi pi-send" (click)="sendMessage()"></button>
+            <button pButton icon="pi pi-users" (click)="showUserManagement()" *ngIf="selectedChat.id != '-1'"></button>
+        </div>
+
+        <p-dialog [(visible)]="userManagementVisible"
+                    [modal]="true"
+                    [draggable]="false"
+                    [resizable]="false">
+            <div class="participantManagement">
+                <input pInputText 
+                        type="text" 
+                        id="userSearch" 
+                        [(ngModel)]="userSearchText"
+                        (keydown)="searchUser()"
+                        (focus)="searchUser()"
+                        (focusout)="hideSearchResults()"
+                        (autocomplete)="false"/>
+                <div id="searchResults" *ngIf="showSearchResults">
+                    <span *ngFor="let user of searchResult">
+                        {{user.userName}} <button pButton icon="pi pi-user-plus" (click)="addParticipant(user)"></button><br/>
+                    </span>
+                </div>
+                
+                <div id="participantList">
+                    <span *ngFor="let participant of tempParticipants">
+                        {{participant.userName}} <button pButton icon="pi pi-minus" (click)="removeParticipant(participant)"></button><br/>
+                    </span>
+                </div>
+                <div id="actionButtons">
+                    <button pButton id="confirm" (click)="confirm()">Confirm</button>
+                    <button pButton id="Cancel" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </p-dialog>
+    </div>
+</div>

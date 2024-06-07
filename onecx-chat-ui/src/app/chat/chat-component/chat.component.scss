@@ -1,0 +1,137 @@
+.chatOverview {
+    width: 179pt;
+    overflow-y: scroll;
+    flex-grow: 1 0;
+    height: 100%
+}
+
+.chat {
+    height: min-content;
+    font-weight: 500;
+    padding-left: 10pt;
+    padding-top: 5pt;
+}
+
+.newChat {
+    width: 100%;
+    height: 50pt;
+    font-weight: bold;
+    font-size: 24pt;
+    padding-top: 10pt;
+    text-align: center;
+}
+
+.currentChat {
+    height: 100%;
+    flex-grow: 1;
+    display: inline-flex;
+    flex-flow: column;
+}
+
+.chatUi {
+    display: flex;
+    height: 100%;
+    height: 920.7pt;
+}
+
+.chat button {
+    width: 100%;
+    color: black;
+    background: none;
+    height: min-content;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.newChat button {
+    color: rgb(99, 99, 99);
+    background: none;
+}
+
+#actionBar textarea {
+    margin-top: auto;
+    float: right;
+    width: 100%;
+    height: min-content; 
+    padding: 5pt;
+}
+
+#actionBar button {
+    height: min-content;
+    padding: 5pt;
+    margin-top: auto;
+    background: none;
+    color: rgb(99, 99, 99);
+}
+
+#actionBar {
+    display: flex;
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    align-content: center;
+}
+
+.selectedChat {
+    width: 85%;
+    height: 100%;
+    display: inline-flex;
+    flex-flow: column;
+    overflow-y: scroll;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#message {
+    padding-bottom: 15pt;
+    white-space: pre-line;
+}
+
+.participantManagement {
+    height: 70vh;
+    width: 65vw;
+}
+
+#actionButtons {
+    position: absolute;
+    bottom: 2vh;
+    right: 1vw;
+}
+
+#confirm {
+    margin-right: 0.5vw;
+}
+
+.participantManagement input {
+    width: 85%;
+    display: block;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#participantList button {
+    height: 14pt;
+    width: 14pt;
+}
+
+#searchResults {
+    width: 83%;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    align-content: center;
+    height: 20vh;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: red;
+}
+
+#searchResults button {
+    height: 14pt;
+    width: 14pt;
+    margin-left: 15vw;
+}
