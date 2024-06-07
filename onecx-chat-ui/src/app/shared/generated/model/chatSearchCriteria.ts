@@ -9,10 +9,24 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ChatType } from './chatType';
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface ChatSearchCriteria { 
+    type?: ChatType;
+    topic?: string;
+    participant?: string;
+    appId?: string;
+    /**
+     * The number of page.
+     */
+    pageNumber?: number;
+    /**
+     * The size of page
+     */
+    pageSize?: number;
 }
+export namespace ChatSearchCriteria {
+}
+
 

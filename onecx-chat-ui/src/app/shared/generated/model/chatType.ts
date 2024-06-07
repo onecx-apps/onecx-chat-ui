@@ -11,8 +11,10 @@
  */
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
-}
+export type ChatType = 'HUMAN_CHAT' | 'AI_CHAT';
+
+export const ChatType = {
+    HumanChat: 'HUMAN_CHAT' as ChatType,
+    AiChat: 'AI_CHAT' as ChatType
+};
 

@@ -9,10 +9,22 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { MessageType } from './messageType';
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface Message { 
+    version?: number;
+    creationDate?: string;
+    creationUser?: string;
+    modificationDate?: string;
+    modificationUser?: string;
+    id?: string;
+    type: MessageType;
+    text?: string;
+    userName?: string;
+    reliability?: number;
 }
+export namespace Message {
+}
+
 

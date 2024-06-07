@@ -11,8 +11,11 @@
  */
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
-}
+export type MessageType = 'HUMAN' | 'ASSISTANT' | 'SYSTEM';
+
+export const MessageType = {
+    Human: 'HUMAN' as MessageType,
+    Assistant: 'ASSISTANT' as MessageType,
+    System: 'SYSTEM' as MessageType
+};
 
