@@ -3,8 +3,7 @@ import { chatComponentFeature } from '../chat.reducers';
 import { createChildSelectors } from '@onecx/portal-integration-angular/ngrx';
 import { createSelector } from '@ngrx/store';
 import { ChatComponentState } from './chat-component.state';
-import { ChatPageResultDTO } from './models/chatPageResultDTO.model';
-import { MessagePageResultDTO } from './models/messagePageResultDTO';
+import { Chat, ChatPageResult, Message, MessagePageResult } from 'src/app/shared/generated';
 
 
 export const chatComponentSelector = createChildSelectors(
@@ -14,14 +13,28 @@ export const chatComponentSelector = createChildSelectors(
 
 export const selectChatPageResults = createSelector(
     chatComponentSelector.selectChatPageResult,
-    (chatPageResult): ChatPageResultDTO => {
+    (chatPageResult): ChatPageResult => {
         return chatPageResult
     }
 )
 
 export const selectMessagePageResults = createSelector(
     chatComponentSelector.selectMessagePageResult,
-    (messagePageResult): MessagePageResultDTO => {
+    (messagePageResult): MessagePageResult => {
         return messagePageResult
+    }
+)
+
+export const selectChat = createSelector(
+    chatComponentSelector.selectChat,
+    (chat): Chat => {
+        return chat
+    }
+)
+
+export const selectMessages = createSelector(
+    chatComponentSelector.selectMessages,
+    (messages): Message[] => {
+        return messages
     }
 )

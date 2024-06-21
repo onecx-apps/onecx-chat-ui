@@ -23,6 +23,7 @@ import { SharedModule } from '../shared/shared.module';
 import { chatComponentFeature } from './chat.reducers';
 import { routes } from './chat.routes';
 import { chatComponent } from './chat-component/chat.component';
+import { ChatComponentEffects } from './chat-component/chat-component.effects';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { chatComponent } from './chat-component/chat.component';
     CalendarModule,
     CommonModule,
     StoreModule.forFeature(chatComponentFeature),
-    EffectsModule.forFeature(),
+    EffectsModule.forFeature(ChatComponentEffects),
     TranslateModule.forRoot({
       extend: true,
       isolate: false,

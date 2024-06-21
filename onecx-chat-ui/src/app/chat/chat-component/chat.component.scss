@@ -21,13 +21,6 @@
     text-align: center;
 }
 
-.currentChat {
-    height: 100%;
-    flex-grow: 1;
-    display: inline-flex;
-    flex-flow: column;
-}
-
 .chatUi {
     display: flex;
     height: 100%;
@@ -67,28 +60,44 @@
 
 #actionBar {
     display: flex;
-    width: 85%;
+    // width: 85%;
+    width: 786pt;
     margin-left: auto;
     margin-right: auto;
     margin-top: auto;
     align-content: center;
 }
 
-.selectedChat {
-    width: 85%;
+.currentChat {
+    width: 85vw;
     height: 100%;
-    display: inline-flex;
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-end !important;
     flex-flow: column;
-    overflow-y: scroll;
+}
+
+.selectedChat {
+    padding-top: 55vh;
+    // width: 85%;
+    width: 786pt;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    overflow-y: auto;
     margin-left: auto;
     margin-right: auto;
-    text-align: center;
 }
 
 #message {
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
     padding-bottom: 15pt;
     white-space: pre-line;
+    text-align: justify;
 }
+
 
 .participantManagement {
     height: 70vh;

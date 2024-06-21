@@ -2,25 +2,22 @@
     <div class="chatOverview">
         <div class="newChat">   
             New Chat
-            <button pButton icon="pi pi-external-link" (click)="selectChat('-1')"></button>
+            <button pButton icon="pi pi-external-link" (click)="selectChat('NewChat')"></button>
         </div>
-        <div class="chat" *ngFor="let chat of chats">
-            <button pButton class="chat" label="{{chat.summary}}" (click)="selectChat(chat.id)"></button>                
+        <div class="chat" *ngFor="let chat of this.chats">
+            <button pButton class="chat" label="{{chat.summary}}" (click)="selectChat(chat.id!)"></button>               
         </div>
     </div>
     <div class="currentChat">
-        <div id="newChat" *ngIf="selectedChat.id == '-1'">
+        <div id="newChat" *ngIf="selectedChat.id == 'NewChat'">
             <p-dropdown [options]="topics"></p-dropdown>
-
         </div>
 
-        <div *ngIf="selectedChat.id != '-1'" class="selectedChat">
-            <!-- {{selectedChat.id}} -->
-            
-            <span id="message" *ngFor="let message of selectedChat.messages">
+        <div *ngIf="selectedChat.id != 'NewChat'" class="selectedChat">
+            <div id="message" *ngFor="let message of messages">
                 <h4>{{ message.userName }}</h4>
                 {{ message.text }}
-            </span>
+            </div>
         </div>
         
         <div id="actionBar">

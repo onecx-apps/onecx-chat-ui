@@ -1,11 +1,11 @@
-import { ChatDTO } from "./models/chatDTO.model";
-import { ChatPageResultDTO } from "./models/chatPageResultDTO.model";
-import { MessagePageResultDTO } from "./models/messagePageResultDTO";
+import { Chat, ChatPageResult, Message, MessagePageResult } from "src/app/shared/generated"
+
 
 export interface ChatComponentState {
-    chatPageResult: ChatPageResultDTO
-    messagePageResult: MessagePageResultDTO
+    chatPageResult: ChatPageResult
+    messagePageResult: MessagePageResult
     loading: boolean
     loaded: boolean
-    chat: ChatDTO
+    chat: Chat
+    messages: Message[]
 }

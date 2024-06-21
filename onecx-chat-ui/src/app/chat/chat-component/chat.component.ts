@@ -1,8 +1,12 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { ChatDTO } from "./models/chatDTO.model";
-import { date } from "zod";
-import { MessageDTO } from "./models/messageDTO.model";
-import { ParticipantDTO } from "./models/participantDTO.model";
+import { Component, OnInit } from "@angular/core";
+import { Store } from "@ngrx/store";
+import { Chat, ChatPageResult, ChatSearchCriteria, ChatType, CreateChat, Message, MessageType, Participant, CreateMessage } from "src/app/shared/generated";
+import { ChatComponentActions } from "./chat-component.actions";
+import { KeycloakService } from "keycloak-angular";
+import { Observable } from "rxjs";
+import { selectChat, selectChatPageResults, selectMessages } from "./chat-component.selector";
+import { WebSocketService } from "./web-socket.service";
+import { WebSocketHelperDTO } from "./web-socket-helper-dto.model";
 
 @Component({
     selector: 'app-chat-component',
@@ -10,74 +14,100 @@ import { ParticipantDTO } from "./models/participantDTO.model";
     styleUrls: ['./chat.component.scss']
 })
 export class chatComponent implements OnInit{
+    constructor(private store: Store, private keyCloakService: KeycloakService) {
+
+    }
+    userName!: string
+    websocketService!: WebSocketService
+
+    chatPageResult$?: Observable<ChatPageResult>;
+    chatPageResult?: ChatPageResult;
     
-    //Toggle visibility of user management
-    userManagementVisible: boolean = false
-    
+    userManagementVisible: boolean = false    
     userSearchText = ""
-    
     showSearchResults = false
     
     //Used to temporarily store changes to participants of chats until confirmed
-    tempParticipants: ParticipantDTO[] = []
-    
-    searchResult: ParticipantDTO[] = []
-
-    chats: ChatDTO[] = []
-
+    tempParticipants: Participant[] = []
+    searchResult: Participant[] = []
+    chats: Chat[] = []
     topics: string[] = []
+    selectedTopic: string = ''
     
-    selectedChat = {
-        type: '',
-        topic: '',
-        id: '-1',
-        summary:'',
-        messages: [] as MessageDTO[],
-        tenantId: '',
-        appId: '',
-        participants: [] as ParticipantDTO[],
-        chatRef: ''
+    selectedChat$!: Observable<Chat>
+    selectedChat: Chat = {
+        type: ChatType.AiChat
     }
+
+    messages$!: Observable<Message[]>
+    messages: Message[] = []
 
     autoResize: boolean = true
     messageText: string = ""
 
     ngOnInit(): void {
+        // this.userName = this.keyCloakService.getUsername()
+        this.userName = 'onecx'
+        this.websocketService = new WebSocketService(this.userName)
+
+        // this.websocketService.receiveStatus('').subscribe((message: WebSocketHelperDTO) => {
+        //     if(this.selectedChat.id == message.chatId) {
+        //         this.messages.push(message.message)
+        //     }  
+        // })
+
+        this.chatPageResult$ = this.store.select(selectChatPageResults)
+        this.selectedChat$ = this.store.select(selectChat);
+        this.messages$ = this.store.select(selectMessages)
         
-    }
+        this.chatPageResult$?.subscribe((chatPageResult) => {
+            this.chatPageResult = chatPageResult
+            this.chats = this.chatPageResult.stream!
+        })
 
-    selectChat(id: string) {
-        if(id == '-1') {
-            this.selectedChat = {
-                type: '',
-                topic: '',
-                id: '-1',
-                summary:'',
-                messages: [] as MessageDTO[],
-                tenantId: '',
-                appId: '',
-                participants: [] as ParticipantDTO[],
-                chatRef: ''
-            }
-        } else {
+        this.selectedChat$.subscribe((chat) => {
+            this.selectedChat = chat
+        })
 
+        this.messages$.subscribe((messages) => {
+            this.messages = messages
+        })
+
+        let searchCriteria: ChatSearchCriteria = {
+            pageNumber: 0,
+            pageSize: 10,
+            participant: this.userName
         }
+        // this.store.dispatch(ChatComponentActions.chatPageOpened({searchCriteria: searchCriteria}))
+
+        
+        // this.selectChat('10a975a0-cd29-47e8-bd74-080f20351c64')
+    }
+    
+    
+    selectChat(id: string) {
+        this.store.dispatch(ChatComponentActions.getChatById({id: id}))
+        this.store.dispatch(ChatComponentActions.getMessagesById({id: id}))
+
     }
 
     sendMessage() {
-        if (this.selectedChat.id != "-1") {
-            let message = {
-                id: '',
-                text: this.messageText,
-                creationDate: new Date(),
-                userName: "mjanen", //TODO get username from Keycloak?,
-                reliability: 1,
-                tenantId: "2"
+        if (this.selectedChat.id == "NewChat") {
+            //TODO Find a way to determine partcicipants by topric?
+            let createChat: CreateChat = {
+                type: ChatType.HumanChat,
+                topic: this.selectedTopic,
+                participants: this.tempParticipants
             }
-            // this.selectedChat.messages.push(message)
-
+            this.store.dispatch(ChatComponentActions.createChatClicked({createChat: createChat}))
         } else {
-            //start new chat
+            let createMessage: CreateMessage = {
+                type: MessageType.Human,
+                userName: this.userName,
+                text: this.messageText,
+                version: 1
+            }
+            this.store.dispatch(ChatComponentActions.sendMessage({chatId: this.selectedChat.id!, createMessage: createMessage}))
         }
         this.messageText = ""
     }
@@ -93,16 +123,16 @@ export class chatComponent implements OnInit{
 
     showUserManagement() {
         this.userManagementVisible = !this.userManagementVisible
-        this.selectedChat.participants.forEach(p => {
+        this.selectedChat!.participants!.forEach(p => {
             this.tempParticipants.push(p)
         })
     }
 
-    addParticipant(participant: ParticipantDTO) {
+    addParticipant(participant: Participant) {
         this.tempParticipants.push(participant)
     }
 
-    removeParticipant(participant: ParticipantDTO) {
+    removeParticipant(participant: Participant) {
        let index = this.tempParticipants.findIndex(p => p == participant)
        this.tempParticipants.splice(index, 1)
     }
@@ -129,7 +159,7 @@ export class chatComponent implements OnInit{
         //Clear participants to avoid duplication
         this.selectedChat.participants = []
         //Copy updated participants into chat object
-        this.tempParticipants.forEach(p => this.selectedChat.participants.push(p))
+        // this.tempParticipants.forEach(p => this.selectedChat.participants.push(p))
         this.tempParticipants = []
         this.userManagementVisible = false
     }
