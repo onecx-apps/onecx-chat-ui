@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { ChatComponentActions } from './chat-component.actions';
 import { catchError, map, mergeMap, of } from 'rxjs';
-import { ChatSearchCriteria, ChatsService, CreateChat, CreateMessage, Message } from 'src/app/shared/generated';
+import { AddParticipant, ChatSearchCriteria, ChatsService, CreateChat, CreateMessage, Message, UpdateChat } from 'src/app/shared/generated';
 
 @Injectable()
 export class ChatComponentEffects {
@@ -44,7 +44,7 @@ export class ChatComponentEffects {
       mergeMap((action: { searchCriteria: ChatSearchCriteria }) =>
         this.chatService.searchChats(action.searchCriteria).pipe(
           map((chatPageResult) => {
-              return ChatComponentActions.chatPageResultReceived({ chatPageResult: chatPageResult[0] })
+              return ChatComponentActions.chatPageResultReceived({ chatPageResult: chatPageResult })
             }
           ),
           catchError((error) =>
@@ -65,7 +65,6 @@ export class ChatComponentEffects {
       mergeMap((action: { id: string }) =>
         this.chatService.getChatById(action.id).pipe(
           map((chat) => {
-              console.log("CHAT EFFECT")
               return ChatComponentActions.getChatByIdSuccess({ chat: chat })
             }
           ),
@@ -121,5 +120,103 @@ export class ChatComponentEffects {
         )
       )
     )
+  );
+
+  getParticipantsById$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(ChatComponentActions.getParticipantsById),
+      mergeMap((action: {chatId: string}) =>
+        this.chatService.getChatParticipants(action.chatId).pipe(
+          map((participants) => {
+            return ChatComponentActions.getParticipantsByIdSuccess({participants: participants})
+          }),
+          catchError((error) =>
+            of(
+              ChatComponentActions.getParticipantsByIdFailed({
+                error,
+              })
+            )
+          )
+        )
+      )
+    )
+  )
+
+  addParticipant$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(ChatComponentActions.addParticipant),
+      mergeMap((action: {addParticipant: AddParticipant, chatId: string}) => 
+        this.chatService.addParticipant(action.chatId, action.addParticipant).pipe(
+          map((participant) => {
+            return ChatComponentActions.addParticipantSuccess({participant: participant})
+          }),
+          catchError((error) =>
+            of(
+              ChatComponentActions.addParticipantFailed({
+                error,
+              })
+            )
+          )
+        )
+      )
+    )
+  )
+
+  removeParticipant$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ChatComponentActions.removeParticipant),
+      mergeMap((action: {chatId: string, participantId: string}) => 
+        this.chatService.removeParticipant(action.chatId, action.participantId).pipe(
+          map(() => {
+            return ChatComponentActions.removeParticipantSuccess({participant: null})
+          }),
+          catchError((error) =>
+            of(ChatComponentActions.removeParticipantFailed({
+              error,
+            }))
+          )
+        )
+      )
+    )
+  )
+
+  updateChat$ = createEffect(() => 
+    this.actions$.pipe(
+      ofType(ChatComponentActions.updateChat),
+      mergeMap((action: {chatId: string, updateChat: UpdateChat}) => 
+        this.chatService.updateChat(action.chatId, action.updateChat).pipe(
+          map((chat) => {
+            return ChatComponentActions.updateChatSuccess({chat: chat})
+          }),
+          catchError((error) =>
+            of(
+              ChatComponentActions.updateChatFailed({
+                error,
+              })
+            )
+          )
+        )
+      )
+    )
+  )
+
+  deleteChat$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ChatComponentActions.deleteChat),
+      mergeMap((action: {chatId: string}) =>
+        this.chatService.deleteChat(action.chatId).pipe(
+          map(() =>{
+            return ChatComponentActions.deleteChatSuccess({chat: null})
+          }),
+          catchError((error) =>
+            of(
+              ChatComponentActions.deleteChatFailed({
+                error,
+              })
+            )
+          )
+        )
+      )
+    )  
   )
 }

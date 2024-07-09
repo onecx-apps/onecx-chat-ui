@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { Chat, ChatPageResult, ChatSearchCriteria, ChatType, CreateChat, Message, MessageType, Participant, CreateMessage } from "src/app/shared/generated";
+import { Chat, ChatPageResult, ChatSearchCriteria, ChatType, CreateChat, Message, MessageType, Participant, CreateMessage, WebsocketHelper } from "src/app/shared/generated";
 import { ChatComponentActions } from "./chat-component.actions";
 import { KeycloakService } from "keycloak-angular";
 import { Observable } from "rxjs";
 import { selectChat, selectChatPageResults, selectMessages } from "./chat-component.selector";
 import { WebSocketService } from "./web-socket.service";
-import { WebSocketHelperDTO } from "./web-socket-helper-dto.model";
+import { MessageService } from "primeng/api";
 
 @Component({
     selector: 'app-chat-component',
@@ -14,7 +14,7 @@ import { WebSocketHelperDTO } from "./web-socket-helper-dto.model";
     styleUrls: ['./chat.component.scss']
 })
 export class chatComponent implements OnInit{
-    constructor(private store: Store, private keyCloakService: KeycloakService) {
+    constructor(private store: Store, private keyCloakService: KeycloakService, private messageService: MessageService) {
 
     }
     userName!: string
@@ -50,11 +50,17 @@ export class chatComponent implements OnInit{
         this.userName = 'onecx'
         this.websocketService = new WebSocketService(this.userName)
 
-        // this.websocketService.receiveStatus('').subscribe((message: WebSocketHelperDTO) => {
-        //     if(this.selectedChat.id == message.chatId) {
-        //         this.messages.push(message.message)
-        //     }  
-        // })
+        this.websocketService.receivedMessage$.subscribe((websocketHelper: WebsocketHelper) => {
+            if(websocketHelper != undefined) {
+                if(this.selectedChat.id == websocketHelper.chatId) {
+                    this.messages = [...this.messages, websocketHelper.messageDTO]
+                    this.scrollToBottom()
+                } else{
+                    this.messageService.add({severity:'info', summary:'Received new Message in chat' + websocketHelper.chatId, detail:'Via MessageService'});
+                }
+            }
+        })
+        
 
         this.chatPageResult$ = this.store.select(selectChatPageResults)
         this.selectedChat$ = this.store.select(selectChat);
@@ -78,12 +84,11 @@ export class chatComponent implements OnInit{
             pageSize: 10,
             participant: this.userName
         }
-        // this.store.dispatch(ChatComponentActions.chatPageOpened({searchCriteria: searchCriteria}))
+        this.store.dispatch(ChatComponentActions.chatPageOpened({searchCriteria: searchCriteria}))
 
         
-        // this.selectChat('10a975a0-cd29-47e8-bd74-080f20351c64')
+        // this.selectChat('54dfd4ab-7072-4acc-b7f8-2ee3986144dd')
     }
-    
     
     selectChat(id: string) {
         this.store.dispatch(ChatComponentActions.getChatById({id: id}))
@@ -109,6 +114,7 @@ export class chatComponent implements OnInit{
             }
             this.store.dispatch(ChatComponentActions.sendMessage({chatId: this.selectedChat.id!, createMessage: createMessage}))
         }
+        this.scrollToBottom()
         this.messageText = ""
     }
 
@@ -162,5 +168,12 @@ export class chatComponent implements OnInit{
         // this.tempParticipants.forEach(p => this.selectedChat.participants.push(p))
         this.tempParticipants = []
         this.userManagementVisible = false
+    }
+
+    scrollToBottom() {
+        // Get the div element
+        let divElement = document.getElementById('selectedChat');
+        // Scroll to the bottom of the div
+        divElement!.scrollTop = divElement!.scrollHeight;
     }
 }

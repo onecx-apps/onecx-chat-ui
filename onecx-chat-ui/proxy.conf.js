@@ -7,6 +7,8 @@ const bypassFn = function (req, res) {
       res.setHeader('Access-Control-Allow-Headers', '*');
       return res.send('');
     } else {
+      console.log("Else")
+      console.log('########## REQ ', req.url)
       return null;
     }
   } catch (error) {
@@ -26,7 +28,7 @@ const PROXY_CONFIG = {
     bypass: bypassFn,
   },
   '/bff': {
-    target: 'http://onecx-chat-ui-bff',
+    target: 'http://localhost:8081',
     secure: false,
     pathRewrite: {
       '^.*/bff': '',

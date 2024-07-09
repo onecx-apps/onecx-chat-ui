@@ -1,8 +1,8 @@
 .chatOverview {
-    width: 179pt;
+    min-width: 179pt;
     overflow-y: scroll;
     flex-grow: 1 0;
-    height: 100%
+    height: 99%
 }
 
 .chat {
@@ -22,9 +22,15 @@
 }
 
 .chatUi {
+    position: absolute;
     display: flex;
+    width: 100%;
+    // height: 93.7vh;
     height: 100%;
-    height: 920.7pt;
+    max-height: 100%;
+    // height: 920.7pt;
+    overflow-y: clip;
+    overflow-x: clip;
 }
 
 .chat button {
@@ -78,7 +84,7 @@
 }
 
 .selectedChat {
-    padding-top: 55vh;
+    padding-top: auto;
     // width: 85%;
     width: 786pt;
     height: 100%;
@@ -87,6 +93,9 @@
     overflow-y: auto;
     margin-left: auto;
     margin-right: auto;
+
+    overscroll-behavior-y: auto;
+    scroll-snap-type: mandatory;
 }
 
 #message {

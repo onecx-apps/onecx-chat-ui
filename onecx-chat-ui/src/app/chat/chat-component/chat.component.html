@@ -13,7 +13,7 @@
             <p-dropdown [options]="topics"></p-dropdown>
         </div>
 
-        <div *ngIf="selectedChat.id != 'NewChat'" class="selectedChat">
+        <div *ngIf="selectedChat.id != 'NewChat'" class="selectedChat" id="selectedChat">
             <div id="message" *ngFor="let message of messages">
                 <h4>{{ message.userName }}</h4>
                 {{ message.text }}

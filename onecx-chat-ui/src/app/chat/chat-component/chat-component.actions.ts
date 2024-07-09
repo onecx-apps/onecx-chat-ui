@@ -1,5 +1,5 @@
 import { createActionGroup, props } from "@ngrx/store";
-import { Chat, ChatPageResult, ChatSearchCriteria, CreateChat, CreateMessage, Message } from "src/app/shared/generated";
+import { Chat, ChatPageResult, ChatSearchCriteria, CreateChat, CreateMessage, Message, Participant, AddParticipant, UpdateChat } from "src/app/shared/generated";
 
 
 export const ChatComponentActions = createActionGroup ({
@@ -23,7 +23,26 @@ export const ChatComponentActions = createActionGroup ({
 
         'send message': props<{chatId: string, createMessage: CreateMessage}>(),
         'send message success': props<{message: Message}>(),
-        'send message failed': props<{error: string | null}>()
+        'send message failed': props<{error: string | null}>(),
 
+        'get participants by id': props<{chatId: string}>(),
+        'get participants by id success': props<{participants: Participant[]}>(),
+        'get participants by id failed': props<{error: string | null}>(),
+
+        'add participant': props<{chatId: string, addParticipant: AddParticipant}>(),
+        'add participant success': props<{participant: Participant}>(),
+        'add participant failed': props<{error: string | null}>(),
+        
+        'remove participant': props<{chatId: string, participantId: string}>(),
+        'remove participant success': props<{participant: Participant | null}>(),
+        'remove participant failed': props<{error: string | null}>(),
+
+        'update chat': props<{chatId: string, updateChat: UpdateChat}>(),
+        'update chat success': props<{chat: Chat}>(),
+        'update chat failed': props<{error: string | null}>(),
+
+        'delete chat': props<{chatId: string}>(),
+        'delete chat success': props<{chat: Chat | null}>(),
+        'delete chat failed': props<{error: string | null}>()
     },
 })

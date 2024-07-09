@@ -3,6 +3,7 @@ README.md
 api.module.ts
 api/api.ts
 api/chats.service.ts
+api/participants.service.ts
 configuration.ts
 encoder.ts
 git_push.sh
@@ -24,5 +25,6 @@ model/problemDetailInvalidParam.ts
 model/problemDetailParam.ts
 model/problemDetailResponse.ts
 model/updateChat.ts
+model/websocketHelper.ts
 param.ts
 variables.ts

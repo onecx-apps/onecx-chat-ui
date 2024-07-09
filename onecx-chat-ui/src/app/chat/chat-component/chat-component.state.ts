@@ -1,4 +1,4 @@
-import { Chat, ChatPageResult, Message, MessagePageResult } from "src/app/shared/generated"
+import { Chat, ChatPageResult, Message, MessagePageResult, Participant } from "src/app/shared/generated"
 
 
 export interface ChatComponentState {
@@ -8,4 +8,5 @@ export interface ChatComponentState {
     loaded: boolean
     chat: Chat
     messages: Message[]
+    chatParticipants: Participant[]
 }

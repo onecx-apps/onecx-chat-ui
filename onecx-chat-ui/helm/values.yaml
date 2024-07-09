@@ -13,7 +13,7 @@ app:
         description: OneCX OnecxChatUi Module
         note: OneCX OnecxChatUi UI module auto import via MF operator
     permission:
-      enabled: true
+      enabled: false
       spec:
         permissions:
           CHAT_COMPONENT:

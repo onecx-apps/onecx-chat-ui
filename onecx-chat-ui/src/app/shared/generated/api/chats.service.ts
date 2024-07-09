@@ -50,7 +50,7 @@ import { Configuration }                                     from '../configurat
 })
 export class ChatsService {
 
-    protected basePath = 'http://onecx-chat-bff:8080';
+    protected basePath = 'http://onecx-chat-bff:8081';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -181,7 +181,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -255,7 +255,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -333,7 +333,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -396,7 +396,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -460,7 +460,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -524,7 +524,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -588,7 +588,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -601,9 +601,9 @@ export class ChatsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getChats(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ChatPageResult>>;
-    public getChats(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ChatPageResult>>>;
-    public getChats(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ChatPageResult>>>;
+    public getChats(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ChatPageResult>;
+    public getChats(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ChatPageResult>>;
+    public getChats(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ChatPageResult>>;
     public getChats(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new HttpParams({encoder: this.encoder});
@@ -653,7 +653,7 @@ export class ChatsService {
         }
 
         let localVarPath = `/chats`;
-        return this.httpClient.request<Array<ChatPageResult>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ChatPageResult>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters,
@@ -661,7 +661,75 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * remove a participant
+     * @param chatId 
+     * @param participantId 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public removeParticipant(chatId: string, participantId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public removeParticipant(chatId: string, participantId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public removeParticipant(chatId: string, participantId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public removeParticipant(chatId: string, participantId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (chatId === null || chatId === undefined) {
+            throw new Error('Required parameter chatId was null or undefined when calling removeParticipant.');
+        }
+        if (participantId === null || participantId === undefined) {
+            throw new Error('Required parameter participantId was null or undefined when calling removeParticipant.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/participants/${this.configuration.encodeParam({name: "participantId", value: participantId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -673,9 +741,9 @@ export class ChatsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchChats(chatSearchCriteria: ChatSearchCriteria, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<ChatPageResult>>;
-    public searchChats(chatSearchCriteria: ChatSearchCriteria, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<ChatPageResult>>>;
-    public searchChats(chatSearchCriteria: ChatSearchCriteria, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<ChatPageResult>>>;
+    public searchChats(chatSearchCriteria: ChatSearchCriteria, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ChatPageResult>;
+    public searchChats(chatSearchCriteria: ChatSearchCriteria, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ChatPageResult>>;
+    public searchChats(chatSearchCriteria: ChatSearchCriteria, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ChatPageResult>>;
     public searchChats(chatSearchCriteria: ChatSearchCriteria, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (chatSearchCriteria === null || chatSearchCriteria === undefined) {
             throw new Error('Required parameter chatSearchCriteria was null or undefined when calling searchChats.');
@@ -727,7 +795,7 @@ export class ChatsService {
         }
 
         let localVarPath = `/chats/search`;
-        return this.httpClient.request<Array<ChatPageResult>>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ChatPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: chatSearchCriteria,
@@ -735,7 +803,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -813,7 +881,7 @@ export class ChatsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
-                transferCache: localVarTransferCache,
+                // transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
