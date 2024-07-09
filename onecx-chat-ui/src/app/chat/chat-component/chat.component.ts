@@ -4,7 +4,7 @@ import { Chat, ChatPageResult, ChatSearchCriteria, ChatType, CreateChat, Message
 import { ChatComponentActions } from "./chat-component.actions";
 import { KeycloakService } from "keycloak-angular";
 import { Observable } from "rxjs";
-import { selectChat, selectChatPageResults, selectMessages } from "./chat-component.selector";
+import { selectChat, selectChatPageResults, selectChatParticipants, selectMessages } from "./chat-component.selector";
 import { WebSocketService } from "./web-socket.service";
 import { MessageService } from "primeng/api";
 
@@ -17,8 +17,16 @@ export class chatComponent implements OnInit{
     constructor(private store: Store, private keyCloakService: KeycloakService, private messageService: MessageService) {
 
     }
-    userName!: string
+
+    
+    userName: string = "onecx"
     websocketService!: WebSocketService
+    
+    searchCriteria: ChatSearchCriteria = {
+        pageNumber: 0,
+        pageSize: 10,
+        participant: this.userName
+    }
 
     chatPageResult$?: Observable<ChatPageResult>;
     chatPageResult?: ChatPageResult;
@@ -27,6 +35,8 @@ export class chatComponent implements OnInit{
     userSearchText = ""
     showSearchResults = false
     
+    chatParticipants: Participant[] = []
+    chatParticipants$?: Observable<Participant[]>
     //Used to temporarily store changes to participants of chats until confirmed
     tempParticipants: Participant[] = []
     searchResult: Participant[] = []
@@ -65,6 +75,7 @@ export class chatComponent implements OnInit{
         this.chatPageResult$ = this.store.select(selectChatPageResults)
         this.selectedChat$ = this.store.select(selectChat);
         this.messages$ = this.store.select(selectMessages)
+        this.chatParticipants$ = this.store.select(selectChatParticipants)
         
         this.chatPageResult$?.subscribe((chatPageResult) => {
             this.chatPageResult = chatPageResult
@@ -79,21 +90,21 @@ export class chatComponent implements OnInit{
             this.messages = messages
         })
 
-        let searchCriteria: ChatSearchCriteria = {
-            pageNumber: 0,
-            pageSize: 10,
-            participant: this.userName
-        }
-        this.store.dispatch(ChatComponentActions.chatPageOpened({searchCriteria: searchCriteria}))
+        this.chatParticipants$.subscribe((participants) => {
+            this.chatParticipants = participants
+        })
+        
+        this.store.dispatch(ChatComponentActions.chatPageOpened({searchCriteria: this.searchCriteria}))
 
         
         // this.selectChat('54dfd4ab-7072-4acc-b7f8-2ee3986144dd')
     }
     
     selectChat(id: string) {
-        this.store.dispatch(ChatComponentActions.getChatById({id: id}))
-        this.store.dispatch(ChatComponentActions.getMessagesById({id: id}))
-
+        if(id != "NewChat") {
+            this.store.dispatch(ChatComponentActions.getChatById({id: id}))
+            this.store.dispatch(ChatComponentActions.getMessagesById({id: id}))
+        }
     }
 
     sendMessage() {
@@ -102,9 +113,18 @@ export class chatComponent implements OnInit{
             let createChat: CreateChat = {
                 type: ChatType.HumanChat,
                 topic: this.selectedTopic,
-                participants: this.tempParticipants
+                creationUser: this.userName,
+                summary: "TEST CREATE",
+                participants: [{
+                    type: "HUMAN",
+                    userId: "onecx",
+                    email: "onecx@onecx.com",
+                    userName: "onecx",
+                    creationUser: "onecx"
+                }]
             }
             this.store.dispatch(ChatComponentActions.createChatClicked({createChat: createChat}))
+            this.store.dispatch(ChatComponentActions.chatPageOpened({ searchCriteria: this.searchCriteria }))
         } else {
             let createMessage: CreateMessage = {
                 type: MessageType.Human,
@@ -113,7 +133,7 @@ export class chatComponent implements OnInit{
                 version: 1
             }
             this.store.dispatch(ChatComponentActions.sendMessage({chatId: this.selectedChat.id!, createMessage: createMessage}))
-        }
+            }
         this.scrollToBottom()
         this.messageText = ""
     }
@@ -135,7 +155,7 @@ export class chatComponent implements OnInit{
     }
 
     addParticipant(participant: Participant) {
-        this.tempParticipants.push(participant)
+        this.tempParticipants = [...this.tempParticipants, participant]
     }
 
     removeParticipant(participant: Participant) {
@@ -162,10 +182,14 @@ export class chatComponent implements OnInit{
     }
 
     confirm() {
-        //Clear participants to avoid duplication
-        this.selectedChat.participants = []
-        //Copy updated participants into chat object
-        // this.tempParticipants.forEach(p => this.selectedChat.participants.push(p))
+        this.store.dispatch(ChatComponentActions.updateChat(
+            {        
+                chatId: this.selectedChat.id!,
+                updateChat: {
+                    participants: this.tempParticipants
+                }
+            })
+        )
         this.tempParticipants = []
         this.userManagementVisible = false
     }

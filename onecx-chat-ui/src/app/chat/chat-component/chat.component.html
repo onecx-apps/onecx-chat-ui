@@ -14,8 +14,11 @@
         </div>
 
         <div *ngIf="selectedChat.id != 'NewChat'" class="selectedChat" id="selectedChat">
+            <div id=chatHeader>
+                <h4>{{selectedChat.summary}}</h4>
+            </div>
             <div id="message" *ngFor="let message of messages">
-                <h4>{{ message.userName }}</h4>
+                <h5>{{ message.userName }}</h5>
                 {{ message.text }}
             </div>
         </div>
