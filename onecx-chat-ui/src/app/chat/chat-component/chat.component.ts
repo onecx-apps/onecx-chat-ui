@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Chat, ChatPageResult, ChatSearchCriteria, ChatType, CreateChat, Message, MessageType, Participant, CreateMessage, WebsocketHelper } from "src/app/shared/generated";
 import { ChatComponentActions } from "./chat-component.actions";
@@ -6,14 +6,15 @@ import { KeycloakService } from "keycloak-angular";
 import { Observable } from "rxjs";
 import { selectChat, selectChatPageResults, selectChatParticipants, selectMessages } from "./chat-component.selector";
 import { WebSocketService } from "./web-socket.service";
-import { MessageService } from "primeng/api";
+import { MessageService, TranslationKeys } from "primeng/api";
+import { REMOVE_STYLES_ON_COMPONENT_DESTROY } from "@angular/platform-browser";
 
 @Component({
     selector: 'app-chat-component',
     templateUrl: './chat.component.html',
     styleUrls: ['./chat.component.scss']
 })
-export class chatComponent implements OnInit{
+export class chatComponent implements OnInit, OnDestroy{
     constructor(private store: Store, private keyCloakService: KeycloakService, private messageService: MessageService) {
 
     }
@@ -66,7 +67,7 @@ export class chatComponent implements OnInit{
                     this.messages = [...this.messages, websocketHelper.messageDTO]
                     this.scrollToBottom()
                 } else{
-                    this.messageService.add({severity:'info', summary:'Received new Message in chat' + websocketHelper.chatId, detail:'Via MessageService'});
+                    this.messageService.add({severity:'info', summary:'Received new Message in chat ' + websocketHelper.chatId, detail:'Via MessageService'});
                 }
             }
         })
@@ -99,12 +100,21 @@ export class chatComponent implements OnInit{
         
         // this.selectChat('54dfd4ab-7072-4acc-b7f8-2ee3986144dd')
     }
+
+    ngOnDestroy(): void {
+        this.websocketService.diconnectSocket()
+    }
     
     selectChat(id: string) {
         if(id != "NewChat") {
             this.store.dispatch(ChatComponentActions.getChatById({id: id}))
             this.store.dispatch(ChatComponentActions.getMessagesById({id: id}))
-        }
+        } else{
+            this.selectedChat = {
+                type: ChatType.AiChat,
+                id: "NewChat"
+            }
+        }   
     }
 
     sendMessage() {
