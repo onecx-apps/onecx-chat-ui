@@ -7,7 +7,6 @@ import { Observable } from "rxjs";
 import { selectChat, selectChatPageResults, selectChatParticipants, selectMessages } from "./chat-component.selector";
 import { WebSocketService } from "./web-socket.service";
 import { MessageService, TranslationKeys } from "primeng/api";
-import { REMOVE_STYLES_ON_COMPONENT_DESTROY } from "@angular/platform-browser";
 
 @Component({
     selector: 'app-chat-component',
@@ -20,7 +19,7 @@ export class chatComponent implements OnInit, OnDestroy{
     }
 
     
-    userName: string = "onecx"
+    userName: string = ""
     websocketService!: WebSocketService
     
     searchCriteria: ChatSearchCriteria = {
@@ -57,8 +56,7 @@ export class chatComponent implements OnInit, OnDestroy{
     messageText: string = ""
 
     ngOnInit(): void {
-        // this.userName = this.keyCloakService.getUsername()
-        this.userName = 'onecx'
+        this.userName = this.keyCloakService.getUsername()
         this.websocketService = new WebSocketService(this.userName)
 
         this.websocketService.receivedMessage$.subscribe((websocketHelper: WebsocketHelper) => {
@@ -67,6 +65,7 @@ export class chatComponent implements OnInit, OnDestroy{
                     this.messages = [...this.messages, websocketHelper.messageDTO]
                     this.scrollToBottom()
                 } else{
+                    //TODO Find a better way to display messages received for a non selected chat
                     this.messageService.add({severity:'info', summary:'Received new Message in chat ' + websocketHelper.chatId, detail:'Via MessageService'});
                 }
             }
@@ -97,9 +96,7 @@ export class chatComponent implements OnInit, OnDestroy{
         
         this.store.dispatch(ChatComponentActions.chatPageOpened({searchCriteria: this.searchCriteria}))
 
-        
-        // this.selectChat('54dfd4ab-7072-4acc-b7f8-2ee3986144dd')
-    }
+        }
 
     ngOnDestroy(): void {
         this.websocketService.diconnectSocket()
@@ -205,9 +202,6 @@ export class chatComponent implements OnInit, OnDestroy{
     }
 
     scrollToBottom() {
-        // Get the div element
-        let divElement = document.getElementById('selectedChat');
-        // Scroll to the bottom of the div
-        divElement!.scrollTop = divElement!.scrollHeight;
+        //TODO Automatically scroll to the bottom whenever a message is added to the current chat
     }
 }

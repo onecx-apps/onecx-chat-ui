@@ -1,7 +1,7 @@
 <div class="chatUi">
     <div class="chatOverview">
         <div class="newChat">   
-            New Chat
+            {{ 'CHAT.OVERVIEW.NEW_CHAT' | translate }}
             <button pButton icon="pi pi-external-link" (click)="selectChat('NewChat')"></button>
         </div>
         <div class="chat" *ngFor="let chat of this.chats">

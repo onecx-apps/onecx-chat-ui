@@ -29,5 +29,10 @@
       "EXTENDED": "Erweitert",
       "FULL": "Vollständig"
     }
+  },
+  "CHAT": {
+    "OVERVIEW": {
+      "NEW_CHAT": "Neuer Chat"
+    }
   }
 }
