@@ -1,0 +1,34 @@
+app:
+  name: ui
+  image:
+    repository: 'onecx/onecx-chat-ui-ui'
+  routing:
+    enabled: true
+    path: /mfe/onecxChatUi/
+
+  operator:
+    # Microfrontend
+    microfrontend:
+      enabled: true
+      specs:
+        main:
+          exposedModule: './OnecxChatUiModule'
+          description: 'OneCX OnecxChatUi Module'
+          note: 'OneCX OnecxChatUi UI module auto import via MF operator'
+          type: MODULE
+          technology: WEBCOMPONENTMODULE
+          remoteName: onecx-chat-ui
+          tagName: onecx-chat-ui-webcomponent
+    # Permission
+    permission:
+      enabled: true
+      spec:
+        permissions:
+    # Keycloak
+    keycloak:
+      client:
+        enabled: true
+        spec:
+          kcConfig:
+            clientId: 'onecx-chat-ui-ui'
+# PIPE Config
