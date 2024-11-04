@@ -1,6 +1,68 @@
----
 openapi: 3.0.3
 info:
   title: onecx-chat-ui-bff
   version: '1.0'
-paths: {}
+paths:
+  /chat/search:
+    post:
+      operationId: searchChats
+      tags:
+        - ChatBffService
+      description:
+        This operation performs a search based on provided search criteria.
+        Search for chat results.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatSearchResponse'
+        '400':
+          description: Bad request
+        '500':
+          description: Something went wrong
+components:
+  schemas:
+    Chat:
+      type: object
+      required:
+        - id
+      properties:
+        modificationCount:
+          type: integer
+          format: int32
+        id:
+          type: string
+        # "ACTION S1: add additional properties here"
+    ChatSearchRequest:
+      type: object
+      properties:
+        limit:
+          type: integer
+          maximum: 2500
+        id:
+          type: integer
+          format: int32
+        changeMe:
+          type: string
+        # " ACTION S1: Add additional properties to the <feature>-bff.yaml"
+    ChatSearchResponse:
+      type: object
+      required:
+        - results
+        - totalNumberOfResults
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Chat'
+        totalNumberOfResults:
+          type: integer
+          format: int32
+          description: Total number of results on the server.

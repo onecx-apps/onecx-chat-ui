@@ -1,12 +1,15 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.module.ts
 api/api.ts
+api/chatBffService.service.ts
 configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/chat.ts
+model/chatSearchRequest.ts
+model/chatSearchResponse.ts
 model/models.ts
 param.ts
 variables.ts
