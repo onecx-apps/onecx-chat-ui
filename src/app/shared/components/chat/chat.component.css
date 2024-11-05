@@ -1,3 +1,9 @@
+.chat-container {
+  max-height: 100%;
+  height: 100%;
+}
+
+/* Chat History */
 .chat-history-container {
   height: 95%;
   display: flex;
@@ -22,9 +28,6 @@
 }
 
 .message-bubble {
-  border-radius: 10px;
-  padding: 10px;
-  margin: 5px;
   max-width: 60%;
   word-wrap: break-word;
 }
@@ -45,8 +48,7 @@
 
 
 /* Chat Input */
-.chat-input-container {
-    height: 5%;
+.chat-input-container {    
     padding: 1px;
     margin-top: 4px;
     background-color: white;

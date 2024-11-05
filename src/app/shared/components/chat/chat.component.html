@@ -1,49 +1,53 @@
-<div class="chat-history-container">
-  <div class="chat-messages" #scrollContainer>
-    <div
-      *ngFor="let message of chatMessages"
-      class="message-bubble"
-      [ngClass]="{
-        'message-left':
-          message.type === 'SYSTEM' || message.type === 'ASSISTANT',
-        'message-right': message.type === 'HUMAN'
-      }"
-    >
-      <div>
-        <div class="message-info">
-          <span *ngIf="message.type !== 'HUMAN'" class="message-username">{{
-            message.userName
-          }}</span>
-          <span *ngIf="message.type !== 'HUMAN'" class="px-2">|</span>
-          <span class="message-date">{{
-            message.creationDate | date : 'short'
-          }}</span>
+<div class="chat-container">
+  <div class="chat-history-container">
+    <div class="chat-messages" #scrollContainer>
+      <div
+        *ngFor="let message of chatMessages"
+        class="message-bubble p-2 m-2 border-round"
+        [ngClass]="{
+          'message-left':
+            message.type === 'SYSTEM' || message.type === 'ASSISTANT',
+          'message-right': message.type === 'HUMAN'
+        }"
+      >
+        <div>
+          <div class="message-info">
+            <span *ngIf="message.type !== 'HUMAN'" class="message-username">{{
+              message.userName
+            }}</span>
+            <span *ngIf="message.type !== 'HUMAN'" class="px-2">|</span>
+            <span class="message-date">{{
+              message.creationDate | date : 'short'
+            }}</span>
+          </div>
+          <div class="message-text">{{ message.text }}</div>
         </div>
-        <div class="message-text">{{ message.text }}</div>
       </div>
     </div>
   </div>
-</div>
-<div class="chat-input-container">
-  <form [formGroup]="formGroup">
-    <div class="inner-container">
-      <div class="chat-input">
-        <input
-          pInputText
-          type="text"
-          id="chat-message-input"
-          class="w-full pt-3 pb-2"
-          formControlName="message"
-          [placeholder]="'CHAT.MESSAGE_PLACEHOLDER' | translate"
-        />
+  <div class="chat-input-container">
+    <form [formGroup]="formGroup">
+      <div class="inner-container">
+        <div class="chat-input">
+          <input
+            pInputText
+            type="text"
+            id="chat-message-input"
+            class="w-full"
+            formControlName="message"
+            [placeholder]="'CHAT.MESSAGE_PLACEHOLDER' | translate"
+            (keydown.enter)="$event.preventDefault(); sendButtonClicked()"
+          />
+        </div>
+        <div class="chat-actions">
+          <p-button
+            [disabled]="formGroup.status !== 'VALID'"
+            icon="pi pi-send"
+            [text]="true"
+            (onClick)="sendButtonClicked()"
+          />
+        </div>
       </div>
-      <div class="chat-actions">
-        <p-button
-          [disabled]="formGroup.status !== 'VALID'"
-          icon="pi pi-send"
-          [text]="true"
-        />
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

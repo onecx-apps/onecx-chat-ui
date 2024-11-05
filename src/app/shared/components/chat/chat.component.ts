@@ -2,7 +2,9 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -18,6 +20,9 @@ export class ChatComponent implements AfterViewChecked {
   @Input()
   chatMessages: ChatMessage[] = [];
 
+  @Output()
+  sendMessage = new EventEmitter<string>();
+
   @ViewChild('scrollContainer') private scrollContainer: ElementRef | undefined;
 
   public formGroup: FormGroup;
@@ -30,6 +35,16 @@ export class ChatComponent implements AfterViewChecked {
         Validators.required,
       ]),
     });
+  }
+
+  sendButtonClicked() {
+    if (
+      !this.formGroup.value['message'] ||
+      this.formGroup.value['message'] === ''
+    )
+      return;
+    this.sendMessage.emit(this.formGroup.value['message']);
+    this.formGroup.reset();
   }
 
   ngAfterViewChecked() {

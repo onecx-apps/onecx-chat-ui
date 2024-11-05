@@ -59,4 +59,15 @@ export class FullChatComponent {
       userName: 'Assistant',
     },
   ];
+
+  sendMessage(message: string) {
+    const newMessage: ChatMessage = {
+      creationDate: new Date(),
+      id: (this.mockChatMessages.length + 1).toString(),
+      type: MessageType.Human,
+      text: message,
+      userName: 'User123',
+    };
+    this.mockChatMessages.push(newMessage);
+  }
 }
