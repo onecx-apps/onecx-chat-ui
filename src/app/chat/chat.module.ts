@@ -16,9 +16,10 @@ import { chatFeature } from './chat.reducers';
 import { routes } from './chat.routes';
 import { ChatSearchComponent } from './pages/chat-search/chat-search.component';
 import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
+import { FullChatComponent } from './pages/full-chat/full-chat.component';
 
 @NgModule({
-  declarations: [ChatSearchComponent],
+  declarations: [ChatSearchComponent, FullChatComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     CommonModule,

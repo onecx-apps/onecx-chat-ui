@@ -7,22 +7,20 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Participant } from './participant';
-import { ChatType } from './chatType';
+import { MessageType } from './messageType';
 
 
-export interface Chat { 
+export interface Message { 
     version?: number;
     creationDate?: string;
     creationUser?: string;
     modificationDate?: string;
     modificationUser?: string;
     id?: string;
-    type: ChatType;
-    topic?: string;
-    summary?: string;
-    appId?: string;
-    participants?: Array<Participant>;
+    type: MessageType;
+    text?: string;
+    userName?: string;
+    reliability?: number;
 }
 
 

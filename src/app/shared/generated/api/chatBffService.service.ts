@@ -17,9 +17,9 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { ChatSearchRequest } from '../model/chatSearchRequest';
+import { ChatPageResult } from '../model/chatPageResult';
 // @ts-ignore
-import { ChatSearchResponse } from '../model/chatSearchResponse';
+import { ChatSearchRequest } from '../model/chatSearchRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -98,9 +98,9 @@ export class ChatBffService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ChatSearchResponse>;
-    public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ChatSearchResponse>>;
-    public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ChatSearchResponse>>;
+    public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ChatPageResult>;
+    public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ChatPageResult>>;
+    public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ChatPageResult>>;
     public searchChats(chatSearchRequest?: ChatSearchRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
@@ -144,7 +144,7 @@ export class ChatBffService {
         }
 
         let localVarPath = `/chat/search`;
-        return this.httpClient.request<ChatSearchResponse>('post', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<ChatPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: chatSearchRequest,

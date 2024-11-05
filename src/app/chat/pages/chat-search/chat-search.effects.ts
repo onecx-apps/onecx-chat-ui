@@ -96,10 +96,10 @@ export class ChatSearchEffects {
         ),
       })
       .pipe(
-        map(({ results, totalNumberOfResults }) =>
+        map(({ results, totalElements }) =>
           ChatSearchActions.chatSearchResultsReceived({
             results,
-            totalNumberOfResults,
+            totalNumberOfResults: totalElements ?? 0,
           })
         ),
         catchError((error) =>

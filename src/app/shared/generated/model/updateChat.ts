@@ -11,14 +11,14 @@ import { Participant } from './participant';
 import { ChatType } from './chatType';
 
 
-export interface Chat { 
+export interface UpdateChat { 
     version?: number;
     creationDate?: string;
     creationUser?: string;
     modificationDate?: string;
     modificationUser?: string;
     id?: string;
-    type: ChatType;
+    type?: ChatType;
     topic?: string;
     summary?: string;
     appId?: string;

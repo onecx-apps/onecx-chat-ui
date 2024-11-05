@@ -11,7 +11,7 @@ import { Participant } from './participant';
 import { ChatType } from './chatType';
 
 
-export interface Chat { 
+export interface CreateChat { 
     version?: number;
     creationDate?: string;
     creationUser?: string;
@@ -22,7 +22,7 @@ export interface Chat {
     topic?: string;
     summary?: string;
     appId?: string;
-    participants?: Array<Participant>;
+    participants: Array<Participant>;
 }
 
 

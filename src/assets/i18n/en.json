@@ -29,5 +29,8 @@
       "EXTENDED": "Extended",
       "FULL": "Full"
     }
+  },
+  "CHAT": {
+    "MESSAGE_PLACEHOLDER": "Message..."
   }
 }
