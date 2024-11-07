@@ -1,4 +1,4 @@
-.full-chat-container {
+.chat-assistant-container {
     height: calc(100vh - 83px);
     display: flex;
     flex-direction: column;

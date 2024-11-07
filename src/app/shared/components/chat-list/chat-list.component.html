@@ -1,1 +1,32 @@
-<p>chat-list works!</p>
+<div class="p-1 w-full flex">
+  <p-dropdown
+    [options]="chats"
+    [(ngModel)]="selectedChat"
+    optionLabel="topic"
+    [filter]="true"
+    filterBy="topic"
+    [placeholder]="'CHAT.SELECT_CHAT' | translate"
+    [loading]="loading"
+    class="w-full"
+    [style]="{ width: '100%' }"
+  >
+    <ng-template pTemplate="selectedItem" let-selectedOption>
+      <div class="flex align-items-center gap-2">
+        <div *ngIf="selectedOption.id !== 'new'">
+          {{ selectedOption.topic }}
+        </div>
+        <div *ngIf="selectedOption.id === 'new'">
+          <i>{{ selectedOption.topic | translate }}</i>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template let-item pTemplate="item">
+      <div class="flex align-items-center gap-2">
+        <div *ngIf="item.id !== 'new'">{{ item.topic }}</div>
+        <div *ngIf="item.id === 'new'">
+          <i>{{ item.topic | translate }}</i>
+        </div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+</div>

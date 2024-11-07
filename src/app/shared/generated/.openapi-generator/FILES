@@ -15,6 +15,7 @@ model/chatSearchRequest.ts
 model/chatType.ts
 model/createChat.ts
 model/createMessage.ts
+model/getChatsResponse.ts
 model/message.ts
 model/messagePageResult.ts
 model/messageType.ts

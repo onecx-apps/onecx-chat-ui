@@ -5,6 +5,7 @@ export * from './chatSearchRequest';
 export * from './chatType';
 export * from './createChat';
 export * from './createMessage';
+export * from './getChatsResponse';
 export * from './message';
 export * from './messagePageResult';
 export * from './messageType';

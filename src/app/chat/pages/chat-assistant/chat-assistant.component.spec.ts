@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FullChatComponent } from './full-chat.component';
+import { AIChatComponent } from './chat-assistant.component';
 
 describe('FullChatComponent', () => {
-  let component: FullChatComponent;
-  let fixture: ComponentFixture<FullChatComponent>;
+  let component: AIChatComponent;
+  let fixture: ComponentFixture<AIChatComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FullChatComponent],
+      imports: [AIChatComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FullChatComponent);
+    fixture = TestBed.createComponent(AIChatComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

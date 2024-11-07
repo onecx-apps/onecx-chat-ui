@@ -20,6 +20,9 @@ export class ChatComponent implements AfterViewChecked {
   @Input()
   chatMessages: ChatMessage[] = [];
 
+  @Input()
+  sendMessageDisabled = false;
+
   @Output()
   sendMessage = new EventEmitter<string>();
 

@@ -6,6 +6,7 @@ import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TranslateModule } from '@ngx-translate/core';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [ChatComponent, ChatListComponent],
@@ -16,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
+    DropdownModule,
   ],
   exports: [ChatComponent, ChatListComponent],
   providers: [],

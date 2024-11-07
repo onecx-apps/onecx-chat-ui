@@ -21,11 +21,11 @@ import { AddParticipant } from '../model/addParticipant';
 // @ts-ignore
 import { Chat } from '../model/chat';
 // @ts-ignore
-import { ChatPageResult } from '../model/chatPageResult';
-// @ts-ignore
 import { CreateChat } from '../model/createChat';
 // @ts-ignore
 import { CreateMessage } from '../model/createMessage';
+// @ts-ignore
+import { GetChatsResponse } from '../model/getChatsResponse';
 // @ts-ignore
 import { Message } from '../model/message';
 // @ts-ignore
@@ -551,25 +551,13 @@ export class ChatsInternal {
 
     /**
      * Return list of chats
-     * @param pageNumber 
-     * @param pageSize 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getChats(pageNumber?: number, pageSize?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<ChatPageResult>>;
-    public getChats(pageNumber?: number, pageSize?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<ChatPageResult>>>;
-    public getChats(pageNumber?: number, pageSize?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<ChatPageResult>>>;
-    public getChats(pageNumber?: number, pageSize?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (pageNumber !== undefined && pageNumber !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageNumber, 'pageNumber');
-        }
-        if (pageSize !== undefined && pageSize !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>pageSize, 'pageSize');
-        }
+    public getChats(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GetChatsResponse>;
+    public getChats(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GetChatsResponse>>;
+    public getChats(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GetChatsResponse>>;
+    public getChats(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -603,10 +591,9 @@ export class ChatsInternal {
         }
 
         let localVarPath = `/chats`;
-        return this.httpClient.request<Array<ChatPageResult>>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<GetChatsResponse>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

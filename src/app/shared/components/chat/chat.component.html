@@ -41,7 +41,7 @@
         </div>
         <div class="chat-actions">
           <p-button
-            [disabled]="formGroup.status !== 'VALID'"
+            [disabled]="formGroup.status !== 'VALID' || sendMessageDisabled"
             icon="pi pi-send"
             [text]="true"
             (onClick)="sendButtonClicked()"

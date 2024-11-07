@@ -1,0 +1,10 @@
+<div class="chat-assistant-container">
+  <app-chat-list
+    [chats]="chats"
+    [loading]="chatsLoading"
+  ></app-chat-list>
+  <app-chat
+    [chatMessages]="chatMessages"
+    (sendMessage)="sendMessage($event)"
+  ></app-chat>
+</div>
