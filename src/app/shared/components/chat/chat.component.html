@@ -13,7 +13,7 @@
         <div>
           <div class="message-info">
             <span *ngIf="message.type !== 'HUMAN'" class="message-username">{{
-              message.userName
+               message.userNameKey ? (message.userNameKey | translate) : message.userName
             }}</span>
             <span *ngIf="message.type !== 'HUMAN'" class="px-2">|</span>
             <span class="message-date">{{

@@ -33,6 +33,11 @@
   "CHAT": {
     "MESSAGE_PLACEHOLDER": "Message...",
     "NEW_CHAT": "New Chat...",
-    "SELECT_CHAT": "Select a chat"
+    "SELECT_CHAT": "Select a chat",
+    "PARTICIPANT": {
+      "ASSISTANT": "Assistant",
+      "HUMAN": "Human",
+      "SYSTEM": "System"
+    }
   }
 }

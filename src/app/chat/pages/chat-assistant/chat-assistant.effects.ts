@@ -156,7 +156,7 @@ export class ChatAssistantEffects {
 
   createChat = (user: ChatUser) => {
     return this.chatInternalService.createChat({
-      type: ChatType.HumanChat,
+      type: ChatType.AiChat,
       participants: [
         {
           type: ParticipantType.Human,
