@@ -4,6 +4,7 @@ import { Chat, Message } from 'src/app/shared/generated';
 export const ChatAssistantActions = createActionGroup({
   source: 'ChatAssistant',
   events: {
+    'navigated to chat assistant': emptyProps(),
     'chats loaded': props<{
       chats: Chat[];
     }>(),

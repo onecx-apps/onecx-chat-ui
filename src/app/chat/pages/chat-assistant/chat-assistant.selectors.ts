@@ -4,6 +4,7 @@ import { Chat, Message } from 'src/app/shared/generated';
 import { chatFeature } from '../../chat.reducers';
 import { initialState } from './chat-assistant.reducers';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
+import { NEW_HUMAN_CHAT_ITEM } from 'src/app/shared/components/chat-list/chat-list.component';
 
 export const chatAssistantSelectors = createChildSelectors(
   chatFeature.selectAssistant,
@@ -19,14 +20,16 @@ export const selectChatAssistantViewModel = createSelector(
     currentChat: Chat | undefined,
     currentMessages: Message[] | undefined
   ): ChatAssistantViewModel => ({
-    chats,
-    currentChat,
-    currentMessages: currentMessages?.map((m) => ({
-      ...m,
-      id: m.id ?? '',
-      text: m.text ?? '',
-      userName: m.userName ?? '',
-      creationDate: new Date(m.creationDate ?? ''),
-    })),
+    chats: [NEW_HUMAN_CHAT_ITEM, ...chats],
+    currentChat: currentChat ?? NEW_HUMAN_CHAT_ITEM,
+    currentMessages: currentMessages
+      ?.map((m) => ({
+        ...m,
+        id: m.id ?? '',
+        text: m.text ?? '',
+        userName: m.userName ?? '',
+        creationDate: new Date(m.creationDate ?? ''),
+      }))
+      .sort((a, b) => a.creationDate.getTime() - b.creationDate.getTime()),
   })
 );

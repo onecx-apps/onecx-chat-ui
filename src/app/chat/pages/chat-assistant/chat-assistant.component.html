@@ -2,6 +2,7 @@
   <app-chat-list
     [chats]="vm.chats"
     [loading]="chatsLoading"
+    [selectedChat]="vm.currentChat"
     (chatSelected)="chatSelected($event)"
   ></app-chat-list>
   <app-chat

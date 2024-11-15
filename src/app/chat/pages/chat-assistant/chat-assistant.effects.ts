@@ -20,6 +20,7 @@ import {
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantComponent } from './chat-assistant.component';
 import { chatAssistantSelectors } from './chat-assistant.selectors';
+import { ChatUser } from './chat-assistant.state';
 
 @Injectable()
 export class ChatAssistantEffects {
@@ -34,10 +35,23 @@ export class ChatAssistantEffects {
     private readonly exportDataService: ExportDataService
   ) {}
 
-  loadAvailableChats$ = createEffect(() => {
+  navigatedToChatAssistant = createEffect(() => {
     return this.actions$.pipe(
       ofType(routerNavigatedAction),
       filterForNavigatedTo(this.router, ChatAssistantComponent),
+      switchMap(() => {
+        return of(ChatAssistantActions.navigatedToChatAssistant());
+      })
+    );
+  });
+
+  loadAvailableChats$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        ChatAssistantActions.navigatedToChatAssistant,
+        ChatAssistantActions.chatCreationSuccessfull,
+        ChatAssistantActions.messageSentForNewChat
+      ),
       switchMap(() => {
         return this.chatInternalService.getChats().pipe(
           map((response) => {
@@ -67,7 +81,7 @@ export class ChatAssistantEffects {
       concatLatestFrom(() => [
         this.store.select(chatAssistantSelectors.selectCurrentChat),
       ]),
-      filter(([, chat]) => chat?.id !== undefined),
+      filter(([, chat]) => chat?.id !== undefined && chat.id !== 'new'),
       switchMap(([, chat]) => {
         return this.chatInternalService.getChatMessages(chat?.id ?? '').pipe(
           map((response) => {
@@ -90,8 +104,12 @@ export class ChatAssistantEffects {
   createChat$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ChatAssistantActions.chatCreated),
-      switchMap(() => {
-        return this.createChat('123').pipe(
+      concatLatestFrom(() => [
+        this.store.select(chatAssistantSelectors.selectUser),
+      ]),
+      filter(([, user]) => user !== undefined),
+      switchMap(([, user]) => {
+        return this.createChat(user as ChatUser).pipe(
           map((chat) => {
             return ChatAssistantActions.chatCreationSuccessfull({
               chat,
@@ -112,8 +130,12 @@ export class ChatAssistantEffects {
   createChatAndSendMessage$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(ChatAssistantActions.createNewChatForMessage),
-      switchMap((action) => {
-        return this.createChat('123').pipe(
+      concatLatestFrom(() => [
+        this.store.select(chatAssistantSelectors.selectUser),
+      ]),
+      filter(([, user]) => user !== undefined),
+      switchMap(([action, user]) => {
+        return this.createChat(user as ChatUser).pipe(
           map((chat) =>
             ChatAssistantActions.messageSentForNewChat({
               chat,
@@ -132,13 +154,15 @@ export class ChatAssistantEffects {
     );
   });
 
-  createChat = (userId: string) => {
+  createChat = (user: ChatUser) => {
     return this.chatInternalService.createChat({
       type: ChatType.HumanChat,
       participants: [
         {
           type: ParticipantType.Human,
-          userId,
+          userId: user.userId,
+          userName: user.userName,
+          email: user.email,
         },
       ],
     });
@@ -154,7 +178,7 @@ export class ChatAssistantEffects {
         this.store.select(chatAssistantSelectors.selectCurrentChat),
       ]),
       switchMap(([action, chat]) => {
-        if (!chat?.id) {
+        if (!chat?.id || chat.id === 'new') {
           return of(
             ChatAssistantActions.createNewChatForMessage({
               message: action.message,

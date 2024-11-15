@@ -4,6 +4,12 @@ import { ChatAssistantState } from './chat-assistant.state';
 import { MessageType } from 'src/app/shared/generated';
 
 export const initialState: ChatAssistantState = {
+  // TODO: use onecx user data
+  user: {
+    userId: '123',
+    userName: 'human',
+    email: 'human@earth.io',
+  },
   chats: [],
   currentChat: undefined,
   currentMessages: undefined,
@@ -58,10 +64,15 @@ export const chatAssistantReducer = createReducer(
       };
     }
   ),
-  on(ChatAssistantActions.chatSelected, (state: ChatAssistantState, action) => {
-    return {
-      ...state,
-      currentChat: action.chat,
-    };
-  })
+  on(
+    ChatAssistantActions.chatSelected,
+    ChatAssistantActions.chatCreationSuccessfull,
+    (state: ChatAssistantState, action) => {
+      return {
+        ...state,
+        currentChat: action.chat,
+        currentMessages: []
+      };
+    }
+  ),
 );
