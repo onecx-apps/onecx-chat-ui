@@ -9,7 +9,7 @@ import {
   ExportDataService,
   PortalMessageService,
 } from '@onecx/portal-integration-angular';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, of, switchMap } from 'rxjs';
 import {
   ChatBffService,
   ChatsInternal,
@@ -34,31 +34,58 @@ export class ChatAssistantEffects {
     private readonly exportDataService: ExportDataService
   ) {}
 
-  loadAvailableChats$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(routerNavigatedAction),
-        filterForNavigatedTo(this.router, ChatAssistantComponent),
-        tap(() => {
-          this.chatInternalService.getChats().pipe(
-            map((response) => {
-              return ChatAssistantActions.chatsLoaded({
-                chats: response.chats ?? [],
-              });
-            }),
-            catchError((error) =>
-              of(
-                ChatAssistantActions.chatsLoadingFailed({
-                  error,
-                })
-              )
+  loadAvailableChats$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(routerNavigatedAction),
+      filterForNavigatedTo(this.router, ChatAssistantComponent),
+      switchMap(() => {
+        return this.chatInternalService.getChats().pipe(
+          map((response) => {
+            return ChatAssistantActions.chatsLoaded({
+              chats: response.stream ?? [],
+            });
+          }),
+          catchError((error) =>
+            of(
+              ChatAssistantActions.chatsLoadingFailed({
+                error,
+              })
             )
-          );
-        })
-      );
-    },
-    { dispatch: false }
-  );
+          )
+        );
+      })
+    );
+  });
+
+  loadAvailableMessages$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(
+        ChatAssistantActions.chatSelected,
+        ChatAssistantActions.messageSendingSuccessfull,
+        ChatAssistantActions.messagesLoadingFailed
+      ),
+      concatLatestFrom(() => [
+        this.store.select(chatAssistantSelectors.selectCurrentChat),
+      ]),
+      filter(([, chat]) => chat?.id !== undefined),
+      switchMap(([, chat]) => {
+        return this.chatInternalService.getChatMessages(chat?.id ?? '').pipe(
+          map((response) => {
+            return ChatAssistantActions.messagesLoaded({
+              messages: response,
+            });
+          }),
+          catchError((error) =>
+            of(
+              ChatAssistantActions.messagesLoadingFailed({
+                error,
+              })
+            )
+          )
+        );
+      })
+    );
+  });
 
   createChat$ = createEffect(() => {
     return this.actions$.pipe(
@@ -107,7 +134,7 @@ export class ChatAssistantEffects {
 
   createChat = (userId: string) => {
     return this.chatInternalService.createChat({
-      type: ChatType.AiChat,
+      type: ChatType.HumanChat,
       participants: [
         {
           type: ParticipantType.Human,

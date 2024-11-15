@@ -33,5 +33,14 @@ export const ChatAssistantActions = createActionGroup({
     'chat creation failed': props<{
       error: string | null;
     }>(),
+    'chat selected': props<{
+      chat: Chat;
+    }>(),
+    'messages loaded': props<{
+      messages: Message[];
+    }>(),
+    'messages loading failed': props<{
+      error: string | null;
+    }>(),
   },
 });

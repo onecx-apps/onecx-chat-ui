@@ -19,8 +19,6 @@ export class ChatAssistantComponent {
 
   chatMessages: ChatMessage[] = [];
 
-  chats: Chat[] = [];
-
   chatsLoading = false;
 
   constructor(private readonly store: Store) {}
@@ -37,6 +35,14 @@ export class ChatAssistantComponent {
     this.store.dispatch(
       ChatAssistantActions.messageSent({
         message,
+      })
+    );
+  }
+
+  chatSelected(chat: Chat) {
+    this.store.dispatch(
+      ChatAssistantActions.chatSelected({
+        chat,
       })
     );
   }

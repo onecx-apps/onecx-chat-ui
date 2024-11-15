@@ -9,11 +9,12 @@
     [loading]="loading"
     class="w-full"
     [style]="{ width: '100%' }"
+    (onChange)="onChange($event)"
   >
     <ng-template pTemplate="selectedItem" let-selectedOption>
       <div class="flex align-items-center gap-2">
         <div *ngIf="selectedOption.id !== 'new'">
-          {{ selectedOption.topic }}
+          {{ selectedOption.topic ?? selectedOption.id }}
         </div>
         <div *ngIf="selectedOption.id === 'new'">
           <i>{{ selectedOption.topic | translate }}</i>
@@ -22,7 +23,7 @@
     </ng-template>
     <ng-template let-item pTemplate="item">
       <div class="flex align-items-center gap-2">
-        <div *ngIf="item.id !== 'new'">{{ item.topic }}</div>
+        <div *ngIf="item.id !== 'new'">{{ item.topic ?? item.id }}</div>
         <div *ngIf="item.id === 'new'">
           <i>{{ item.topic | translate }}</i>
         </div>

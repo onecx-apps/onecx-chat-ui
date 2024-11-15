@@ -1,10 +1,11 @@
-<div class="chat-assistant-container">
+<div class="chat-assistant-container" *ngrxLet="viewModel$; let vm">
   <app-chat-list
-    [chats]="chats"
+    [chats]="vm.chats"
     [loading]="chatsLoading"
+    (chatSelected)="chatSelected($event)"
   ></app-chat-list>
   <app-chat
-    [chatMessages]="chatMessages"
+    [chatMessages]="vm.currentMessages ?? []"
     (sendMessage)="sendMessage($event)"
   ></app-chat>
 </div>

@@ -26,5 +26,6 @@ model/problemDetailInvalidParam.ts
 model/problemDetailParam.ts
 model/problemDetailResponse.ts
 model/updateChat.ts
+model/websocketHelper.ts
 param.ts
 variables.ts

@@ -11,6 +11,13 @@ import { Chat } from './chat';
 
 
 export interface GetChatsResponse { 
-    chats?: Array<Chat>;
+    /**
+     * The total elements in the resource.
+     */
+    totalElements?: number;
+    number?: number;
+    size?: number;
+    totalPages?: number;
+    stream?: Array<Chat>;
 }
 

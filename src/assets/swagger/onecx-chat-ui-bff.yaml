@@ -329,7 +329,20 @@ components:
     GetChatsResponse:
       type: object
       properties:
-        chats:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
           type: array
           items:
             $ref: "#/components/schemas/Chat"
@@ -563,3 +576,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Participant"
+    WebsocketHelper:
+      required:
+        - messageDTO
+        - chatId
+      type: object
+      properties:
+        chatId:
+          type: string
+        messageDTO:
+          $ref: '#/components/schemas/Message'
