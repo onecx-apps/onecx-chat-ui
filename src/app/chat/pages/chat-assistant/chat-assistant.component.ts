@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
-import { Chat, MessageType } from 'src/app/shared/generated';
-import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 import { Observable } from 'rxjs';
-import { selectChatAssistantViewModel } from './chat-assistant.selectors';
+import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
+import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
+import { selectChatAssistantViewModel } from './chat-assistant.selectors';
+import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -24,14 +24,6 @@ export class ChatAssistantComponent {
   constructor(private readonly store: Store) {}
 
   sendMessage(message: string) {
-    const newMessage: ChatMessage = {
-      creationDate: new Date(),
-      id: (this.chatMessages.length + 1).toString(),
-      type: MessageType.Human,
-      text: message,
-      userName: 'User123',
-    };
-    this.chatMessages.push(newMessage);
     this.store.dispatch(
       ChatAssistantActions.messageSent({
         message,

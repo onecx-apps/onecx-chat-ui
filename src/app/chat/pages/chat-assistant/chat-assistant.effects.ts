@@ -76,7 +76,7 @@ export class ChatAssistantEffects {
       ofType(
         ChatAssistantActions.chatSelected,
         ChatAssistantActions.messageSendingSuccessfull,
-        ChatAssistantActions.messagesLoadingFailed
+        ChatAssistantActions.messageSendingFailed,
       ),
       concatLatestFrom(() => [
         this.store.select(chatAssistantSelectors.selectCurrentChat),

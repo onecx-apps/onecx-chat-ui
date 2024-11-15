@@ -23,15 +23,6 @@ export const chatAssistantReducer = createReducer(
       return {
         ...state,
         currentChat: action.chat,
-        currentMessages: [
-          {
-            type: MessageType.Human,
-            id: 'new',
-            text: action.message,
-            creationDate: new Date().toISOString(),
-          },
-          ...(state.currentMessages ?? []),
-        ],
       };
     }
   ),
@@ -44,6 +35,13 @@ export const chatAssistantReducer = createReducer(
           id: 'new',
           text: action.message,
           creationDate: new Date().toISOString(),
+        },
+        {
+          creationDate: new Date().toISOString(),
+          id: 'ai-temp',
+          type: MessageType.Assistant,
+          text: '',
+          isLoadingInfo: true,
         },
         ...(state.currentMessages ?? []),
       ],
@@ -71,8 +69,8 @@ export const chatAssistantReducer = createReducer(
       return {
         ...state,
         currentChat: action.chat,
-        currentMessages: []
+        currentMessages: [],
       };
     }
-  ),
+  )
 );

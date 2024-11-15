@@ -7,4 +7,5 @@ export interface ChatMessage {
   text: string;
   userName: string;
   userNameKey?: string | undefined;
+  isLoadingInfo?: boolean;
 }

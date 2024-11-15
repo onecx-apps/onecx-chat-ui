@@ -13,14 +13,21 @@
         <div>
           <div class="message-info">
             <span *ngIf="message.type !== 'HUMAN'" class="message-username">{{
-               message.userNameKey ? (message.userNameKey | translate) : message.userName
+              message.userNameKey
+                ? (message.userNameKey | translate)
+                : message.userName
             }}</span>
             <span *ngIf="message.type !== 'HUMAN'" class="px-2">|</span>
             <span class="message-date">{{
               message.creationDate | date : 'short'
             }}</span>
           </div>
-          <div class="message-text">{{ message.text }}</div>
+          <div *ngIf="!message.isLoadingInfo" class="message-text">
+            {{ message.text }}
+          </div>
+          <div *ngIf="message.isLoadingInfo">
+            <p-progressBar mode="indeterminate" [style]="{ height: '6px' }" />
+          </div>
         </div>
       </div>
     </div>
