@@ -11,4 +11,5 @@ export interface ChatAssistantState {
   chats: Chat[];
   currentChat: Chat | undefined;
   currentMessages: Message[] | undefined;
+  topic: string;
 }

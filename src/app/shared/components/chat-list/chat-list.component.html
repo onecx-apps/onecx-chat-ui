@@ -1,4 +1,4 @@
-<div class="p-1 w-full flex">
+<div class="p-1 w-full flex align-items-center">
   <p-dropdown
     [options]="chats"
     [(ngModel)]="selectedChat"
@@ -31,4 +31,8 @@
       </div>
     </ng-template>
   </p-dropdown>
+  <div class="flex justify-content-center pl-1">
+    <p-menu #menu [model]="menuItems" [popup]="true" appendTo="body" />
+    <p-button (onClick)="menu.toggle($event)" icon="pi pi-ellipsis-v" />
+  </div>
 </div>

@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
+import { MessageType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantState } from './chat-assistant.state';
-import { MessageType } from 'src/app/shared/generated';
 
 export const initialState: ChatAssistantState = {
   // TODO: use onecx user data
@@ -13,6 +13,11 @@ export const initialState: ChatAssistantState = {
   chats: [],
   currentChat: undefined,
   currentMessages: undefined,
+  topic: 'chat-assistant',
+};
+
+const cleanTemp = (m: { id?: string | undefined }) => {
+  return m.id !== 'new' && !m?.id?.includes('temp');
 };
 
 export const chatAssistantReducer = createReducer(
@@ -43,10 +48,28 @@ export const chatAssistantReducer = createReducer(
           text: '',
           isLoadingInfo: true,
         },
-        ...(state.currentMessages ?? []),
+        ...(state.currentMessages?.filter(cleanTemp) ?? []),
       ],
     };
   }),
+  on(
+    ChatAssistantActions.messageSendingFailed,
+    (state: ChatAssistantState, action) => {
+      return {
+        ...state,
+        currentMessages: [
+          {
+            type: MessageType.Human,
+            id: 'new',
+            text: action.message,
+            creationDate: new Date().toISOString(),
+            isFailed: true,
+          },
+          ...(state.currentMessages?.filter(cleanTemp) ?? []),
+        ],
+      };
+    }
+  ),
   on(ChatAssistantActions.chatsLoaded, (state: ChatAssistantState, action) => {
     return {
       ...state,
@@ -69,6 +92,17 @@ export const chatAssistantReducer = createReducer(
       return {
         ...state,
         currentChat: action.chat,
+        currentMessages: [],
+      };
+    }
+  ),
+  on(
+    ChatAssistantActions.chatDeletionSuccessfull,
+    (state: ChatAssistantState, action) => {
+      return {
+        ...state,
+        currentChat: undefined,
+        chats: state.chats.filter((c) => c.id !== action.chatId),
         currentMessages: [],
       };
     }

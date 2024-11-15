@@ -8,4 +8,5 @@ export interface ChatMessage {
   userName: string;
   userNameKey?: string | undefined;
   isLoadingInfo?: boolean;
+  isFailed?: boolean;
 }

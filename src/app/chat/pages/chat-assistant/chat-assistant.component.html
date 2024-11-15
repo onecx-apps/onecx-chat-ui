@@ -4,9 +4,11 @@
     [loading]="chatsLoading"
     [selectedChat]="vm.currentChat"
     (chatSelected)="chatSelected($event)"
+    [menuItems]="(menuItems | async) ?? []"
   ></app-chat-list>
   <app-chat
     [chatMessages]="vm.currentMessages ?? []"
     (sendMessage)="sendMessage($event)"
+    (retrySendMessage)="sendMessage($event)"
   ></app-chat>
 </div>

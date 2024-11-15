@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MenuItem } from 'primeng/api';
+import { combineLatest, map, Observable } from 'rxjs';
 import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
 import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
@@ -21,7 +23,28 @@ export class ChatAssistantComponent {
 
   chatsLoading = false;
 
-  constructor(private readonly store: Store) {}
+  constructor(
+    private readonly store: Store,
+    private translateService: TranslateService
+  ) {}
+
+  menuItems: Observable<MenuItem[]> = combineLatest([
+    this.viewModel$,
+    this.translateService.get(['CHAT.ACTIONS.DELETE']),
+  ]).pipe(
+    map(([vm, t]) => {
+      return [
+        {
+          label: t['CHAT.ACTIONS.DELETE'],
+          icon: 'pi pi-trash',
+          disabled: vm.currentChat?.id === 'new',
+          command: () => {
+            this.store.dispatch(ChatAssistantActions.currentChatDeleted());
+          },
+        },
+      ] as MenuItem[];
+    })
+  );
 
   sendMessage(message: string) {
     this.store.dispatch(

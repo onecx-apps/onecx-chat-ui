@@ -38,6 +38,16 @@
   margin-bottom: 5px;
 }
 
+.message-error {
+  font-size: 0.8em;
+  margin-top: 5px;
+  color: var(--error-color);  
+}
+
+.retry-button {
+  cursor: pointer;
+}
+
 .message-right .message-info {
     color: var(--primary-color);
 }

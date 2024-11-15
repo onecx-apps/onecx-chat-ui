@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Chat, ChatType } from '../../generated';
+import { MenuItem } from 'primeng/api';
 
 export const NEW_HUMAN_CHAT_ITEM = {
   topic: 'CHAT.NEW_CHAT',
@@ -26,6 +27,9 @@ export class ChatListComponent {
 
   @Input()
   loading = false;
+
+  @Input()
+  menuItems: MenuItem[] | undefined
 
   @Output()
   chatSelected = new EventEmitter<Chat>();

@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { ChatComponent } from './components/chat/chat.component';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   declarations: [ChatComponent, ChatListComponent],
@@ -20,6 +21,7 @@ import { ChatComponent } from './components/chat/chat.component';
     TranslateModule,
     DropdownModule,
     ProgressBarModule,
+    MenuModule 
   ],
   exports: [ChatComponent, ChatListComponent],
   providers: [],

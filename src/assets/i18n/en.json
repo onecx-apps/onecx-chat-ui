@@ -38,6 +38,18 @@
       "ASSISTANT": "Assistant",
       "HUMAN": "Human",
       "SYSTEM": "System"
+    },
+    "ACTIONS": {
+      "DELETE": "Delete chat"
+    },
+    "ERROR_MESSAGES": {
+      "CREATE_CHAT": "Chat creation failed.",
+      "DELETE_CHAT": "Chat deletion failed.",
+      "SEND_MESSAGE": "Sending message failed."
+    },
+    "SUCCESS_MESSAGES": {
+      "CREATE_CHAT": "Chat created.",
+      "DELETE_CHAT": "Chat deleted."
     }
   }
 }

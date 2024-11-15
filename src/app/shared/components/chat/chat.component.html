@@ -28,6 +28,16 @@
           <div *ngIf="message.isLoadingInfo">
             <p-progressBar mode="indeterminate" [style]="{ height: '6px' }" />
           </div>
+          <div
+            *ngIf="message.isFailed"
+            class="flex align-items-center flex-row message-error"
+          >
+            <span class="pi pi-exclamation-triangle pr-2"></span>
+            <span
+              >Delivery failed.
+              <u class="retry-button" (click)="retrySending(message)">Retry</u></span
+            >
+          </div>
         </div>
       </div>
     </div>

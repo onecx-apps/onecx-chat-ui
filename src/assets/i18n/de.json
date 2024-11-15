@@ -33,6 +33,23 @@
   "CHAT": {
     "MESSAGE_PLACEHOLDER": "Nachricht...",
     "NEW_CHAT": "Neuer Chat...",
-    "SELECT_CHAT": "Chat auswählen"
+    "SELECT_CHAT": "Chat auswählen",
+    "PARTICIPANT": {
+      "ASSISTANT": "Assistent",
+      "HUMAN": "Mensch",
+      "SYSTEM": "System"
+    },
+    "ACTIONS": {
+      "DELETE": "Chat löschen"
+    },
+    "ERROR_MESSAGES": {
+      "CREATE_CHAT": "Chat-Erstellung fehlgeschlagen.",
+      "DELETE_CHAT": "Chat-Löschung fehlgeschlagen.",
+      "SEND_MESSAGE": "Nachricht senden fehlgeschlagen."
+    },
+    "SUCCESS_MESSAGES": {
+      "CREATE_CHAT": "Chat erstellt.",
+      "DELETE_CHAT": "Chat gelöscht."
+    }
   }
 }

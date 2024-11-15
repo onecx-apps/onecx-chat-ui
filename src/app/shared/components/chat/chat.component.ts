@@ -26,6 +26,9 @@ export class ChatComponent implements AfterViewChecked {
   @Output()
   sendMessage = new EventEmitter<string>();
 
+  @Output()
+  retrySendMessage = new EventEmitter<string>();
+
   @ViewChild('scrollContainer') private scrollContainer: ElementRef | undefined;
 
   public formGroup: FormGroup;
@@ -59,5 +62,9 @@ export class ChatComponent implements AfterViewChecked {
       this.scrollContainer.nativeElement.scrollTop =
         this.scrollContainer.nativeElement.scrollHeight;
     }
+  }
+
+  retrySending(msg: ChatMessage) {
+    this.retrySendMessage.emit(msg.text);
   }
 }
