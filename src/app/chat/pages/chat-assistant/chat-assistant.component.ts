@@ -1,8 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LetDirective } from '@ngrx/component';
 import { Store } from '@ngrx/store';
-import { TranslateService } from '@ngx-translate/core';
-import { MenuItem } from 'primeng/api';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MenuItem, SharedModule } from 'primeng/api';
+import { CalendarModule } from 'primeng/calendar';
+import { SidebarModule } from 'primeng/sidebar';
 import { combineLatest, map, Observable } from 'rxjs';
+import { ChatListComponent } from 'src/app/shared/components/chat-list/chat-list.component';
+import { ChatComponent } from 'src/app/shared/components/chat/chat.component';
 import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
 import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
@@ -12,7 +19,21 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 @Component({
   selector: 'app-chat-assistant',
   templateUrl: './chat-assistant.component.html',
-  styleUrl: './chat-assistant.component.css',
+  styleUrls: ['./chat-assistant.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    LetDirective,
+    CalendarModule,
+    SidebarModule,
+    TranslateModule,
+    SharedModule,
+    ChatComponent,
+    ChatListComponent,
+  ],
+  providers: [Store, TranslateService],
 })
 export class ChatAssistantComponent {
   viewModel$: Observable<ChatAssistantViewModel> = this.store.select(
@@ -22,6 +43,8 @@ export class ChatAssistantComponent {
   chatMessages: ChatMessage[] = [];
 
   chatsLoading = false;
+
+  sidebarVisible = true;
 
   constructor(
     private readonly store: Store,

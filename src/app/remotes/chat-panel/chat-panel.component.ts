@@ -22,6 +22,7 @@ import { TabViewModule } from 'primeng/tabview'
 import { ReplaySubject } from 'rxjs'
 import { SharedModule } from 'src/app/shared/shared.module'
 import { BookmarkLinksComponent } from './chat-list/chat-list.component'
+import { ChatsInternal } from 'src/app/shared/generated'
 
 export function slotInitializer(slotService: SlotService) {
   return () => slotService.init()
@@ -65,7 +66,7 @@ export function slotInitializer(slotService: SlotService) {
       useExisting: SlotService
     },
     PortalMessageService,
-    // BookmarkAPIUtilsService
+    ChatsInternal
   ],
   selector: 'app-chat-panel',
   templateUrl: './chat-panel.component.html',

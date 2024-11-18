@@ -1,6 +1,6 @@
 <div class="chat-container">
   <div class="chat-history-container">
-    <div class="chat-messages" #scrollContainer>
+    <div class="chat-messages" #scrollContainer [scrollTop]="scrollContainer.scrollHeight"> 
       <div
         *ngFor="let message of chatMessages"
         class="message-bubble p-2 m-2 border-round"

@@ -1,5 +1,5 @@
+import { CommonModule } from '@angular/common';
 import {
-  AfterViewChecked,
   Component,
   ElementRef,
   EventEmitter,
@@ -7,16 +7,39 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '@onecx/portal-integration-angular';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { ChatMessage } from './chat.viewmodel';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ButtonModule,
+    InputTextModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslateModule,
+    DropdownModule,
+    ProgressBarModule,
+    ChatComponent,
+  ],
 })
-export class ChatComponent implements AfterViewChecked {
+export class ChatComponent {
   @Input()
   chatMessages: ChatMessage[] = [];
 
@@ -51,17 +74,6 @@ export class ChatComponent implements AfterViewChecked {
       return;
     this.sendMessage.emit(this.formGroup.value['message']);
     this.formGroup.reset();
-  }
-
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
-
-  private scrollToBottom(): void {
-    if (this.scrollContainer) {
-      this.scrollContainer.nativeElement.scrollTop =
-        this.scrollContainer.nativeElement.scrollHeight;
-    }
   }
 
   retrySending(msg: ChatMessage) {

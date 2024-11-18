@@ -5,13 +5,9 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
 import { Action, Store } from '@ngrx/store';
 import { filterForNavigatedTo } from '@onecx/ngrx-accelerator';
-import {
-  ExportDataService,
-  PortalMessageService,
-} from '@onecx/portal-integration-angular';
+import { PortalMessageService } from '@onecx/portal-integration-angular';
 import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
 import {
-  ChatBffService,
   ChatsInternal,
   ChatType,
   MessageType,
@@ -29,12 +25,10 @@ export class ChatAssistantEffects {
   constructor(
     private actions$: Actions,
     @SkipSelf() private route: ActivatedRoute,
-    private chatService: ChatBffService,
     private chatInternalService: ChatsInternal,
     private router: Router,
     private store: Store,
-    private messageService: PortalMessageService,
-    private readonly exportDataService: ExportDataService
+    private messageService: PortalMessageService
   ) {}
 
   navigatedToChatAssistant = createEffect(() => {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LetDirective } from '@ngrx/component';
@@ -11,17 +11,17 @@ import {
   PortalCoreModule,
 } from '@onecx/portal-integration-angular';
 import { CalendarModule } from 'primeng/calendar';
+import { SidebarModule } from 'primeng/sidebar';
 import { SharedModule } from '../shared/shared.module';
 import { chatFeature } from './chat.reducers';
 import { routes } from './chat.routes';
-import { ChatSearchComponent } from './pages/chat-search/chat-search.component';
-import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
 import { ChatAssistantComponent } from './pages/chat-assistant/chat-assistant.component';
 import { ChatAssistantEffects } from './pages/chat-assistant/chat-assistant.effects';
+import { ChatSearchComponent } from './pages/chat-search/chat-search.component';
+import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
 
 @NgModule({
-  declarations: [ChatSearchComponent, ChatAssistantComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  declarations: [ChatSearchComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -34,6 +34,8 @@ import { ChatAssistantEffects } from './pages/chat-assistant/chat-assistant.effe
     StoreModule.forFeature(chatFeature),
     EffectsModule.forFeature([ChatSearchEffects, ChatAssistantEffects]),
     TranslateModule,
+    SidebarModule,
+    ChatAssistantComponent,
   ],
 })
 export class ChatModule {}

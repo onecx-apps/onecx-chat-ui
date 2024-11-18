@@ -5,13 +5,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { ChatComponent } from './components/chat/chat.component';
-import { MenuModule } from 'primeng/menu';
 
 @NgModule({
-  declarations: [ChatComponent, ChatListComponent],
+  declarations: [],
   imports: [
     CommonModule,
     ButtonModule,
@@ -21,9 +21,11 @@ import { MenuModule } from 'primeng/menu';
     TranslateModule,
     DropdownModule,
     ProgressBarModule,
-    MenuModule 
+    MenuModule,
+    ChatComponent,
+    ChatListComponent,
   ],
-  exports: [ChatComponent, ChatListComponent],
+  exports: [],
   providers: [],
 })
 export class SharedModule {}

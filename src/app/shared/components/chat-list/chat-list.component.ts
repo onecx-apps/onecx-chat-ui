@@ -1,6 +1,14 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Chat, ChatType } from '../../generated';
+import { TranslateModule } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { Chat, ChatType } from '../../generated';
+import { MenuModule } from 'primeng/menu';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 export const NEW_HUMAN_CHAT_ITEM = {
   topic: 'CHAT.NEW_CHAT',
@@ -17,6 +25,18 @@ export const NEW_AI_CHAT_ITEM = {
   selector: 'app-chat-list',
   templateUrl: './chat-list.component.html',
   styleUrl: './chat-list.component.css',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    TranslateModule,
+    DropdownModule,
+    ProgressBarModule,
+    MenuModule,
+  ],
 })
 export class ChatListComponent {
   @Input()
@@ -29,7 +49,7 @@ export class ChatListComponent {
   loading = false;
 
   @Input()
-  menuItems: MenuItem[] | undefined
+  menuItems: MenuItem[] | undefined;
 
   @Output()
   chatSelected = new EventEmitter<Chat>();
