@@ -1,14 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, SharedModule } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { ProgressBarModule } from 'primeng/progressbar';
-import { Chat, ChatType } from '../../generated';
 import { MenuModule } from 'primeng/menu';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Chat, ChatType } from '../../generated';
 
 export const NEW_HUMAN_CHAT_ITEM = {
   topic: 'CHAT.NEW_CHAT',
@@ -29,13 +27,11 @@ export const NEW_AI_CHAT_ITEM = {
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     ButtonModule,
-    InputTextModule,
     TranslateModule,
     DropdownModule,
-    ProgressBarModule,
     MenuModule,
+    SharedModule,
   ],
 })
 export class ChatListComponent {

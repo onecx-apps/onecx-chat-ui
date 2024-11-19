@@ -1,31 +1,35 @@
-import { CommonModule } from '@angular/common'
-import { HttpClient } from '@angular/common/http'
-import { APP_INITIALIZER, Component, Inject, Input } from '@angular/core'
-import { FormsModule } from '@angular/forms'
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
-import { createRemoteComponentTranslateLoader } from '@onecx/angular-accelerator'
-import { AngularAuthModule } from '@onecx/angular-auth'
-import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { CommonModule } from '@angular/common';
+import { APP_INITIALIZER, Component, Inject, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AngularAuthModule } from '@onecx/angular-auth';
+import {
+  PortalMessageService,
+  UserService,
+} from '@onecx/angular-integration-interface';
 import {
   AngularRemoteComponentsModule,
   BASE_URL,
   ocxRemoteComponent,
   ocxRemoteWebcomponent,
-  provideTranslateServiceForRoot,
   RemoteComponentConfig,
   SLOT_SERVICE,
-  SlotService
-} from '@onecx/angular-remote-components'
-import { AppConfigService, PortalCoreModule } from '@onecx/portal-integration-angular'
-import { RippleModule } from 'primeng/ripple'
-import { TabViewModule } from 'primeng/tabview'
-import { ReplaySubject } from 'rxjs'
-import { SharedModule } from 'src/app/shared/shared.module'
-import { BookmarkLinksComponent } from './chat-list/chat-list.component'
-import { ChatsInternal } from 'src/app/shared/generated'
+  SlotService,
+} from '@onecx/angular-remote-components';
+import {
+  AppConfigService,
+  PortalCoreModule,
+} from '@onecx/portal-integration-angular';
+import { RippleModule } from 'primeng/ripple';
+import { TabViewModule } from 'primeng/tabview';
+import { ReplaySubject } from 'rxjs';
+import { ChatAssistantComponent } from 'src/app/chat/pages/chat-assistant/chat-assistant.component';
+import { ChatsInternal } from 'src/app/shared/generated';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { ChatInternalService } from './chat-panel.component.bootstrap';
 
 export function slotInitializer(slotService: SlotService) {
-  return () => slotService.init()
+  return () => slotService.init();
 }
 
 @Component({
@@ -33,72 +37,64 @@ export function slotInitializer(slotService: SlotService) {
   imports: [
     AngularAuthModule,
     AngularRemoteComponentsModule,
-    BookmarkLinksComponent,
+    ChatAssistantComponent,
     CommonModule,
     FormsModule,
     SharedModule,
     RippleModule,
     PortalCoreModule,
     TranslateModule,
-    TabViewModule
+    TabViewModule,
   ],
   providers: [
-    {
-      provide: BASE_URL,
-      useValue: new ReplaySubject<string>(1)
-    },
-    provideTranslateServiceForRoot({
-      isolate: true,
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createRemoteComponentTranslateLoader,
-        deps: [HttpClient, BASE_URL]
-      }
-    }),
     {
       provide: APP_INITIALIZER,
       useFactory: slotInitializer,
       deps: [SLOT_SERVICE],
-      multi: true
+      multi: true,
     },
     {
       provide: SLOT_SERVICE,
-      useExisting: SlotService
+      useExisting: SlotService,
     },
     PortalMessageService,
-    ChatsInternal
+    ChatsInternal,
   ],
   selector: 'app-chat-panel',
   templateUrl: './chat-panel.component.html',
-  styleUrl: './chat-panel.component.scss'
+  styleUrl: './chat-panel.component.scss',
 })
-export class OneCXChatPanelComponent implements ocxRemoteComponent, ocxRemoteWebcomponent {
-  // publicBookmarks$ = new BehaviorSubject<Bookmark[]>([])
-  // privateBookmarks$ = new BehaviorSubject<Bookmark[]>([])
-
-  permissions: string[] = []
-  bookmarkLoadingError = false
-  loading = true
+export class OneCXChatPanelComponent
+  implements ocxRemoteComponent, ocxRemoteWebcomponent
+{
+  permissions: string[] = [];
+  bookmarkLoadingError = false;
+  loading = true;
+  sidebarVisible = false;
 
   @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {
-    this.ocxInitRemoteComponent(config)
+    this.ocxInitRemoteComponent(config);
   }
 
   constructor(
     @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
     private readonly appConfigService: AppConfigService,
+    private readonly chatInternal: ChatInternalService,
     private readonly userService: UserService,
-    private readonly translateService: TranslateService,
-    // private readonly bookmarkApiUtils: BookmarkAPIUtilsService
+    private readonly translateService: TranslateService // private readonly bookmarkApiUtils: BookmarkAPIUtilsService
   ) {
-    this.translateService.use(this.userService.lang$.getValue())
+    this.translateService.use(this.userService.lang$.getValue());
   }
 
   ocxInitRemoteComponent(config: RemoteComponentConfig): void {
-    this.baseUrl.next(config.baseUrl)
-    this.permissions = config.permissions
+    this.baseUrl.next(config.baseUrl);
+    this.permissions = config.permissions;
+    // this.chatInternal.configuration = new Configuration({
+    //   basePath: Location.joinWithSlash(config.baseUrl, environment.apiPrefix),
+    // });
+    this.chatInternal.overwriteBaseURL(config.baseUrl);
     // this.bookmarkApiUtils.overwriteBaseURL(config.baseUrl)
-    this.appConfigService.init(config.baseUrl)
+    // this.appConfigService.init(config.baseUrl);
     // Load Chats
     // this.bookmarkApiUtils.loadBookmarks(this.handleBookmarkLoadError).subscribe((result) => {
     //   const bookmarks = result ?? []
@@ -109,7 +105,11 @@ export class OneCXChatPanelComponent implements ocxRemoteComponent, ocxRemoteWeb
   }
 
   private readonly handleBookmarkLoadError = () => {
-    this.bookmarkLoadingError = true
-    this.loading = false
+    this.bookmarkLoadingError = true;
+    this.loading = false;
+  };
+
+  showSidebar() {
+    this.sidebarVisible = true;
   }
 }

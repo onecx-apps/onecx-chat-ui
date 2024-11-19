@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LetDirective } from '@ngrx/component';
 import { Store } from '@ngrx/store';
@@ -10,11 +17,11 @@ import { SidebarModule } from 'primeng/sidebar';
 import { combineLatest, map, Observable } from 'rxjs';
 import { ChatListComponent } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatComponent } from 'src/app/shared/components/chat/chat.component';
-import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
 import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { selectChatAssistantViewModel } from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -32,19 +39,25 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
     SharedModule,
     ChatComponent,
     ChatListComponent,
+    TooltipModule,
   ],
-  providers: [Store, TranslateService],
 })
-export class ChatAssistantComponent {
+export class ChatAssistantComponent implements OnChanges {
   viewModel$: Observable<ChatAssistantViewModel> = this.store.select(
     selectChatAssistantViewModel
   );
 
-  chatMessages: ChatMessage[] = [];
+  _sidebarVisible = false;
 
-  chatsLoading = false;
+  @Input()
+  set sidebarVisible(val: boolean) {
+    if (val) {
+      this.store.dispatch(ChatAssistantActions.chatPanelOpened());
+    }
+    this._sidebarVisible = val;
+  }
 
-  sidebarVisible = true;
+  @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
   constructor(
     private readonly store: Store,
@@ -83,5 +96,11 @@ export class ChatAssistantComponent {
         chat,
       })
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['sidebarVisible']) {
+      this.sidebarVisibleChange.emit(this.sidebarVisible);
+    }
   }
 }

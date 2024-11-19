@@ -23,6 +23,7 @@ import {
   providePortalDialogService,
   translateServiceInitializer,
   UserService,
+  PortalMessageService,
 } from '@onecx/portal-integration-angular';
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -65,6 +66,7 @@ export const commonImports = [CommonModule];
     }),
   ],
   providers: [
+    PortalMessageService,
     providePortalDialogService(),
     { provide: APP_CONFIG, useValue: environment },
     {

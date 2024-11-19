@@ -5,6 +5,7 @@ export const ChatAssistantActions = createActionGroup({
   source: 'ChatAssistant',
   events: {
     'navigated to chat assistant': emptyProps(),
+    'chat panel opened': emptyProps(),
     'chats loaded': props<{
       chats: Chat[];
     }>(),

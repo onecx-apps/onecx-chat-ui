@@ -14,8 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
-import { UserService } from '@onecx/portal-integration-angular';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
@@ -56,7 +55,7 @@ export class ChatComponent {
 
   public formGroup: FormGroup;
 
-  constructor(private userService: UserService) {
+  constructor(private translateService: TranslateService) {
     this.formGroup = new FormGroup({
       message: new FormControl(null, [
         Validators.minLength(1),

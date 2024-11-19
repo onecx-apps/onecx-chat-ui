@@ -5,11 +5,13 @@ const {
   share,
   withModuleFederationPlugin,
 } = require('@angular-architects/module-federation/webpack');
+const webpack = require('webpack');
 const config = withModuleFederationPlugin({
   name: 'onecx-chat-ui-app',
   filename: 'remoteEntry.js',
   exposes: {
     './OnecxChatUiModule': './src/bootstrap.ts',
+    './OneCXChatPanelComponent': 'src/app/remotes/chat-panel/chat-panel.component.main.ts'
   },
   shared: share({
     '@angular/core': {
@@ -93,9 +95,14 @@ const plugins = config.plugins.filter(
 
 module.exports = {
   ...config,
-  plugins,
+  plugins: [
+    ...plugins,
+    new webpack.DefinePlugin({
+      ngDevMode: 'undefined',
+    }),
+  ],
   output: {
-    uniqueName: 'onecx-chat-ui-ui',
+    uniqueName: 'onecx-chat-ui',
     publicPath: 'auto',
   },
   experiments: {

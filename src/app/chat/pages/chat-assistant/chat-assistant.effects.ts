@@ -1,5 +1,5 @@
-import { Injectable, SkipSelf } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
@@ -17,6 +17,7 @@ import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantComponent } from './chat-assistant.component';
 import { chatAssistantSelectors } from './chat-assistant.selectors';
 import { ChatUser } from './chat-assistant.state';
+import { ChatInternalService } from 'src/app/remotes/chat-panel/chat-panel.component.bootstrap';
 
 const CHAT_TOPIC_LENGTH = 30;
 
@@ -24,12 +25,18 @@ const CHAT_TOPIC_LENGTH = 30;
 export class ChatAssistantEffects {
   constructor(
     private actions$: Actions,
-    @SkipSelf() private route: ActivatedRoute,
-    private chatInternalService: ChatsInternal,
+    private _remoteChatInternalService: ChatInternalService,
+    private _chatInternalService: ChatsInternal,
     private router: Router,
     private store: Store,
     private messageService: PortalMessageService
   ) {}
+
+  get chatInternalService() {
+    return (
+      this._remoteChatInternalService.getService() ?? this._chatInternalService
+    );
+  }
 
   navigatedToChatAssistant = createEffect(() => {
     return this.actions$.pipe(
@@ -45,6 +52,7 @@ export class ChatAssistantEffects {
     return this.actions$.pipe(
       ofType(
         ChatAssistantActions.navigatedToChatAssistant,
+        ChatAssistantActions.chatPanelOpened,
         ChatAssistantActions.chatCreationSuccessfull,
         ChatAssistantActions.messageSentForNewChat,
         ChatAssistantActions.chatDeletionSuccessfull,
@@ -270,57 +278,57 @@ export class ChatAssistantEffects {
     );
   });
 
-  errorMessages: { action: Action; key: string }[] = [
-    {
-      action: ChatAssistantActions.chatCreationFailed,
-      key: 'CHAT.ERROR_MESSAGES.CREATE_CHAT',
-    },
-    {
-      action: ChatAssistantActions.chatDeletionFailed,
-      key: 'CHAT.ERROR_MESSAGES.DELETE_CHAT',
-    },
-    {
-      action: ChatAssistantActions.messageSendingFailed,
-      key: 'CHAT.ERROR_MESSAGES.SEND_MESSAGE',
-    },
-  ];
+  // errorMessages: { action: Action; key: string }[] = [
+  //   {
+  //     action: ChatAssistantActions.chatCreationFailed,
+  //     key: 'CHAT.ERROR_MESSAGES.CREATE_CHAT',
+  //   },
+  //   {
+  //     action: ChatAssistantActions.chatDeletionFailed,
+  //     key: 'CHAT.ERROR_MESSAGES.DELETE_CHAT',
+  //   },
+  //   {
+  //     action: ChatAssistantActions.messageSendingFailed,
+  //     key: 'CHAT.ERROR_MESSAGES.SEND_MESSAGE',
+  //   },
+  // ];
 
-  successMessages: { action: Action; key: string }[] = [
-    {
-      action: ChatAssistantActions.chatCreationSuccessfull,
-      key: 'CHAT.SUCCESS_MESSAGES.CREATE_CHAT',
-    },
-  ];
+  // successMessages: { action: Action; key: string }[] = [
+  //   {
+  //     action: ChatAssistantActions.chatCreationSuccessfull,
+  //     key: 'CHAT.SUCCESS_MESSAGES.CREATE_CHAT',
+  //   },
+  // ];
 
-  displayError$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        tap((action) => {
-          const e = this.errorMessages.find(
-            (e) => e.action.type === action.type
-          );
-          if (e) {
-            this.messageService.error({ summaryKey: e.key });
-          }
-        })
-      );
-    },
-    { dispatch: false }
-  );
+  // displayError$ = createEffect(
+  //   () => {
+  //     return this.actions$.pipe(
+  //       tap((action) => {
+  //         const e = this.errorMessages.find(
+  //           (e) => e.action.type === action.type
+  //         );
+  //         if (e) {
+  //           this.messageService.error({ summaryKey: e.key });
+  //         }
+  //       })
+  //     );
+  //   },
+  //   { dispatch: false }
+  // );
 
-  displaySuccess$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        tap((action) => {
-          const e = this.successMessages.find(
-            (e) => e.action.type === action.type
-          );
-          if (e) {
-            this.messageService.success({ summaryKey: e.key });
-          }
-        })
-      );
-    },
-    { dispatch: false }
-  );
+  // displaySuccess$ = createEffect(
+  //   () => {
+  //     return this.actions$.pipe(
+  //       tap((action) => {
+  //         const e = this.successMessages.find(
+  //           (e) => e.action.type === action.type
+  //         );
+  //         if (e) {
+  //           this.messageService.success({ summaryKey: e.key });
+  //         }
+  //       })
+  //     );
+  //   },
+  //   { dispatch: false }
+  // );
 }

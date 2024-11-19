@@ -3,7 +3,7 @@ FROM ghcr.io/onecx/docker-spa-base:1.3.0
 # Copy nginx configuration
 COPY nginx/locations.conf $DIR_LOCATION/locations.conf
 # Copy application build
-COPY dist/onecx-chat-ui-ui/ $DIR_HTML
+COPY dist/onecx-chat-ui/ $DIR_HTML
 
 # Optional extend list of application environments
 #ENV CONFIG_ENV_LIST BFF_URL,APP_BASE_HREF
