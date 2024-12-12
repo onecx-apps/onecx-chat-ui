@@ -1,16 +1,38 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AIChatComponent } from './chat-assistant.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LetDirective } from '@ngrx/component';
+import { provideMockStore } from '@ngrx/store/testing';
+import { PortalCoreModule } from '@onecx/portal-integration-angular';
+import { TranslateTestingModule } from 'ngx-translate-testing';
+import { ChatAssistantComponent } from './chat-assistant.component';
+import { initialState } from './chat-assistant.reducers';
 
-describe('FullChatComponent', () => {
-  let component: AIChatComponent;
-  let fixture: ComponentFixture<AIChatComponent>;
+describe('ChatAssistantComponent', () => {
+  let component: ChatAssistantComponent;
+  let fixture: ComponentFixture<ChatAssistantComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AIChatComponent],
+      imports: [
+        ChatAssistantComponent,
+        PortalCoreModule,
+        LetDirective,
+        ReactiveFormsModule,
+        TranslateTestingModule.withTranslations(
+          'en',
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          require('./../../../../assets/i18n/en.json')
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        ).withTranslations('de', require('./../../../../assets/i18n/de.json')),
+      ],
+      providers: [
+        provideMockStore({
+          initialState: { chat: { assistant: initialState } },
+        }),
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AIChatComponent);
+    fixture = TestBed.createComponent(ChatAssistantComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

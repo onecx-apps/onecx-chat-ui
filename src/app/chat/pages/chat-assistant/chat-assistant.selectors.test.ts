@@ -1,6 +1,7 @@
 import { ChatType } from 'src/app/shared/generated';
 import * as fromSelectors from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
+import { NEW_AI_CHAT_ITEM } from 'src/app/shared/components/chat-list/chat-list.component';
 
 describe('ChatAssistant Selectors', () => {
   const initialState = {
@@ -13,10 +14,14 @@ describe('ChatAssistant Selectors', () => {
   describe('selectChatAssistantViewModel', () => {
     it('should select the chat assistant view model', () => {
       const result = fromSelectors.selectChatAssistantViewModel.projector(
-        initialState.chats
+        initialState.chats,
+        undefined,
+        []
       );
       const expected: ChatAssistantViewModel = {
-        chats: initialState.chats,
+        chats: [NEW_AI_CHAT_ITEM, ...initialState.chats],
+        currentChat: NEW_AI_CHAT_ITEM,
+        currentMessages: [],
       };
       expect(result).toEqual(expected);
     });
