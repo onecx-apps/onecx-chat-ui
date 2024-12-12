@@ -24,6 +24,17 @@ describe('AppComponent', () => {
       ],
       providers: [{ provide: AUTH_SERVICE, useClass: MockAuthModule }],
     }).compileComponents();
+
+    const mutationObserverMock = jest.fn(function MutationObserver(callback) {
+      this.observe = jest.fn()
+      this.disconnect = jest.fn()
+      this.trigger = (mockedMutationsList: any) => {
+        callback(mockedMutationsList, this)
+      }
+      return this
+    })
+    global.MutationObserver = mutationObserverMock
+    global.origin = "";
   });
 
   it('should create the app', () => {
