@@ -1,9 +1,0 @@
-PERMISSION NAME;PERMISSION_KEY;basic-role;advanced-role;
-Basic permission;ONECX_CHAT_UI_SEARCH#BASIC;x;x;
-View search results;ONECX_CHAT_UI_SEARCH#VIEW;x;x;
-Portal header give feedbackc;PORTAL_HEADER_GIVE_FEEDBACK#VIEW;x;x;
-Portal header add to my favorites;PORTAL_HEADER:ADD_TO_MY_FAVORITES#VIEW;x;x;
-Chat component search;CHAT_COMPONENT#SEARCH;x;x;
-
-
-# ACTION 11: Update permissions and roles
