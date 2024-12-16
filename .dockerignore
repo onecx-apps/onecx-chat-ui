@@ -1,14 +1,16 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-dist
-tmp
+.angular
+/tmp
 /out-tsc
 
 # dependencies
 node_modules
+src
 
 # IDEs and editors
+.vscode/
 /.idea
 .project
 .classpath
@@ -30,15 +32,10 @@ node_modules
 /coverage
 /libpeerconnection.log
 npm-debug.log
-yarn-error.log
 testem.log
 /typings
+yarn-error.log
 
 # System Files
 .DS_Store
 Thumbs.db
-
-.nx/cache
-.nx/workspace-data
-
-.angular
