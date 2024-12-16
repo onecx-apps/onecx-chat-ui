@@ -1,0 +1,45 @@
+app:
+  name: ui
+  image:
+    repository: onecx/onecx-chat-ui
+  routing:
+    enabled: true
+    path: /mfe/onecxChatUi/
+  operator:
+    microfrontend:
+      enabled: true
+      specs:
+        main:
+          exposedModule: ./OnecxChatUiModule
+          description: OneCX OnecxChatUi Module
+          note: OneCX OnecxChatUi UI module auto import via MF operator
+          type: MODULE
+          technology: WEBCOMPONENTMODULE
+          remoteName: onecx-chat
+          tagName: onecx-chat-ui-webcomponent
+        chat-panel:
+          exposedModule: "./OneCXChatPanelComponent"
+          description: "Display chat panel"
+          type: COMPONENT
+          technology: WEBCOMPONENTMODULE
+          remoteName: onecx-chat
+          tagName: ocx-chat-panel-component
+    permission:
+      enabled: true
+      spec:
+        permissions:
+          CHAT:
+            CREATE: Create chat
+            EDIT: Edit chat
+            DELETE: Delete chat
+            SAVE: Update and save chat
+            IMPORT: Import chat
+            EXPORT: Export chat
+            VIEW: View mode for chat
+            SEARCH: Search chat
+    keycloak:
+      client:
+        enabled: true
+        spec:
+          kcConfig:
+            clientId: onecx-chat-ui

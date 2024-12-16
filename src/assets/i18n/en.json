@@ -1,0 +1,56 @@
+{
+  "CHAT_SEARCH": {
+    "HEADER": "Chat Search",
+    "SUB_HEADER": "Searching and displaying of Chat",
+    "HELP_ARTICLE_ID": "Help Article",
+    "EMPTY_RESULTS": "No results.",
+    "BREADCRUMB": "Search",
+    "DIAGRAM": {
+      "SUM": "Total"
+    },
+    "HEADER_ACTIONS": {
+      "EXPORT_ALL": "Export all",
+      "SHOW_CHART": "Show chart",
+      "HIDE_CHART": "Hide chart",
+      "CREATE_SEARCH_CONFIG": "Create search configuration",
+      "UPDATE_SEARCH_CONFIG": "Update search configuration",
+      "DIALOG_CONFIRM": "Confirm",
+      "DIALOG_CANCEL": "Cancel"
+    },
+    "ERROR_MESSAGES": {
+      "SEARCH_RESULTS_LOADING_FAILED": "Loading search results failed.",
+      "SEARCH_CONFIG_CREATION_FAILED": "Create search configuration failed.",
+      "SEARCH_CONFIG_UPDATE_FAILED": "Update search configuration failed.",
+      "SEARCH_CONFIGS_LOADING_FAILED": "Loading search configurations failed."
+    },
+    "INPUT_FIELDS": "ACTION S4: ADD TRANSLATION for your input fields",
+    "PREDEFINED_GROUP": {
+      "DEFAULT": "Default",
+      "EXTENDED": "Extended",
+      "FULL": "Full"
+    }
+  },
+  "CHAT": {
+    "TITLE_AI": "Chat Assistant",
+    "MESSAGE_PLACEHOLDER": "Message...",
+    "NEW_CHAT": "New Chat...",
+    "SELECT_CHAT": "Select a chat",
+    "PARTICIPANT": {
+      "ASSISTANT": "Assistant",
+      "HUMAN": "Human",
+      "SYSTEM": "System"
+    },
+    "ACTIONS": {
+      "DELETE": "Delete chat"
+    },
+    "ERROR_MESSAGES": {
+      "CREATE_CHAT": "Chat creation failed.",
+      "DELETE_CHAT": "Chat deletion failed.",
+      "SEND_MESSAGE": "Sending message failed."
+    },
+    "SUCCESS_MESSAGES": {
+      "CREATE_CHAT": "Chat created.",
+      "DELETE_CHAT": "Chat deleted."
+    }
+  }
+}
