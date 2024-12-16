@@ -25,6 +25,16 @@ const PROXY_CONFIG = {
     logLevel: 'debug',
     bypass: bypassFn,
   },
+  '/mfe/onecx-chat': {
+    target: 'http://localhost:4200/',
+    secure: false,
+    pathRewrite: {
+      '^.*/mfe/onecx-chat': '',
+    },
+    changeOrigin: true,
+    logLevel: 'debug',
+    bypass: bypassFn,
+  }
 };
 
 module.exports = PROXY_CONFIG;
