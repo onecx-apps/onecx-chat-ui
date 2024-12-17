@@ -37,7 +37,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "^19.5.7",
-    "@nx/devkit": "19.5.7",
+    "@nx/devkit": "20.2.2",
     "@nx/plugin": "^19.5.7",
     "@onecx/accelerator": "^5.12.1",
     "@onecx/angular-accelerator": "^5.12.1",
