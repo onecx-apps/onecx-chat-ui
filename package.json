@@ -38,7 +38,7 @@
     "@ngx-translate/http-loader": "^8.0.0",
     "@nx/angular": "^19.5.7",
     "@nx/devkit": "19.5.7",
-    "@nx/plugin": "^19.5.7",
+    "@nx/plugin": "^20.2.2",
     "@onecx/accelerator": "^5.12.1",
     "@onecx/angular-accelerator": "^5.12.1",
     "@onecx/angular-auth": "^5.12.1",
