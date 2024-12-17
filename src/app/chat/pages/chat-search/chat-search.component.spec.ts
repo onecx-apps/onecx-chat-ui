@@ -38,12 +38,13 @@ describe('ChatSearchComponent', () => {
     listeners = listeners.filter((l) => l !== listener);
   };
 
-  window.postMessage = (m: any) => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+  window.postMessage = (m: any) => {    
     listeners.forEach((l) =>
       l({
         data: m,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         stopImmediatePropagation: () => {},
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         stopPropagation: () => {},
       })
     );
@@ -153,7 +154,7 @@ describe('ChatSearchComponent', () => {
   });
 
   it('should dispatch resetButtonClicked action on resetSearch', async () => {
-    var doneFn = jest.fn();
+    const doneFn = jest.fn();
     store.overrideSelector(selectChatSearchViewModel, {
       ...baseChatSearchViewModel,
       results: [
