@@ -2,7 +2,6 @@ export default {
   displayName: 'onecx-chat-ui',
   preset: './jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: './coverage/onecx-chat-ui',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
@@ -25,4 +24,9 @@ export default {
     '<rootDir>/src/**/*(*.)@(spec|test).[jt]s?(x)',
   ],
   testEnvironment: '@happy-dom/jest-environment',
+  collectCoverage: true,
+  coverageDirectory: './reports/coverage/',
+  coveragePathIgnorePatterns: ['src/app/shared/generated'],
+  coverageReporters: ['clover', 'json', 'lcov', 'text', 'text-summary', 'html'],
+  testResultsProcessor: 'jest-sonar-reporter',
 };
