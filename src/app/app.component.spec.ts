@@ -19,22 +19,24 @@ describe('AppComponent', () => {
         HttpClientTestingModule,
         TranslateTestingModule.withTranslations(
           'en',
-          require('./../assets/i18n/en.json')
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+          require('./../assets/i18n/en.json'),
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
         ).withTranslations('de', require('./../assets/i18n/de.json')),
       ],
       providers: [{ provide: AUTH_SERVICE, useClass: MockAuthModule }],
     }).compileComponents();
 
     const mutationObserverMock = jest.fn(function MutationObserver(callback) {
-      this.observe = jest.fn()
-      this.disconnect = jest.fn()
+      this.observe = jest.fn();
+      this.disconnect = jest.fn();
       this.trigger = (mockedMutationsList: any) => {
-        callback(mockedMutationsList, this)
-      }
-      return this
-    })
-    global.MutationObserver = mutationObserverMock
-    global.origin = "";
+        callback(mockedMutationsList, this);
+      };
+      return this;
+    });
+    global.MutationObserver = mutationObserverMock;
+    global.origin = '';
   });
 
   it('should create the app', () => {

@@ -116,7 +116,7 @@ export class ChatsInternal {
     public addParticipant(chatId: string, addParticipant: AddParticipant, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Participant>;
     public addParticipant(chatId: string, addParticipant: AddParticipant, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Participant>>;
     public addParticipant(chatId: string, addParticipant: AddParticipant, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Participant>>;
-    public addParticipant(chatId: string, addParticipant: AddParticipant, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public addParticipant(chatId: string, addParticipant: AddParticipant, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (chatId === null || chatId === undefined) {
             throw new Error('Required parameter chatId was null or undefined when calling addParticipant.');
         }
@@ -164,7 +164,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/participants`;
+        const localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/participants`;
         return this.httpClient.request<Participant>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -187,7 +187,7 @@ export class ChatsInternal {
     public createChat(createChat: CreateChat, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Chat>;
     public createChat(createChat: CreateChat, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Chat>>;
     public createChat(createChat: CreateChat, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Chat>>;
-    public createChat(createChat: CreateChat, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createChat(createChat: CreateChat, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (createChat === null || createChat === undefined) {
             throw new Error('Required parameter createChat was null or undefined when calling createChat.');
         }
@@ -232,7 +232,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats`;
+        const localVarPath = `/chats`;
         return this.httpClient.request<Chat>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -256,7 +256,7 @@ export class ChatsInternal {
     public createChatMessage(chatId: string, createMessage: CreateMessage, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Message>;
     public createChatMessage(chatId: string, createMessage: CreateMessage, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Message>>;
     public createChatMessage(chatId: string, createMessage: CreateMessage, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Message>>;
-    public createChatMessage(chatId: string, createMessage: CreateMessage, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createChatMessage(chatId: string, createMessage: CreateMessage, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (chatId === null || chatId === undefined) {
             throw new Error('Required parameter chatId was null or undefined when calling createChatMessage.');
         }
@@ -304,7 +304,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/messages`;
+        const localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/messages`;
         return this.httpClient.request<Message>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -327,7 +327,7 @@ export class ChatsInternal {
     public deleteChat(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
     public deleteChat(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
     public deleteChat(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteChat(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public deleteChat(id: string, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling deleteChat.');
         }
@@ -362,7 +362,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        const localVarPath = `/chats/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -384,7 +384,7 @@ export class ChatsInternal {
     public getChatById(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Chat>;
     public getChatById(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Chat>>;
     public getChatById(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Chat>>;
-    public getChatById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getChatById(id: string, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling getChatById.');
         }
@@ -420,7 +420,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        const localVarPath = `/chats/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<Chat>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -442,7 +442,7 @@ export class ChatsInternal {
     public getChatMessages(chatId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Message>>;
     public getChatMessages(chatId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Message>>>;
     public getChatMessages(chatId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Message>>>;
-    public getChatMessages(chatId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getChatMessages(chatId: string, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (chatId === null || chatId === undefined) {
             throw new Error('Required parameter chatId was null or undefined when calling getChatMessages.');
         }
@@ -478,7 +478,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/messages`;
+        const localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/messages`;
         return this.httpClient.request<Array<Message>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -500,7 +500,7 @@ export class ChatsInternal {
     public getChatParticipants(chatId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Participant>>;
     public getChatParticipants(chatId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Participant>>>;
     public getChatParticipants(chatId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Participant>>>;
-    public getChatParticipants(chatId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getChatParticipants(chatId: string, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (chatId === null || chatId === undefined) {
             throw new Error('Required parameter chatId was null or undefined when calling getChatParticipants.');
         }
@@ -536,7 +536,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/participants`;
+        const localVarPath = `/chats/${this.configuration.encodeParam({name: "chatId", value: chatId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/participants`;
         return this.httpClient.request<Array<Participant>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -557,7 +557,7 @@ export class ChatsInternal {
     public getChats(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GetChatsResponse>;
     public getChats(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GetChatsResponse>>;
     public getChats(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GetChatsResponse>>;
-    public getChats(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getChats(observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -590,7 +590,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats`;
+        const localVarPath = `/chats`;
         return this.httpClient.request<GetChatsResponse>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -613,7 +613,7 @@ export class ChatsInternal {
     public updateChat(id: string, updateChat: UpdateChat, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
     public updateChat(id: string, updateChat: UpdateChat, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
     public updateChat(id: string, updateChat: UpdateChat, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public updateChat(id: string, updateChat: UpdateChat, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateChat(id: string, updateChat: UpdateChat, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling updateChat.');
         }
@@ -661,7 +661,7 @@ export class ChatsInternal {
             }
         }
 
-        let localVarPath = `/chats/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        const localVarPath = `/chats/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

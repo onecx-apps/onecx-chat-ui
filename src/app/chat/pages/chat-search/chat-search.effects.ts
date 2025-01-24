@@ -33,7 +33,7 @@ export class ChatSearchEffects {
     private router: Router,
     private store: Store,
     private messageService: PortalMessageService,
-    private readonly exportDataService: ExportDataService
+    private readonly exportDataService: ExportDataService,
   ) {}
 
   syncParamsToUrl$ = createEffect(
@@ -41,7 +41,7 @@ export class ChatSearchEffects {
       return this.actions$.pipe(
         ofType(
           ChatSearchActions.searchButtonClicked,
-          ChatSearchActions.resetButtonClicked
+          ChatSearchActions.resetButtonClicked,
         ),
         concatLatestFrom(() => [
           this.store.select(chatSearchSelectors.selectCriteria),
@@ -62,10 +62,10 @@ export class ChatSearchEffects {
               onSameUrlNavigation: 'ignore',
             });
           }
-        })
+        }),
       );
     },
-    { dispatch: false }
+    { dispatch: false },
   );
 
   searchByUrl$ = createEffect(() => {
@@ -75,12 +75,12 @@ export class ChatSearchEffects {
       filterOutQueryParamsHaveNotChanged(
         this.router,
         chatSearchCriteriasSchema,
-        false
+        false,
       ),
       concatLatestFrom(() =>
-        this.store.select(chatSearchSelectors.selectCriteria)
+        this.store.select(chatSearchSelectors.selectCriteria),
       ),
-      switchMap(([, searchCriteria]) => this.performSearch(searchCriteria))
+      switchMap(([, searchCriteria]) => this.performSearch(searchCriteria)),
     );
   });
 
@@ -92,7 +92,7 @@ export class ChatSearchEffects {
             ...acc,
             [key]: value instanceof Date ? value.toISOString() : value,
           }),
-          {}
+          {},
         ),
       })
       .pipe(
@@ -100,15 +100,15 @@ export class ChatSearchEffects {
           ChatSearchActions.chatSearchResultsReceived({
             results,
             totalNumberOfResults: totalElements ?? 0,
-          })
+          }),
         ),
         catchError((error) =>
           of(
             ChatSearchActions.chatSearchResultsLoadingFailed({
               error,
-            })
-          )
-        )
+            }),
+          ),
+        ),
       );
   }
 
@@ -120,8 +120,8 @@ export class ChatSearchEffects {
       map(() =>
         ChatSearchActions.chartVisibilityRehydrated({
           visible: localStorage.getItem('chatChartVisibility') === 'true',
-        })
-      )
+        }),
+      ),
     );
   });
 
@@ -130,14 +130,14 @@ export class ChatSearchEffects {
       return this.actions$.pipe(
         ofType(ChatSearchActions.chartVisibilityToggled),
         concatLatestFrom(() =>
-          this.store.select(chatSearchSelectors.selectChartVisible)
+          this.store.select(chatSearchSelectors.selectChartVisible),
         ),
         tap(([, chartVisible]) => {
           localStorage.setItem('chatChartVisibility', String(chartVisible));
-        })
+        }),
       );
     },
-    { dispatch: false }
+    { dispatch: false },
   );
 
   exportData$ = createEffect(
@@ -149,12 +149,12 @@ export class ChatSearchEffects {
           this.exportDataService.exportCsv(
             viewModel.displayedColumns,
             viewModel.results,
-            'Chat.csv'
+            'Chat.csv',
           );
-        })
+        }),
       );
     },
-    { dispatch: false }
+    { dispatch: false },
   );
 
   errorMessages: { action: Action; key: string }[] = [
@@ -169,14 +169,14 @@ export class ChatSearchEffects {
       return this.actions$.pipe(
         tap((action) => {
           const e = this.errorMessages.find(
-            (e) => e.action.type === action.type
+            (e) => e.action.type === action.type,
           );
           if (e) {
             this.messageService.error({ summaryKey: e.key });
           }
-        })
+        }),
       );
     },
-    { dispatch: false }
+    { dispatch: false },
   );
 }
