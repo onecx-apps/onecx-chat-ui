@@ -38,7 +38,7 @@ describe('ChatSearchComponent', () => {
     listeners = listeners.filter((l) => l !== listener);
   };
 
-  window.postMessage = (m: any) => {    
+  window.postMessage = (m: any) => {
     listeners.forEach((l) =>
       l({
         data: m,
@@ -46,7 +46,7 @@ describe('ChatSearchComponent', () => {
         stopImmediatePropagation: () => {},
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         stopPropagation: () => {},
-      })
+      }),
     );
   };
 
@@ -102,7 +102,9 @@ describe('ChatSearchComponent', () => {
         StoreModule.forRoot({}),
         TranslateTestingModule.withTranslations(
           'en',
-          require('./../../../../assets/i18n/en.json')
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+          require('./../../../../assets/i18n/en.json'),
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
         ).withTranslations('de', require('./../../../../assets/i18n/de.json')),
         HttpClientTestingModule,
         NoopAnimationsModule,
@@ -118,15 +120,15 @@ describe('ChatSearchComponent', () => {
     }).compileComponents();
 
     const mutationObserverMock = jest.fn(function MutationObserver(callback) {
-      this.observe = jest.fn()
-      this.disconnect = jest.fn()
+      this.observe = jest.fn();
+      this.disconnect = jest.fn();
       this.trigger = (mockedMutationsList: any) => {
-        callback(mockedMutationsList, this)
-      }
-      return this
-    })
-    global.MutationObserver = mutationObserverMock
-    global.origin = "";
+        callback(mockedMutationsList, this);
+      };
+      return this;
+    });
+    global.MutationObserver = mutationObserverMock;
+    global.origin = '';
   });
 
   beforeEach(async () => {
@@ -145,7 +147,7 @@ describe('ChatSearchComponent', () => {
     fixture.detectChanges();
     chatSearch = await TestbedHarnessEnvironment.harnessForFixture(
       fixture,
-      ChatSearchHarness
+      ChatSearchHarness,
     );
   });
 
@@ -194,14 +196,12 @@ describe('ChatSearchComponent', () => {
     const overflowMenuItems = await pageHeader.getOverFlowMenuItems();
     expect(overflowMenuItems.length).toBe(2);
 
-    const exportAllActionItem = await pageHeader.getOverFlowMenuItem(
-      'Export all'
-    );
+    const exportAllActionItem =
+      await pageHeader.getOverFlowMenuItem('Export all');
     expect(await exportAllActionItem!.getText()).toBe('Export all');
 
-    const showHideChartActionItem = await pageHeader.getOverFlowMenuItem(
-      'Show chart'
-    );
+    const showHideChartActionItem =
+      await pageHeader.getOverFlowMenuItem('Show chart');
     expect(await showHideChartActionItem!.getText()).toBe('Show chart');
   });
 
@@ -220,9 +220,8 @@ describe('ChatSearchComponent', () => {
     const overflowMenuItems = await pageHeader.getOverFlowMenuItems();
     expect(overflowMenuItems.length).toBe(2);
 
-    const showHideChartActionItem = await pageHeader.getOverFlowMenuItem(
-      'Hide chart'
-    );
+    const showHideChartActionItem =
+      await pageHeader.getOverFlowMenuItem('Hide chart');
     expect(await showHideChartActionItem!.getText()).toEqual('Hide chart');
   });
 
@@ -325,13 +324,12 @@ describe('ChatSearchComponent', () => {
     const overflowActionButton = await pageHeader.getOverflowActionMenuButton();
     await overflowActionButton?.click();
 
-    const exportAllActionItem = await pageHeader.getOverFlowMenuItem(
-      'Export all'
-    );
+    const exportAllActionItem =
+      await pageHeader.getOverFlowMenuItem('Export all');
     await exportAllActionItem!.selectItem();
 
     expect(store.dispatch).toHaveBeenCalledWith(
-      ChatSearchActions.exportButtonClicked()
+      ChatSearchActions.exportButtonClicked(),
     );
   });
 
@@ -341,7 +339,7 @@ describe('ChatSearchComponent', () => {
     component.viewModeChanged('advanced');
 
     expect(store.dispatch).toHaveBeenCalledWith(
-      ChatSearchActions.viewModeChanged({ viewMode: 'advanced' })
+      ChatSearchActions.viewModeChanged({ viewMode: 'advanced' }),
     );
   });
 
@@ -353,11 +351,11 @@ describe('ChatSearchComponent', () => {
     fixture.detectChanges();
     chatSearch = await TestbedHarnessEnvironment.harnessForFixture(
       fixture,
-      ChatSearchHarness
+      ChatSearchHarness,
     );
 
     expect(store.dispatch).toHaveBeenCalledWith(
-      ChatSearchActions.displayedColumnsChanged({ displayedColumns: [] })
+      ChatSearchActions.displayedColumnsChanged({ displayedColumns: [] }),
     );
 
     jest.clearAllMocks();
@@ -406,7 +404,7 @@ describe('ChatSearchComponent', () => {
             id: 'column_2',
           },
         ],
-      })
+      }),
     );
   });
 
@@ -424,12 +422,11 @@ describe('ChatSearchComponent', () => {
     const overflowActionButton = await pageHeader.getOverflowActionMenuButton();
     await overflowActionButton?.click();
 
-    const showChartActionItem = await pageHeader.getOverFlowMenuItem(
-      'Show chart'
-    );
+    const showChartActionItem =
+      await pageHeader.getOverFlowMenuItem('Show chart');
     await showChartActionItem!.selectItem();
     expect(store.dispatch).toHaveBeenCalledWith(
-      ChatSearchActions.chartVisibilityToggled()
+      ChatSearchActions.chartVisibilityToggled(),
     );
   });
 
@@ -438,7 +435,7 @@ describe('ChatSearchComponent', () => {
     const pageHeader = await searchHeader.getPageHeader();
     expect(await pageHeader.getHeaderText()).toEqual('Chat Search');
     expect(await pageHeader.getSubheaderText()).toEqual(
-      'Searching and displaying of Chat'
+      'Searching and displaying of Chat',
     );
   });
 

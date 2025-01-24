@@ -14,9 +14,9 @@ describe('ChatComponent', () => {
         PortalCoreModule,
         TranslateTestingModule.withTranslations(
           'en',
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
           require('./../../../../assets/i18n/en.json')
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
         ).withTranslations('de', require('./../../../../assets/i18n/de.json')),
       ],
     }).compileComponents();
