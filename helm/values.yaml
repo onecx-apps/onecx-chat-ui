@@ -1,7 +1,7 @@
 app:
   name: ui
   image:
-    repository: onecx/onecx-chat-ui
+    repository: onecx-apps/onecx-chat-ui
   routing:
     enabled: true
     path: /mfe/onecxChatUi/
