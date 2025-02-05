@@ -25,8 +25,8 @@ import { TabViewModule } from 'primeng/tabview';
 import { ReplaySubject } from 'rxjs';
 import { ChatAssistantComponent } from 'src/app/chat/pages/chat-assistant/chat-assistant.component';
 import { ChatsInternal } from 'src/app/shared/generated';
+import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ChatInternalService } from './chat-panel.component.bootstrap';
 
 export function slotInitializer(slotService: SlotService) {
   return () => slotService.init();
@@ -81,7 +81,7 @@ export class OneCXChatPanelComponent
     private readonly appConfigService: AppConfigService,
     private readonly chatInternal: ChatInternalService,
     private readonly userService: UserService,
-    private readonly translateService: TranslateService // private readonly bookmarkApiUtils: BookmarkAPIUtilsService
+    private readonly translateService: TranslateService, // private readonly bookmarkApiUtils: BookmarkAPIUtilsService
   ) {
     this.translateService.use(this.userService.lang$.getValue());
   }

@@ -10,7 +10,7 @@ const config = withModuleFederationPlugin({
   name: 'onecx-chat-ui-app',
   filename: 'remoteEntry.js',
   exposes: {
-    './OnecxChatUiModule': './src/bootstrap.ts',
+    './OnecxChatUiModule': './src/main.ts',
     './OneCXChatPanelComponent': 'src/app/remotes/chat-panel/chat-panel.component.main.ts'
   },
   shared: share({

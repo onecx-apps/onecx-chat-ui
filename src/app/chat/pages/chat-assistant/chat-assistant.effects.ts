@@ -3,10 +3,11 @@ import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
-import { Action, Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { filterForNavigatedTo } from '@onecx/ngrx-accelerator';
 import { PortalMessageService } from '@onecx/portal-integration-angular';
-import { catchError, filter, map, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, of, switchMap } from 'rxjs';
+import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
   ChatsInternal,
   ChatType,
@@ -17,7 +18,6 @@ import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantComponent } from './chat-assistant.component';
 import { chatAssistantSelectors } from './chat-assistant.selectors';
 import { ChatUser } from './chat-assistant.state';
-import { ChatInternalService } from 'src/app/remotes/chat-panel/chat-panel.component.bootstrap';
 
 const CHAT_TOPIC_LENGTH = 30;
 
@@ -29,7 +29,7 @@ export class ChatAssistantEffects {
     private _chatInternalService: ChatsInternal,
     private router: Router,
     private store: Store,
-    private messageService: PortalMessageService
+    private messageService: PortalMessageService,
   ) {}
 
   get chatInternalService() {
@@ -44,7 +44,7 @@ export class ChatAssistantEffects {
       filterForNavigatedTo(this.router, ChatAssistantComponent),
       switchMap(() => {
         return of(ChatAssistantActions.navigatedToChatAssistant());
-      })
+      }),
     );
   });
 
@@ -56,7 +56,7 @@ export class ChatAssistantEffects {
         ChatAssistantActions.chatCreationSuccessfull,
         ChatAssistantActions.messageSentForNewChat,
         ChatAssistantActions.chatDeletionSuccessfull,
-        ChatAssistantActions.chatDeletionFailed
+        ChatAssistantActions.chatDeletionFailed,
       ),
       switchMap(() => {
         return this.chatInternalService.getChats().pipe(
@@ -69,11 +69,11 @@ export class ChatAssistantEffects {
             of(
               ChatAssistantActions.chatsLoadingFailed({
                 error,
-              })
-            )
-          )
+              }),
+            ),
+          ),
         );
-      })
+      }),
     );
   });
 
@@ -81,7 +81,7 @@ export class ChatAssistantEffects {
     return this.actions$.pipe(
       ofType(
         ChatAssistantActions.chatSelected,
-        ChatAssistantActions.messageSendingSuccessfull
+        ChatAssistantActions.messageSendingSuccessfull,
       ),
       concatLatestFrom(() => [
         this.store.select(chatAssistantSelectors.selectCurrentChat),
@@ -98,11 +98,11 @@ export class ChatAssistantEffects {
             of(
               ChatAssistantActions.messagesLoadingFailed({
                 error,
-              })
-            )
-          )
+              }),
+            ),
+          ),
         );
-      })
+      }),
     );
   });
 
@@ -124,11 +124,11 @@ export class ChatAssistantEffects {
             of(
               ChatAssistantActions.chatDeletionFailed({
                 error,
-              })
-            )
-          )
+              }),
+            ),
+          ),
         );
-      })
+      }),
     );
   });
 
@@ -154,11 +154,11 @@ export class ChatAssistantEffects {
               of(
                 ChatAssistantActions.chatDeletionFailed({
                   error,
-                })
-              )
-            )
+                }),
+              ),
+            ),
           );
-      })
+      }),
     );
   });
 
@@ -181,11 +181,11 @@ export class ChatAssistantEffects {
             of(
               ChatAssistantActions.chatCreationFailed({
                 error,
-              })
-            )
-          )
+              }),
+            ),
+          ),
         );
-      })
+      }),
     );
   });
 
@@ -208,17 +208,17 @@ export class ChatAssistantEffects {
             ChatAssistantActions.messageSentForNewChat({
               chat,
               message: action.message,
-            })
+            }),
           ),
           catchError((error) =>
             of(
               ChatAssistantActions.chatCreationFailed({
                 error,
-              })
-            )
-          )
+              }),
+            ),
+          ),
         );
-      })
+      }),
     );
   });
 
@@ -241,7 +241,7 @@ export class ChatAssistantEffects {
     return this.actions$.pipe(
       ofType(
         ChatAssistantActions.messageSent,
-        ChatAssistantActions.messageSentForNewChat
+        ChatAssistantActions.messageSentForNewChat,
       ),
       concatLatestFrom(() => [
         this.store.select(chatAssistantSelectors.selectCurrentChat),
@@ -251,7 +251,7 @@ export class ChatAssistantEffects {
           return of(
             ChatAssistantActions.createNewChatForMessage({
               message: action.message,
-            })
+            }),
           );
         }
         return this.chatInternalService
@@ -263,18 +263,18 @@ export class ChatAssistantEffects {
             map((message) =>
               ChatAssistantActions.messageSendingSuccessfull({
                 message,
-              })
+              }),
             ),
             catchError((error) =>
               of(
                 ChatAssistantActions.messageSendingFailed({
                   message: action.message,
                   error,
-                })
-              )
-            )
+                }),
+              ),
+            ),
           );
-      })
+      }),
     );
   });
 

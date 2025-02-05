@@ -14,6 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MenuItem, SharedModule } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { SidebarModule } from 'primeng/sidebar';
+import { TooltipModule } from 'primeng/tooltip';
 import { combineLatest, map, Observable } from 'rxjs';
 import { ChatListComponent } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatComponent } from 'src/app/shared/components/chat/chat.component';
@@ -21,7 +22,6 @@ import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { selectChatAssistantViewModel } from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
-import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -44,7 +44,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class ChatAssistantComponent implements OnChanges {
   viewModel$: Observable<ChatAssistantViewModel> = this.store.select(
-    selectChatAssistantViewModel
+    selectChatAssistantViewModel,
   );
 
   _sidebarVisible = false;
@@ -61,7 +61,7 @@ export class ChatAssistantComponent implements OnChanges {
 
   constructor(
     private readonly store: Store,
-    private translateService: TranslateService
+    private translateService: TranslateService,
   ) {}
 
   menuItems: Observable<MenuItem[]> = combineLatest([
@@ -79,14 +79,14 @@ export class ChatAssistantComponent implements OnChanges {
           },
         },
       ] as MenuItem[];
-    })
+    }),
   );
 
   sendMessage(message: string) {
     this.store.dispatch(
       ChatAssistantActions.messageSent({
         message,
-      })
+      }),
     );
   }
 
@@ -94,7 +94,7 @@ export class ChatAssistantComponent implements OnChanges {
     this.store.dispatch(
       ChatAssistantActions.chatSelected({
         chat,
-      })
+      }),
     );
   }
 
