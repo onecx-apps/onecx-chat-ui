@@ -26,7 +26,7 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 @Component({
   selector: 'app-chat-assistant',
   templateUrl: './chat-assistant.component.html',
-  styleUrls: ['./chat-assistant.component.css'],
+  styleUrls: ['./chat-assistant.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
