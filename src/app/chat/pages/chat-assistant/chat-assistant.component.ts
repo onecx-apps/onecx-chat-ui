@@ -22,12 +22,26 @@ import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { selectChatAssistantViewModel } from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { environment } from 'src/environments/environment';
+import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
+import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
+import { ChatOptionButtonComponent } from '../../shared/components/chat-option-button/chat-option-button.component';
+import { ChatInitialScreenComponent } from '../../shared/components/chat-initial-screen/chat-initial-screen.component';
 
 @Component({
   selector: 'app-chat-assistant',
   templateUrl: './chat-assistant.component.html',
   styleUrls: ['./chat-assistant.component.scss'],
   standalone: true,
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ transform: 'translateX(100%)', opacity: 0 }),
+        animate('300ms ease-in-out', style({ transform: 'translateX(0%)', opacity: 1 }))
+      ])
+    ])
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -40,14 +54,19 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
     ChatComponent,
     ChatListComponent,
     TooltipModule,
+    ChatSliderComponent,
+    ChatHeaderComponent,
+    ChatOptionButtonComponent,
+    ChatInitialScreenComponent,
   ],
 })
 export class ChatAssistantComponent implements OnChanges {
-  viewModel$: Observable<ChatAssistantViewModel> = this.store.select(
-    selectChatAssistantViewModel,
-  );
+  environment = environment;
+  viewModel$: Observable<ChatAssistantViewModel>;
+  menuItems: Observable<MenuItem[]>;
 
   _sidebarVisible = false;
+  selectedChatMode: string | null = null;
 
   @Input()
   set sidebarVisible(val: boolean) {
@@ -62,25 +81,27 @@ export class ChatAssistantComponent implements OnChanges {
   constructor(
     private readonly store: Store,
     private translateService: TranslateService,
-  ) {}
-
-  menuItems: Observable<MenuItem[]> = combineLatest([
-    this.viewModel$,
-    this.translateService.get(['CHAT.ACTIONS.DELETE']),
-  ]).pipe(
-    map(([vm, t]) => {
-      return [
-        {
-          label: t['CHAT.ACTIONS.DELETE'],
-          icon: 'pi pi-trash',
-          disabled: vm.currentChat?.id === 'new',
-          command: () => {
-            this.store.dispatch(ChatAssistantActions.currentChatDeleted());
+  ) {
+    this.viewModel$ = this.store.select(selectChatAssistantViewModel);
+    
+    this.menuItems = combineLatest([
+      this.viewModel$,
+      this.translateService.get(['CHAT.ACTIONS.DELETE']),
+    ]).pipe(
+      map(([vm, t]) => {
+        return [
+          {
+            label: t['CHAT.ACTIONS.DELETE'],
+            icon: 'pi pi-trash',
+            disabled: vm.currentChat?.id === 'new',
+            command: () => {
+              this.store.dispatch(ChatAssistantActions.currentChatDeleted());
+            },
           },
-        },
-      ] as MenuItem[];
-    }),
-  );
+        ] as MenuItem[];
+      }),
+    );
+  }
 
   sendMessage(message: string) {
     this.store.dispatch(
@@ -101,6 +122,34 @@ export class ChatAssistantComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['sidebarVisible']) {
       this.sidebarVisibleChange.emit(this.sidebarVisible);
+    }
+  }
+
+  // NEW METHODS ONECX COMPANION
+  selectChatMode(mode: string) {
+    if (mode === 'close') {
+      this._sidebarVisible = false;
+      this.sidebarVisibleChange.emit(false);
+      this.selectedChatMode = null;
+      return;
+    }
+    this.selectedChatMode = mode;
+  }
+
+  goBack() {
+    this.selectedChatMode = null;
+  }
+
+  getChatTitle(): string {
+    switch (this.selectedChatMode) {
+      case 'ai':
+        return 'AI Companion';
+      case 'direct':
+        return 'Direct Chat';
+      case 'group':
+        return 'Group Chat';
+      default:
+        return 'Chat';
     }
   }
 }

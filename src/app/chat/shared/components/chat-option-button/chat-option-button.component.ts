@@ -1,0 +1,21 @@
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-chat-option-button',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './chat-option-button.component.html',
+  styleUrls: ['./chat-option-button.component.scss']
+})
+export class ChatOptionButtonComponent {
+  @Input() title = '';
+  @Input() subtitle = '';
+  @Input() icon = '';
+  @Input() colorClass = '';
+  @Output() buttonClick = new EventEmitter<void>();
+
+  onButtonClick() {
+    this.buttonClick.emit();
+  }
+}

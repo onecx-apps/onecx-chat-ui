@@ -1,0 +1,10 @@
+<div class="chat-header">
+  <button *ngIf="showBack" class="back-button" (click)="backClicked.emit()">
+    <i class="pi pi-arrow-left"></i>
+  </button>
+  <span class="chat-title">{{ title }}</span>
+  <button *ngIf="showClose" class="close-button" (click)="closed.emit()">
+    <i class="pi pi-times"></i>
+  </button>
+</div>
+<div class="header-separator"></div>

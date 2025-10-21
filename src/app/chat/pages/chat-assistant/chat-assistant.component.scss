@@ -1,8 +1,59 @@
-.chat-assistant-container {
-  /* height: calc(100vh - 83px); */
-  height: 100%;
+:host ::ng-deep .onecx-chat-sidebar {
+  width: 280px !important;
+  .p-sidebar-content {
+    padding: 0;
+    height: 100vh;
+    background: #ffffff;
+  }
+  
+  .p-sidebar-close {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    z-index: 10;
+    background: none !important;
+    border: none !important;
+    color: #6b7280 !important;
+    font-size: 16px !important;
+    border-radius: 50% !important;
+    width: 28px !important;
+    height: 28px !important;
+    
+    &:hover {
+      background: #f3f4f6 !important;
+      color: #374151 !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  
+  @media (max-width: 480px) {
+    .p-sidebar-content {
+      padding: 0;
+    }
+  }
+}
+
+.onecx-companion-container {
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #ffffff;
+}
+
+.chat-interface {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
 }
 
 app-chat {
@@ -13,19 +64,14 @@ app-chat {
   padding: 0px;
 }
 
-:host ::ng-deep {
-  .chat-button {
-    color: var(--topbar-item-text-color);
-
-    &:hover,
-    &:focus {
-      color: var(--topbar-item-text-hover-color) !important;
-      background-color: var(--topbar-item-text-hover-bg-color) !important;
-      transition: background-color var(--transition-duration);
-    }
+:host ::ng-deep .chat-button {
+  color: #ffffff !important;
+  &:hover, &:focus {
+    color: #f0f0f0 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
   }
+}
 
-  .chat-button > .p-button-icon {
-    color: var(--topbar-item-text-color);
-  }
+:host ::ng-deep .p-sidebar-header[data-pc-section="header"] {
+  display: none !important;
 }

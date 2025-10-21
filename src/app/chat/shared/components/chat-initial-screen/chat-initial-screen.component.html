@@ -1,0 +1,27 @@
+<div class="companion-header">
+  <app-chat-header [title]="'Good afternoon!'" [showClose]="true" (closed)="selectMode.emit('close')"></app-chat-header>
+  <div class="logo-container">
+    <img [src]="ASSETS_URL + '/img/logo.png'" alt="OneCX Logo" class="onecx-logo-img" />
+  </div>
+  <p class="info-message">You don't have existing chats.<br>Create a new one?</p>
+</div>
+<div class="chat-options">
+  <app-chat-option-button
+    title="AI Companion"
+    subtitle="smart answers"
+    colorClass="ai-companion"
+    (buttonClick)="selectMode.emit('ai')"
+  ></app-chat-option-button>
+  <app-chat-option-button
+    title="Direct Chat"
+    subtitle="with a person"
+    colorClass="direct-chat"
+    (buttonClick)="selectMode.emit('direct')"
+  ></app-chat-option-button>
+  <app-chat-option-button
+    title="Group Chat"
+    subtitle="work together"
+    colorClass="group-chat"
+    (buttonClick)="selectMode.emit('group')"
+  ></app-chat-option-button>
+</div>

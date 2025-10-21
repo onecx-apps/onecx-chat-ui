@@ -52,4 +52,34 @@ describe('ChatAssistantComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should set selectedChatMode and emit sidebarVisibleChange on close', () => {
+    const spy = jest.spyOn(component.sidebarVisibleChange, 'emit');
+    component.selectChatMode('close');
+    expect(component._sidebarVisible).toBe(false);
+    expect(component.selectedChatMode).toBeNull();
+    expect(spy).toHaveBeenCalledWith(false);
+  });
+
+  it('should set selectedChatMode to mode', () => {
+    component.selectChatMode('ai');
+    expect(component.selectedChatMode).toBe('ai');
+  });
+
+  it('should reset selectedChatMode on goBack', () => {
+    component.selectedChatMode = 'ai';
+    component.goBack();
+    expect(component.selectedChatMode).toBeNull();
+  });
+
+  it('should return correct chat title', () => {
+    component.selectedChatMode = 'ai';
+    expect(component.getChatTitle()).toBe('AI Companion');
+    component.selectedChatMode = 'direct';
+    expect(component.getChatTitle()).toBe('Direct Chat');
+    component.selectedChatMode = 'group';
+    expect(component.getChatTitle()).toBe('Group Chat');
+    component.selectedChatMode = null;
+    expect(component.getChatTitle()).toBe('Chat');
+  });
 });

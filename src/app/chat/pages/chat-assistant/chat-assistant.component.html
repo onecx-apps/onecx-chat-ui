@@ -1,55 +1,49 @@
-<p-sidebar
+<app-chat-slider
   [(visible)]="_sidebarVisible"
   [modal]="false"
-  position="right"
-  styleClass="w-30rem p-0"
+  [showCloseIcon]="false"
+  [closeOnEscape]="true"
+  [position]="'right'"
+  [styleClass]="'onecx-chat-sidebar p-0'"
 >
-  <ng-template pTemplate="header">
-    <div class="flex align-items-center gap-2">
-      <span class="font-bold"> {{ 'CHAT.TITLE_AI' | translate }} </span>
-    </div>
-  </ng-template>
-  <div class="chat-assistant-container" *ngrxLet="viewModel$; let vm">
-    <app-chat-list
-      [chats]="vm.chats"
-      [loading]="vm.chats === undefined"
-      [selectedChat]="vm.currentChat"
-      (chatSelected)="chatSelected($event)"
-      [menuItems]="(menuItems | async) ?? []"
-    ></app-chat-list>
-    <app-chat
-      [chatMessages]="vm.currentMessages ?? []"
-      (sendMessage)="sendMessage($event)"
-      (retrySendMessage)="sendMessage($event)"
-    ></app-chat>
+  <div class="onecx-companion-container" *ngrxLet="viewModel$; let vm">
+    <ng-container *ngIf="!selectedChatMode">
+      <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
+    </ng-container>
+    <ng-container *ngIf="selectedChatMode">
+      <div class="chat-interface" [@slideIn]>
+        <app-chat-header
+          [title]="getChatTitle()"
+          [showBack]="true"
+          [showClose]="false"
+          (backClicked)="goBack()"
+        ></app-chat-header>
+        <app-chat-list
+          *ngIf="selectedChatMode === 'ai'"
+          [chats]="vm.chats"
+          [loading]="vm.chats === undefined"
+          [selectedChat]="vm.currentChat"
+          (chatSelected)="chatSelected($event)"
+          [menuItems]="(menuItems | async) ?? []"
+        ></app-chat-list>
+        <app-chat
+          [chatMessages]="vm.currentMessages ?? []"
+          (sendMessage)="sendMessage($event)"
+          (retrySendMessage)="sendMessage($event)"
+        ></app-chat>
+      </div>
+    </ng-container>
   </div>
-</p-sidebar>
+</app-chat-slider>
 <div class="layout-topbar-item">
   <p-button
-    styleClass="min-w-0 justify-content-center chat-button"
-    tooltipPosition="bottom"
+    styleClass="chat-button p-button-rounded p-button-text"
     [attr.aria-label]="'CHAT.TITLE_AI' | translate"
     [pTooltip]="'CHAT.TITLE_AI' | translate"
     tooltipPosition="top"
     tooltipEvent="hover"
-    [rounded]="true"
-    [text]="true"
     (onClick)="sidebarVisible = true"
   >
-    <!-- (onClick)="openBookmarkDialog()" -->
-    <i class="pi pi-comments fs-xlarge p-button-icon"></i>
+    <i class="pi pi-comments fs-xlarge p-button-icon" style="background: transparent; border: none;"></i>
   </p-button>
-  <!-- <ng-template #loadingButton>
-    <p-button
-      styleClass="min-w-0 justify-content-center"
-      [attr.aria-label]="
-        'REMOTES.MANAGE_BOOKMARK.BUTTON.TOOLTIP.LOADING' | translate
-      "
-      tooltipPosition="top"
-      tooltipEvent="hover"
-      [rounded]="true"
-      [text]="true"
-      [loading]="true"
-    ></p-button>
-  </ng-template> -->
 </div>
