@@ -7,7 +7,19 @@
     margin-top: 64px;
   }
   @media (min-width: 1024px) {
-    gap: 32px;
+    margin-top: 128px;
+  }
+  @media (min-width: 1440px) {
+    margin-top: 180px;
+  }
+}
+
+.chat-options > :first-child {
+  @media (min-width: 1024px) {
+    margin-top: 48px;
+  }
+  @media (min-width: 1440px) {
+    margin-top: 80px;
   }
 }
 

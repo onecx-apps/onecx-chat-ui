@@ -41,6 +41,18 @@
   color: #6b7280;
   line-height: 1.5;
   text-align: center;
+  @media (min-width: 768px) {
+    margin-top: 32px;
+    margin-bottom: 64px;
+  }
+  @media (min-width: 1024px) {
+    margin-top: 48px;
+    margin-bottom: 96px;
+  }
+  @media (min-width: 1440px) {
+    margin-top: 64px;
+    margin-bottom: 160px;
+  }
 }
 
 .companion-initial-screen {
