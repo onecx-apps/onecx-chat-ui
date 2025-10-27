@@ -1,17 +1,40 @@
-.onecx-chat-sidebar {
-  width: 360px !important;
+:host ::ng-deep .onecx-chat-sidebar {
+  width: 20%;
   .p-sidebar-content {
-    padding: 0;
+    padding: 0 !important;
     height: 100vh;
-    background: #ffffff;
+    background: var(--menu-bg-color);
   }
-  @media (max-width: 768px) {
-    width: 100vw !important;
-    max-width: 100vw !important;
+  .p-sidebar-header[data-pc-section="header"] {
+    display: none !important;
+  }
+  .p-sidebar-close {
+    position: absolute;
+    background: none !important;
+    border: none !important;
+    color: var(--text-color-secondary) !important;
+    font-size: 16px !important;
+    border-radius: 50% !important;
+    width: 28px !important;
+    height: 28px !important;
+    &:hover {
+      background: var(--hover-bg-color) !important;
+      color: var(--text-color) !important;
+    }
+  }
+  @media (max-width: 1440px) {
+    width: 25%;
+  }
+  @media (max-width: 1024px) {
+    width: 30%;
+  }
+  @media(max-width: 768px) {
+    width: 50%;
   }
   @media (max-width: 480px) {
-    .p-sidebar-content {
-      padding: 0;
-    }
+    width: 70%;
+  }
+  @media (max-width: 360px) {
+    width: 100%;
   }
 }

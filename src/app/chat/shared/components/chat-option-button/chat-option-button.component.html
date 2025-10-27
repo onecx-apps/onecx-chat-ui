@@ -1,9 +1,13 @@
-<button class="chat-option-button" [ngClass]="colorClass" (click)="buttonClick.emit()">
-  <div class="button-content">
-    <div class="button-text">
-      <span class="button-title">{{ title }}</span>
-      <span class="button-subtitle">{{ subtitle }}</span>
+<p-button
+  type="button"
+  [styleClass]="colorClass + ' w-100'"
+  (onClick)="buttonClick.emit()"
+>
+  <ng-template pTemplate="default">
+    <div class="flex flex-column flex-1 align-items-start">
+      <span class="font-bold text-lg mb-1 d-block">{{ title }}</span>
+      <span class="text-sm opacity-90 d-block">{{ subtitle }}</span>
     </div>
-    <span class="button-arrow" [ngClass]="icon"></span>
-  </div>
-</button>
+    <span class="arrow-icon pi pi-arrow-right"></span>
+  </ng-template>
+</p-button>

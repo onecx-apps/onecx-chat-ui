@@ -1,82 +1,32 @@
-.companion-header {
-  position: relative;
-  margin-bottom: 24px;
-}
-
 .header-top {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 32px;
-  background: #ffffff;
+  background: var(--content-bg-color);
   position: relative;
 }
 
-.header-separator {
-  display: block;
-  height: 1px;
-  background: #e5e7eb;
-  width: 100%;
-  @media (max-width: 480px) {
-    width: 100%;
-  }
-}
-
-.logo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.onecx-logo-img {
+img {
   width: 100%;
   height: auto;
-  margin-bottom: 24px;
-  object-fit: contain;
+  display: block;
 }
 
-.info-message {
-  font-size: 14px;
-  color: #6b7280;
-  line-height: 1.5;
-  text-align: center;
-  @media (min-width: 768px) {
-    margin-top: 32px;
-    margin-bottom: 64px;
-  }
-  @media (min-width: 1024px) {
-    margin-top: 48px;
-    margin-bottom: 96px;
-  }
-  @media (min-width: 1440px) {
-    margin-top: 64px;
-    margin-bottom: 160px;
-  }
-}
-
-.companion-initial-screen {
-  height: 100%;
+.chat-options {
   display: flex;
   flex-direction: column;
-  padding: 0 24px 24px 24px;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
   overflow-y: auto;
-  overflow-x: hidden;
+  max-height: 100vh;
+  margin-top: 75%;
 
-  /* Custom scrollbar */
-  &::-webkit-scrollbar {
-    width: 8px;
-    background: #f3f4f6;
+  @media (max-width: 1440px) {
+    margin-top: 15%;
   }
-  &::-webkit-scrollbar-thumb {
-    background: #e5e7eb;
-    border-radius: 8px;
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background: #d1d5db;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0 16px 16px 16px;
+  @media (max-width: 1024px) {
+    margin-top: 0;
   }
 }

@@ -6,6 +6,7 @@ export const ChatAssistantActions = createActionGroup({
   events: {
     'navigated to chat assistant': emptyProps(),
     'chat panel opened': emptyProps(),
+    'chat panel closed': emptyProps(),
     'chats loaded': props<{
       chats: Chat[];
     }>(),
@@ -55,5 +56,7 @@ export const ChatAssistantActions = createActionGroup({
     'messages loading failed': props<{
       error: string | null;
     }>(),
+    'chat mode selected': props<{ mode: string }>(),
+    'chat mode deselected': emptyProps(),
   },
 });

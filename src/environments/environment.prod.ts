@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
   apiPrefix: 'bff',
-  ASSETS_URL: '/mfe/onecxChatUi/assets'
+  DEFAULT_LOGO_PATH: '/assets/img/logo.png',
 };

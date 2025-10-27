@@ -1,8 +1,7 @@
 <app-chat-slider
   [(visible)]="_sidebarVisible"
   [modal]="false"
-  [showCloseIcon]="false"
-  [closeOnEscape]="true"
+  (onHide)="_sidebarVisible = false"
   [position]="'right'"
   [styleClass]="'onecx-chat-sidebar p-0'"
 >
@@ -13,7 +12,7 @@
     <ng-container *ngIf="selectedChatMode">
       <div class="chat-interface" [@slideIn]>
         <app-chat-header
-          [title]="getChatTitle()"
+          [title]="vm.chatTitleKey | translate"
           [showBack]="true"
           [showClose]="false"
           (backClicked)="goBack()"
@@ -42,7 +41,7 @@
     [pTooltip]="'CHAT.TITLE_AI' | translate"
     tooltipPosition="top"
     tooltipEvent="hover"
-    (onClick)="sidebarVisible = true"
+    (onClick)="_sidebarVisible = true"
   >
     <i class="pi pi-comments fs-xlarge p-button-icon" style="background: transparent; border: none;"></i>
   </p-button>

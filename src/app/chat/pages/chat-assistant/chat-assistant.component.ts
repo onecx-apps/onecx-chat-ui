@@ -22,7 +22,6 @@ import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { selectChatAssistantViewModel } from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { environment } from 'src/environments/environment';
 import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
 import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
@@ -34,14 +33,6 @@ import { ChatInitialScreenComponent } from '../../shared/components/chat-initial
   templateUrl: './chat-assistant.component.html',
   styleUrls: ['./chat-assistant.component.scss'],
   standalone: true,
-  animations: [
-    trigger('slideIn', [
-      transition(':enter', [
-        style({ transform: 'translateX(100%)', opacity: 0 }),
-        animate('300ms ease-in-out', style({ transform: 'translateX(0%)', opacity: 1 }))
-      ])
-    ])
-  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -130,26 +121,16 @@ export class ChatAssistantComponent implements OnChanges {
     if (mode === 'close') {
       this._sidebarVisible = false;
       this.sidebarVisibleChange.emit(false);
+      this.store.dispatch(ChatAssistantActions.chatPanelClosed());
       this.selectedChatMode = null;
       return;
     }
+    this.store.dispatch(ChatAssistantActions.chatModeSelected({ mode }));
     this.selectedChatMode = mode;
   }
 
   goBack() {
+    this.store.dispatch(ChatAssistantActions.chatModeDeselected());
     this.selectedChatMode = null;
-  }
-
-  getChatTitle(): string {
-    switch (this.selectedChatMode) {
-      case 'ai':
-        return 'AI Companion';
-      case 'direct':
-        return 'Direct Chat';
-      case 'group':
-        return 'Group Chat';
-      default:
-        return 'Chat';
-    }
   }
 }

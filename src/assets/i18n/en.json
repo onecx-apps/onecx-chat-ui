@@ -31,6 +31,12 @@
     }
   },
   "CHAT": {
+    "TITLE": {
+      "DEFAULT": "Chat",
+      "AI": "AI Companion",
+      "DIRECT": "Direct Chat",
+      "GROUP": "Group Chat"
+    },
     "TITLE_AI": "Chat Assistant",
     "MESSAGE_PLACEHOLDER": "Message...",
     "NEW_CHAT": "New Chat...",
@@ -51,6 +57,16 @@
     "SUCCESS_MESSAGES": {
       "CREATE_CHAT": "Chat created.",
       "DELETE_CHAT": "Chat deleted."
+    },
+    "INITIAL": {
+      "GREETING": "Good afternoon!",
+      "NO_CHATS": "You don't have existing chats.",
+      "CREATE_NEW": "Create a new one?"
+    },
+    "OPTION": {
+      "AI_SUBTITLE": "smart answers",
+      "DIRECT_SUBTITLE": "with a person",
+      "GROUP_SUBTITLE": "work together"
     }
   }
 }

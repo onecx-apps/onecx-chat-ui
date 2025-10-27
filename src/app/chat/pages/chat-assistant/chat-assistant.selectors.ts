@@ -16,25 +16,42 @@ export const selectChatAssistantViewModel = createSelector(
   chatAssistantSelectors.selectChats,
   chatAssistantSelectors.selectCurrentChat,
   chatAssistantSelectors.selectCurrentMessages,
+  chatFeature.selectAssistant,
   (
     chats: Chat[],
     currentChat: Chat | undefined,
-    currentMessages: Message[] | undefined
-  ): ChatAssistantViewModel => ({
-    chats: [NEW_AI_CHAT_ITEM, ...chats],
-    currentChat: currentChat ?? NEW_AI_CHAT_ITEM,
-    currentMessages: currentMessages
-      ?.map(
-        (m) =>
-          ({
-            ...m,
-            id: m.id ?? '',
-            text: m.text ?? '',
-            userName: m.userName ?? '',
-            userNameKey: `CHAT.PARTICIPANT.${m.type.toUpperCase()}`,
-            creationDate: new Date(m.creationDate ?? ''),
-          } as ChatMessage)
-      )
-      .sort((a, b) => a.creationDate.getTime() - b.creationDate.getTime()),
-  })
+    currentMessages: Message[] | undefined,
+    state
+  ): ChatAssistantViewModel => {
+    let chatTitleKey = 'CHAT.TITLE.DEFAULT';
+    switch (state.selectedChatMode) {
+      case 'ai':
+        chatTitleKey = 'CHAT.TITLE.AI';
+        break;
+      case 'direct':
+        chatTitleKey = 'CHAT.TITLE.DIRECT';
+        break;
+      case 'group':
+        chatTitleKey = 'CHAT.TITLE.GROUP';
+        break;
+    }
+    return {
+      chats: [NEW_AI_CHAT_ITEM, ...chats],
+      currentChat: currentChat ?? NEW_AI_CHAT_ITEM,
+      currentMessages: currentMessages
+        ?.map(
+          (m) =>
+            ({
+              ...m,
+              id: m.id ?? '',
+              text: m.text ?? '',
+              userName: m.userName ?? '',
+              userNameKey: `CHAT.PARTICIPANT.${m.type.toUpperCase()}`,
+              creationDate: new Date(m.creationDate ?? ''),
+            } as ChatMessage)
+        )
+        .sort((a, b) => a.creationDate.getTime() - b.creationDate.getTime()),
+      chatTitleKey,
+    };
+  }
 );

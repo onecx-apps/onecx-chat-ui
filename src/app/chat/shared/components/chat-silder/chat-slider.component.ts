@@ -17,4 +17,6 @@ export class ChatSliderComponent {
   @Input() closeOnEscape = true;
   @Input() position: 'left' | 'right' = 'right';
   @Input() styleClass = '';
+
+  @Output() hide = new EventEmitter<void>();
 }
