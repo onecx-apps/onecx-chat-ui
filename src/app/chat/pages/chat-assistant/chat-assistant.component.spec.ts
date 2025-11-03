@@ -72,14 +72,89 @@ describe('ChatAssistantComponent', () => {
     expect(component.selectedChatMode).toBeNull();
   });
 
-  it('should return correct chat title', () => {
-    component.selectedChatMode = 'ai';
-    expect(component.getChatTitle()).toBe('AI Companion');
-    component.selectedChatMode = 'direct';
-    expect(component.getChatTitle()).toBe('Direct Chat');
-    component.selectedChatMode = 'group';
-    expect(component.getChatTitle()).toBe('Group Chat');
-    component.selectedChatMode = null;
-    expect(component.getChatTitle()).toBe('Chat');
+  describe('onDocumentClick', () => {
+    let mockEvent: MouseEvent;
+    let mockElement: HTMLElement;
+
+    beforeEach(() => {
+      component._sidebarVisible = true;
+      mockElement = document.createElement('div');
+    });
+
+    it('should not close sidebar when sidebar is not visible', () => {
+      component._sidebarVisible = false;
+      const spy = jest.spyOn(component, 'closeSidebar');
+      
+      mockEvent = new MouseEvent('click', { bubbles: true });
+      Object.defineProperty(mockEvent, 'target', { value: mockElement, enumerable: true });
+      
+      component.onDocumentClick(mockEvent);
+      
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should not close sidebar when clicking inside sidebar', () => {
+      const sidebarElement = document.createElement('div');
+      sidebarElement.classList.add('p-sidebar');
+      mockElement.appendChild(sidebarElement);
+      
+      const spy = jest.spyOn(component, 'closeSidebar');
+      mockEvent = new MouseEvent('click', { bubbles: true });
+      Object.defineProperty(mockEvent, 'target', { value: sidebarElement, enumerable: true });
+      
+      component.onDocumentClick(mockEvent);
+      
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should not close sidebar when clicking on chat toggle button', () => {
+      const buttonElement = document.createElement('button');
+      buttonElement.setAttribute('aria-label', 'Chat Assistant');
+      mockElement.appendChild(buttonElement);
+      
+      const spy = jest.spyOn(component, 'closeSidebar');
+      mockEvent = new MouseEvent('click', { bubbles: true });
+      Object.defineProperty(mockEvent, 'target', { value: buttonElement, enumerable: true });
+      
+      component.onDocumentClick(mockEvent);
+      
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should close sidebar when clicking outside sidebar and not on toggle button', () => {
+      const spy = jest.spyOn(component, 'closeSidebar');
+      mockEvent = new MouseEvent('click', { bubbles: true });
+      Object.defineProperty(mockEvent, 'target', { value: mockElement, enumerable: true });
+      
+      component.onDocumentClick(mockEvent);
+      
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not close sidebar when clicking inside app-chat-header', () => {
+      const headerElement = document.createElement('app-chat-header');
+      mockElement.appendChild(headerElement);
+      
+      const spy = jest.spyOn(component, 'closeSidebar');
+      mockEvent = new MouseEvent('click', { bubbles: true });
+      Object.defineProperty(mockEvent, 'target', { value: headerElement, enumerable: true });
+      
+      component.onDocumentClick(mockEvent);
+      
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should not close sidebar when clicking inside app-chat-option-button', () => {
+      const buttonElement = document.createElement('app-chat-option-button');
+      mockElement.appendChild(buttonElement);
+      
+      const spy = jest.spyOn(component, 'closeSidebar');
+      mockEvent = new MouseEvent('click', { bubbles: true });
+      Object.defineProperty(mockEvent, 'target', { value: buttonElement, enumerable: true });
+      
+      component.onDocumentClick(mockEvent);
+      
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 });

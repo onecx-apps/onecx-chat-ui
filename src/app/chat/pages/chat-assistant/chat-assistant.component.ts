@@ -6,6 +6,7 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  HostListener,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LetDirective } from '@ngrx/component';
@@ -25,8 +26,8 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 import { environment } from 'src/environments/environment';
 import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
 import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
-import { ChatOptionButtonComponent } from '../../shared/components/chat-option-button/chat-option-button.component';
 import { ChatInitialScreenComponent } from '../../shared/components/chat-initial-screen/chat-initial-screen.component';
+import { ChatNewGroupComponent } from '../chat-new-group/chat-new-group.component';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -47,8 +48,8 @@ import { ChatInitialScreenComponent } from '../../shared/components/chat-initial
     TooltipModule,
     ChatSliderComponent,
     ChatHeaderComponent,
-    ChatOptionButtonComponent,
     ChatInitialScreenComponent,
+    ChatNewGroupComponent,
   ],
 })
 export class ChatAssistantComponent implements OnChanges {
@@ -132,5 +133,43 @@ export class ChatAssistantComponent implements OnChanges {
   goBack() {
     this.store.dispatch(ChatAssistantActions.chatModeDeselected());
     this.selectedChatMode = null;
+  }
+
+  closeSidebar() {
+    this._sidebarVisible = false;
+    this.sidebarVisibleChange.emit(false);
+    this.store.dispatch(ChatAssistantActions.chatPanelClosed());
+    this.selectedChatMode = null;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this._sidebarVisible) {
+      return;
+    }
+
+    const clickedElement = event.target as HTMLElement;
+    
+    // Check if clicked INSIDE sidebar - if so, do nothing
+    const isInsideSidebar = clickedElement.closest('.p-sidebar') || 
+                           clickedElement.closest('[role="complementary"]') ||
+                           clickedElement.closest('app-chat-slider') ||
+                           clickedElement.closest('app-chat-initial-screen') ||
+                           clickedElement.closest('app-chat-option-button') ||
+                           clickedElement.closest('app-chat-header');
+    
+    if (isInsideSidebar) {
+      return;
+    }
+    
+    // Check if clicked on chat TOGGLE button - if so, let the toggle manage the state
+    const isChatToggleButton = clickedElement.closest('[aria-label*="Chat"]') || 
+                               clickedElement.closest('.chat-toggle-button') ||
+                               clickedElement.closest('.chat-button') ||
+                               clickedElement.id === 'chat-toggle-button';
+    
+    if (!isChatToggleButton) {
+      this.closeSidebar();
+    }
   }
 }

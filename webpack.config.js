@@ -7,7 +7,7 @@ const {
 } = require('@angular-architects/module-federation/webpack');
 const webpack = require('webpack');
 const config = withModuleFederationPlugin({
-  name: 'onecx-chat-ui-app',
+  name: 'onecx-chat-ui',
   filename: 'remoteEntry.js',
   exposes: {
     './OnecxChatUiModule': './src/main.ts',

@@ -14,18 +14,18 @@
 }
 
 :host ::ng-deep .p-button.w-100.ai-companion {
-  background: var(--button-chat-primary-bg) !important;
-  color: var(--text-chat-color) !important;
+  background: #3680C0 !important;
+  color: #FFFFFF !important;
 }
 
 :host ::ng-deep .p-button.w-100.direct-chat {
-  background: var(--button-chat-secondary-bg) !important;
-  color: var(--text-chat-color) !important;
+  background: #F49F43 !important;
+  color: #FFFFFF !important;
 }
 
 :host ::ng-deep .p-button.w-100.group-chat {
-  background: var(--button-chat-third-bg) !important;
-  color: var(--text-chat-color) !important;
+  background: #ED6A54 !important;
+  color: #FFFFFF !important;
 }
 
 :host ::ng-deep .p-button .arrow-icon {
@@ -33,6 +33,6 @@
   right: 1.5em;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-chat-color) !important;
+  color: #FFF !important;
   pointer-events: none;
 }

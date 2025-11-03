@@ -24,7 +24,7 @@ export class ChatInitialScreenComponent {
     this.appState.currentMfe$
       .pipe(
         map((mfe) => {
-          const baseUrl = mfe.remoteBaseUrl.replace('workspace', 'onecxChatUi');
+          const baseUrl = mfe.remoteBaseUrl.replace('workspace', 'onecx-chat');
           this.logoUrl = Location.joinWithSlash(baseUrl, environment.DEFAULT_LOGO_PATH);
         })
       )

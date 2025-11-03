@@ -1,38 +1,44 @@
 <app-chat-slider
   [(visible)]="_sidebarVisible"
   [modal]="false"
-  (onHide)="_sidebarVisible = false"
   [position]="'right'"
   [styleClass]="'onecx-chat-sidebar p-0'"
 >
-  <div class="onecx-companion-container" *ngrxLet="viewModel$; let vm">
-    <ng-container *ngIf="!selectedChatMode">
-      <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
-    </ng-container>
-    <ng-container *ngIf="selectedChatMode">
-      <div class="chat-interface" [@slideIn]>
-        <app-chat-header
-          [title]="vm.chatTitleKey | translate"
-          [showBack]="true"
-          [showClose]="false"
-          (backClicked)="goBack()"
-        ></app-chat-header>
-        <app-chat-list
-          *ngIf="selectedChatMode === 'ai'"
-          [chats]="vm.chats"
-          [loading]="vm.chats === undefined"
-          [selectedChat]="vm.currentChat"
-          (chatSelected)="chatSelected($event)"
-          [menuItems]="(menuItems | async) ?? []"
-        ></app-chat-list>
-        <app-chat
-          [chatMessages]="vm.currentMessages ?? []"
-          (sendMessage)="sendMessage($event)"
-          (retrySendMessage)="sendMessage($event)"
-        ></app-chat>
-      </div>
-    </ng-container>
-  </div>
+  @let vm = viewModel$ | async;
+  @if (vm) {
+    <div class="onecx-companion-container">
+      @if (!selectedChatMode) {
+        <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
+      }
+      @if (selectedChatMode === 'group') {
+        <app-chat-new-group (back)="selectedChatMode = null"></app-chat-new-group>
+      }
+      @if (selectedChatMode && selectedChatMode !== 'group') {
+        <div class="chat-interface" [@slideIn]>
+          <app-chat-header
+            [title]="vm.chatTitleKey | translate"
+            [showBack]="true"
+            [showClose]="false"
+            (backClicked)="goBack()"
+          ></app-chat-header>
+          @if (selectedChatMode === 'ai') {
+            <app-chat-list
+              [chats]="vm.chats"
+              [loading]="vm.chats === undefined"
+              [selectedChat]="vm.currentChat"
+              (chatSelected)="chatSelected($event)"
+              [menuItems]="(menuItems | async) ?? []"
+            ></app-chat-list>
+          }
+          <app-chat
+            [chatMessages]="vm.currentMessages ?? []"
+            (sendMessage)="sendMessage($event)"
+            (retrySendMessage)="sendMessage($event)"
+          ></app-chat>
+        </div>
+      }
+    </div>
+  }
 </app-chat-slider>
 <div class="layout-topbar-item">
   <p-button
