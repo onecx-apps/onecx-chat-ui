@@ -10,10 +10,7 @@
       @if (!selectedChatMode) {
         <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
       }
-      @if (selectedChatMode === 'group') {
-        <app-chat-new-group (back)="selectedChatMode = null"></app-chat-new-group>
-      }
-      @if (selectedChatMode && selectedChatMode !== 'group') {
+      @if (selectedChatMode) {
         <div class="chat-interface" [@slideIn]>
           <app-chat-header
             [title]="vm.chatTitleKey | translate"
