@@ -27,7 +27,6 @@ import { environment } from 'src/environments/environment';
 import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
 import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
 import { ChatInitialScreenComponent } from '../../shared/components/chat-initial-screen/chat-initial-screen.component';
-import { ChatNewGroupComponent } from '../chat-new-group/chat-new-group.component';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -49,7 +48,6 @@ import { ChatNewGroupComponent } from '../chat-new-group/chat-new-group.componen
     ChatSliderComponent,
     ChatHeaderComponent,
     ChatInitialScreenComponent,
-    ChatNewGroupComponent,
   ],
 })
 export class ChatAssistantComponent implements OnChanges {

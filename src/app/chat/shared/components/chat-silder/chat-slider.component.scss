@@ -3,7 +3,7 @@
   .p-sidebar-content {
     padding: 0 !important;
     height: 100vh;
-    background: var(--menu-bg-color);
+    background: #fdfeff;
   }
   .p-sidebar-header[data-pc-section="header"] {
     display: none !important;
@@ -12,14 +12,14 @@
     position: absolute;
     background: none !important;
     border: none !important;
-    color: var(--text-color-secondary) !important;
+    color: #FFFFFF !important;
     font-size: 16px !important;
     border-radius: 50% !important;
     width: 28px !important;
     height: 28px !important;
     &:hover {
-      background: var(--hover-bg-color) !important;
-      color: var(--text-color) !important;
+      background: #ad1457 !important;
+      color: #000000 !important;
     }
   }
   @media (max-width: 1440px) {
