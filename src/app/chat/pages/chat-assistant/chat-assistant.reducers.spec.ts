@@ -395,7 +395,6 @@ describe('ChatAssistant Reducer', () => {
 
       const result = chatAssistantReducer(stateWithMixedMessages, action);
 
-      // Should have 2 new messages (human + AI loading) + 2 real messages
       expect(result.currentMessages).toHaveLength(4);
       expect(result.currentMessages?.some(m => m.id === 'real-msg-1')).toBe(true);
       expect(result.currentMessages?.some(m => m.id === 'real-msg-2')).toBe(true);

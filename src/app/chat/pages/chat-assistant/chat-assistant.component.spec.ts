@@ -211,7 +211,7 @@ describe('ChatAssistantComponent', () => {
 
       component.menuItems.subscribe(items => {
         expect(items).toHaveLength(1);
-        expect(items[0].label).toBe('Chat löschen'); // Use the actual German translation
+        expect(items[0].label).toBe('Chat löschen');
         expect(items[0].icon).toBe('pi pi-trash');
         expect(items[0].disabled).toBe(false);
         expect(typeof items[0].command).toBe('function');

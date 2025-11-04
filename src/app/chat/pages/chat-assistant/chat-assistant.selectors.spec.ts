@@ -195,7 +195,6 @@ describe('ChatAssistant Selectors', () => {
 
       expect(result.currentMessages).toHaveLength(2);
       
-      // Check first message (with missing fields)
       expect(result.currentMessages?.[0]).toEqual({
         id: '',
         text: '',
@@ -205,10 +204,8 @@ describe('ChatAssistant Selectors', () => {
         type: MessageType.Human
       });
       
-      // Check that the creation date is Invalid Date (NaN)
       expect(isNaN(result.currentMessages?.[0].creationDate.getTime() ?? 0)).toBe(true);
       
-      // Check second message (complete)
       expect(result.currentMessages?.[1]).toEqual({
         id: 'msg2',
         text: 'Complete message',

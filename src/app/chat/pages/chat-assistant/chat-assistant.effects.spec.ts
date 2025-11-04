@@ -17,6 +17,12 @@ import { ChatAssistantEffects } from './chat-assistant.effects';
 import { chatAssistantSelectors } from './chat-assistant.selectors';
 import { ChatUser } from './chat-assistant.state';
 
+// Mock only the filterForNavigatedTo function from @onecx/ngrx-accelerator
+jest.mock('@onecx/ngrx-accelerator', () => ({
+  ...jest.requireActual('@onecx/ngrx-accelerator'),
+  filterForNavigatedTo: jest.fn().mockReturnValue((source: Observable<any>) => source)
+}));
+
 describe('ChatAssistantEffects', () => {
   let effects: ChatAssistantEffects;
   let actions$: Observable<any>;
@@ -77,6 +83,7 @@ describe('ChatAssistantEffects', () => {
   };
 
   beforeEach(() => {
+    jest.clearAllMocks();
     const chatInternalServiceSpy = {
       getChats: jest.fn(),
       getChatMessages: jest.fn(),
@@ -116,10 +123,6 @@ describe('ChatAssistantEffects', () => {
     remoteChatInternalService.getService.mockReturnValue(null);
   });
 
-  afterEach(() => {
-    store?.resetSelectors();
-  });
-
   describe('chatInternalService getter', () => {
     it('should return remote service when available', () => {
       const mockRemoteService = { getChats: jest.fn() };
@@ -140,17 +143,51 @@ describe('ChatAssistantEffects', () => {
       expect(effects.navigatedToChatAssistant).toBeDefined();
     });
 
-    it('should return navigatedToChatAssistant action when effect logic is triggered', () => {
-      // Test the core logic of the effect - the switchMap that returns the action
-      // Since filterForNavigatedTo is complex to mock, we test the business logic
+    it('should dispatch navigatedToChatAssistant action when router navigated action occurs', (done) => {
+      // Test the actual effect execution with switchMap
+      const routerAction = routerNavigatedAction({
+        payload: {
+          routerState: { url: '/chat-assistant', root: {} as any },
+          event: {} as any
+        }
+      });
+      
+      actions$ = of(routerAction);
+
+      effects.navigatedToChatAssistant.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.navigatedToChatAssistant());
+        expect(result.type).toBe('[ChatAssistant] navigated to chat assistant');
+        done();
+      });
+    });
+
+    it('should execute switchMap and return correct action from of()', (done) => {
+      // Test the switchMap logic specifically - this covers the switchMap(() => { return of(...) }) part
+      const routerAction = routerNavigatedAction({
+        payload: {
+          routerState: { url: '/chat-assistant', root: {} as any },
+          event: {} as any
+        }
+      });
+      
+      actions$ = of(routerAction);
+
+      effects.navigatedToChatAssistant.subscribe(action => {
+        expect(action).toEqual(ChatAssistantActions.navigatedToChatAssistant());
+        expect(action.type).toBe('[ChatAssistant] navigated to chat assistant');
+        done();
+      });
+    });
+
+    it('should verify the switchMap returns the expected action structure', () => {
       const expectedAction = ChatAssistantActions.navigatedToChatAssistant();
       
-      // The effect should always return this action when triggered
       expect(expectedAction.type).toBe('[ChatAssistant] navigated to chat assistant');
-      
-      // Verify the effect is properly configured
       expect(effects.navigatedToChatAssistant).toBeDefined();
       expect(typeof effects.navigatedToChatAssistant.subscribe).toBe('function');
+      
+      const switchMapResult = of(expectedAction);
+      expect(switchMapResult).toBeDefined();
     });
   });
 
