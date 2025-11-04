@@ -30,7 +30,8 @@ describe('ChatHeaderComponent', () => {
     component.showClose = true;
     fixture.detectChanges();
     jest.spyOn(component.closed, 'emit');
-    const closeBtn = fixture.debugElement.query(By.css('.close-button'));
+    const closeBtn = fixture.debugElement.query(By.css('button[icon="pi pi-times"]'));
+    expect(closeBtn).toBeTruthy();
     closeBtn.nativeElement.click();
     expect(component.closed.emit).toHaveBeenCalled();
   });
@@ -40,7 +41,8 @@ describe('ChatHeaderComponent', () => {
     component.showClose = false;
     fixture.detectChanges();
     jest.spyOn(component.backClicked, 'emit');
-    const backBtn = fixture.debugElement.query(By.css('.back-button'));
+    const backBtn = fixture.debugElement.query(By.css('button[icon="pi pi-angle-left"]'));
+    expect(backBtn).toBeTruthy();
     backBtn.nativeElement.click();
     expect(component.backClicked.emit).toHaveBeenCalled();
   });

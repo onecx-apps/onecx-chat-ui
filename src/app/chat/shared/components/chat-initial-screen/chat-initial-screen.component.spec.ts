@@ -3,6 +3,9 @@ import { ChatInitialScreenComponent } from './chat-initial-screen.component';
 import { ChatHeaderComponent } from '../chat-header/chat-header.component';
 import { ChatOptionButtonComponent } from '../chat-option-button/chat-option-button.component';
 import { By } from '@angular/platform-browser';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppStateService } from '@onecx/portal-integration-angular';
+import { of } from 'rxjs';
 
 describe('ChatInitialScreenComponent', () => {
   let component: ChatInitialScreenComponent;
@@ -10,8 +13,33 @@ describe('ChatInitialScreenComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatInitialScreenComponent, ChatHeaderComponent, ChatOptionButtonComponent],
+      imports: [
+        ChatInitialScreenComponent,
+        ChatHeaderComponent,
+        ChatOptionButtonComponent,
+        TranslateModule.forRoot()
+      ],
+      providers: [
+        {
+          provide: AppStateService,
+          useValue: {
+            currentMfe$: of({ remoteBaseUrl: 'http://localhost/workspace' })
+          }
+        }
+      ]
     }).compileComponents();
+
+    // Mock MutationObserver
+    const mutationObserverMock = jest.fn(function MutationObserver(callback) {
+      this.observe = jest.fn();
+      this.disconnect = jest.fn();
+      this.trigger = (mockedMutationsList: any) => {
+        callback(mockedMutationsList, this);
+      };
+      return this;
+    });
+    global.MutationObserver = mutationObserverMock as any;
+
     fixture = TestBed.createComponent(ChatInitialScreenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
