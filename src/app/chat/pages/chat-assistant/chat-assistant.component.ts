@@ -111,7 +111,7 @@ export class ChatAssistantComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['sidebarVisible']) {
-      this.sidebarVisibleChange.emit(this.sidebarVisible);
+      this.sidebarVisibleChange.emit(changes['sidebarVisible'].currentValue);
     }
   }
 

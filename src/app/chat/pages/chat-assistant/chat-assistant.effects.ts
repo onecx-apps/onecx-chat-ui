@@ -29,7 +29,6 @@ export class ChatAssistantEffects {
     private _chatInternalService: ChatsInternal,
     private router: Router,
     private store: Store,
-    private messageService: PortalMessageService,
   ) {}
 
   get chatInternalService() {
@@ -277,58 +276,4 @@ export class ChatAssistantEffects {
       }),
     );
   });
-
-  // errorMessages: { action: Action; key: string }[] = [
-  //   {
-  //     action: ChatAssistantActions.chatCreationFailed,
-  //     key: 'CHAT.ERROR_MESSAGES.CREATE_CHAT',
-  //   },
-  //   {
-  //     action: ChatAssistantActions.chatDeletionFailed,
-  //     key: 'CHAT.ERROR_MESSAGES.DELETE_CHAT',
-  //   },
-  //   {
-  //     action: ChatAssistantActions.messageSendingFailed,
-  //     key: 'CHAT.ERROR_MESSAGES.SEND_MESSAGE',
-  //   },
-  // ];
-
-  // successMessages: { action: Action; key: string }[] = [
-  //   {
-  //     action: ChatAssistantActions.chatCreationSuccessfull,
-  //     key: 'CHAT.SUCCESS_MESSAGES.CREATE_CHAT',
-  //   },
-  // ];
-
-  // displayError$ = createEffect(
-  //   () => {
-  //     return this.actions$.pipe(
-  //       tap((action) => {
-  //         const e = this.errorMessages.find(
-  //           (e) => e.action.type === action.type
-  //         );
-  //         if (e) {
-  //           this.messageService.error({ summaryKey: e.key });
-  //         }
-  //       })
-  //     );
-  //   },
-  //   { dispatch: false }
-  // );
-
-  // displaySuccess$ = createEffect(
-  //   () => {
-  //     return this.actions$.pipe(
-  //       tap((action) => {
-  //         const e = this.successMessages.find(
-  //           (e) => e.action.type === action.type
-  //         );
-  //         if (e) {
-  //           this.messageService.success({ summaryKey: e.key });
-  //         }
-  //       })
-  //     );
-  //   },
-  //   { dispatch: false }
-  // );
 }

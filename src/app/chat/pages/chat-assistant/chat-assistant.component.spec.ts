@@ -1,15 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SimpleChanges } from '@angular/core';
 import { LetDirective } from '@ngrx/component';
-import { provideMockStore } from '@ngrx/store/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { PortalCoreModule } from '@onecx/portal-integration-angular';
 import { TranslateTestingModule } from 'ngx-translate-testing';
 import { ChatAssistantComponent } from './chat-assistant.component';
 import { initialState } from './chat-assistant.reducers';
+import { ChatAssistantActions } from './chat-assistant.actions';
+import { ChatType } from 'src/app/shared/generated';
 
 describe('ChatAssistantComponent', () => {
   let component: ChatAssistantComponent;
   let fixture: ComponentFixture<ChatAssistantComponent>;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -46,6 +50,7 @@ describe('ChatAssistantComponent', () => {
 
     fixture = TestBed.createComponent(ChatAssistantComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
 
@@ -155,6 +160,221 @@ describe('ChatAssistantComponent', () => {
       component.onDocumentClick(mockEvent);
       
       expect(spy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('sidebarVisible setter', () => {
+    beforeEach(() => {
+      jest.spyOn(store, 'dispatch');
+    });
+
+    it('should dispatch chatPanelOpened action when sidebarVisible is set to true', () => {
+      component.sidebarVisible = true;
+      
+      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelOpened());
+      expect(component._sidebarVisible).toBe(true);
+    });
+
+    it('should not dispatch action when sidebarVisible is set to false', () => {
+      component.sidebarVisible = false;
+      
+      expect(store.dispatch).not.toHaveBeenCalled();
+      expect(component._sidebarVisible).toBe(false);
+    });
+
+    it('should set _sidebarVisible regardless of value', () => {
+      component.sidebarVisible = true;
+      expect(component._sidebarVisible).toBe(true);
+      
+      component.sidebarVisible = false;
+      expect(component._sidebarVisible).toBe(false);
+    });
+  });
+
+  describe('menuItems observable', () => {
+    it('should create menu items with delete action', (done) => {
+      const mockViewModel = {
+        chats: [],
+        currentChat: { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat },
+        currentMessages: [],
+        chatTitleKey: 'CHAT.TITLE.AI'
+      };
+
+      store.setState({
+        chat: {
+          assistant: {
+            ...initialState,
+            currentChat: mockViewModel.currentChat
+          }
+        }
+      });
+
+      component.menuItems.subscribe(items => {
+        expect(items).toHaveLength(1);
+        expect(items[0].label).toBe('Chat löschen'); // Use the actual German translation
+        expect(items[0].icon).toBe('pi pi-trash');
+        expect(items[0].disabled).toBe(false);
+        expect(typeof items[0].command).toBe('function');
+        done();
+      });
+    });
+
+    it('should disable delete action when current chat id is "new"', (done) => {
+      const mockViewModel = {
+        chats: [],
+        currentChat: { id: 'new', topic: 'New Chat', type: ChatType.AiChat },
+        currentMessages: [],
+        chatTitleKey: 'CHAT.TITLE.AI'
+      };
+
+      store.setState({
+        chat: {
+          assistant: {
+            ...initialState,
+            currentChat: mockViewModel.currentChat
+          }
+        }
+      });
+
+      component.menuItems.subscribe(items => {
+        expect(items[0].disabled).toBe(true);
+        done();
+      });
+    });
+
+    it('should dispatch currentChatDeleted action when delete command is executed', () => {
+      jest.spyOn(store, 'dispatch');
+      
+      const mockViewModel = {
+        chats: [],
+        currentChat: { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat },
+        currentMessages: [],
+        chatTitleKey: 'CHAT.TITLE.AI'
+      };
+
+      store.setState({
+        chat: {
+          assistant: {
+            ...initialState,
+            currentChat: mockViewModel.currentChat
+          }
+        }
+      });
+
+      component.menuItems.subscribe(items => {
+        if (items[0].command) {
+          items[0].command({});
+        }
+        expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.currentChatDeleted());
+      });
+    });
+  });
+
+  describe('sendMessage', () => {
+    it('should dispatch messageSent action with correct message', () => {
+      jest.spyOn(store, 'dispatch');
+      const testMessage = 'Hello, this is a test message';
+      
+      component.sendMessage(testMessage);
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.messageSent({
+          message: testMessage
+        })
+      );
+    });
+
+    it('should handle empty message', () => {
+      jest.spyOn(store, 'dispatch');
+      
+      component.sendMessage('');
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.messageSent({
+          message: ''
+        })
+      );
+    });
+  });
+
+  describe('chatSelected', () => {
+    it('should dispatch chatSelected action with correct chat', () => {
+      jest.spyOn(store, 'dispatch');
+      const testChat = { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat };
+      
+      component.chatSelected(testChat);
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.chatSelected({
+          chat: testChat
+        })
+      );
+    });
+
+    it('should handle chat with different types', () => {
+      jest.spyOn(store, 'dispatch');
+      const humanChat = { id: 'chat2', topic: 'Human Chat', type: ChatType.HumanChat };
+      
+      component.chatSelected(humanChat);
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.chatSelected({
+          chat: humanChat
+        })
+      );
+    });
+  });
+
+  describe('ngOnChanges', () => {
+    it('should emit sidebarVisibleChange when sidebarVisible changes', () => {
+      jest.spyOn(component.sidebarVisibleChange, 'emit');
+      
+      const changes: SimpleChanges = {
+        sidebarVisible: {
+          currentValue: true,
+          previousValue: false,
+          firstChange: false,
+          isFirstChange: () => false
+        }
+      };
+      
+      component.ngOnChanges(changes);
+      
+      expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(true);
+    });
+
+    it('should not emit when sidebarVisible does not change', () => {
+      jest.spyOn(component.sidebarVisibleChange, 'emit');
+      
+      const changes: SimpleChanges = {
+        otherProperty: {
+          currentValue: 'new',
+          previousValue: 'old',
+          firstChange: false,
+          isFirstChange: () => false
+        }
+      };
+      
+      component.ngOnChanges(changes);
+      
+      expect(component.sidebarVisibleChange.emit).not.toHaveBeenCalled();
+    });
+
+    it('should emit with false when sidebar is closed', () => {
+      jest.spyOn(component.sidebarVisibleChange, 'emit');
+      
+      const changes: SimpleChanges = {
+        sidebarVisible: {
+          currentValue: false,
+          previousValue: true,
+          firstChange: false,
+          isFirstChange: () => false
+        }
+      };
+      
+      component.ngOnChanges(changes);
+      
+      expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
     });
   });
 });
