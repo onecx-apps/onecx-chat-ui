@@ -27,7 +27,7 @@ import {
   UserService,
 } from '@onecx/portal-integration-angular';
 import { ReplaySubject } from 'rxjs';
-import { chatAssistantFeature } from 'src/app/chat/chat.reducers';
+import { chatFeature } from 'src/app/chat/chat.reducers';
 import { ChatAssistantEffects } from 'src/app/chat/pages/chat-assistant/chat-assistant.effects';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import { environment } from 'src/environments/environment';
@@ -64,7 +64,7 @@ bootstrapRemoteComponent(
       BrowserAnimationsModule,
       StoreRouterConnectingModule.forRoot(),
       StoreModule.forRoot({}),
-      StoreModule.forFeature(chatAssistantFeature),
+      StoreModule.forFeature(chatFeature),
       StoreDevtoolsModule.instrument(),
       EffectsModule.forRoot([]),
       EffectsModule.forFeature([ChatAssistantEffects]),

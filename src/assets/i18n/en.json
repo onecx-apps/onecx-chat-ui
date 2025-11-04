@@ -35,7 +35,8 @@
       "DEFAULT": "Chat",
       "AI": "AI Companion",
       "DIRECT": "Direct Chat",
-      "GROUP": "Group Chat"
+      "GROUP": "Group Chat",
+      "NEW_GROUP": "New Group"
     },
     "TITLE_AI": "Chat Assistant",
     "MESSAGE_PLACEHOLDER": "Message...",

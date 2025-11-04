@@ -27,6 +27,8 @@ import { environment } from 'src/environments/environment';
 import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
 import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
 import { ChatInitialScreenComponent } from '../../shared/components/chat-initial-screen/chat-initial-screen.component';
+import { ChatNewGroupComponent } from '../chat-new-group/chat-new-group.component';
+import { NewDirectChatComponent } from '../new-direct-chat/new-direct-chat.component';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -48,6 +50,8 @@ import { ChatInitialScreenComponent } from '../../shared/components/chat-initial
     ChatSliderComponent,
     ChatHeaderComponent,
     ChatInitialScreenComponent,
+    ChatNewGroupComponent,
+    NewDirectChatComponent,
   ],
 })
 export class ChatAssistantComponent implements OnChanges {
@@ -73,7 +77,7 @@ export class ChatAssistantComponent implements OnChanges {
     private translateService: TranslateService,
   ) {
     this.viewModel$ = this.store.select(selectChatAssistantViewModel);
-    
+
     this.menuItems = combineLatest([
       this.viewModel$,
       this.translateService.get(['CHAT.ACTIONS.DELETE']),
@@ -147,25 +151,26 @@ export class ChatAssistantComponent implements OnChanges {
     }
 
     const clickedElement = event.target as HTMLElement;
-    
+
     // Check if clicked INSIDE sidebar - if so, do nothing
-    const isInsideSidebar = clickedElement.closest('.p-sidebar') || 
+    const isInsideSidebar = clickedElement.closest('.p-sidebar') ||
                            clickedElement.closest('[role="complementary"]') ||
                            clickedElement.closest('app-chat-slider') ||
                            clickedElement.closest('app-chat-initial-screen') ||
                            clickedElement.closest('app-chat-option-button') ||
-                           clickedElement.closest('app-chat-header');
-    
+                           clickedElement.closest('app-chat-header') ||
+                           clickedElement.closest('.pi-trash');
+
     if (isInsideSidebar) {
       return;
     }
-    
+
     // Check if clicked on chat TOGGLE button - if so, let the toggle manage the state
     const isChatToggleButton = clickedElement.closest('[aria-label*="Chat"]') || 
                                clickedElement.closest('.chat-toggle-button') ||
                                clickedElement.closest('.chat-button') ||
                                clickedElement.id === 'chat-toggle-button';
-    
+
     if (!isChatToggleButton) {
       this.closeSidebar();
     }

@@ -13,7 +13,10 @@
       @if (selectedChatMode === 'group') {
         <app-chat-new-group (back)="selectedChatMode = null"></app-chat-new-group>
       }
-      @if (selectedChatMode && selectedChatMode !== 'group') {
+      @if (selectedChatMode === 'direct') {
+        <app-new-direct-chat (back)="selectedChatMode = null"></app-new-direct-chat>
+      }
+      @if (selectedChatMode && selectedChatMode !== 'group' && selectedChatMode !== 'direct') {
         <div class="chat-interface" [@slideIn]>
           <app-chat-header
             [title]="vm.chatTitleKey | translate"

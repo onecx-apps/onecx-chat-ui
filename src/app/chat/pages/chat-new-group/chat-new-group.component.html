@@ -1,0 +1,20 @@
+<div class="chat-new-group-wrapper h-full flex flex-column bg-white">
+  <!-- Header (reused component) -->
+  <app-chat-header
+    [title]="'New Group Chat'"
+    [showBack]="true"
+    [showClose]="false"
+    (backClicked)="back.emit()"
+  ></app-chat-header>
+
+  <app-chat-new-content
+    [chatName$]="chatName$"
+    [recipientInput$]="recipientInput$"
+    [recipients$]="recipients$"
+    (chatNameChange)="onChatNameChange($event)"
+    (recipientInputChange)="onRecipientInputChange($event)"
+    (addRecipient)="onAddRecipient()"
+    (createGroup)="createGroup()"
+    (removeRecipient)="onRemoveRecipient($event)"
+  ></app-chat-new-content>
+</div>

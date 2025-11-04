@@ -1,0 +1,89 @@
+.group-text-primary {
+  color: #838383;
+}
+
+.group-text-secondary {
+  color: #000000;
+}
+
+.group-input-border {
+  border: 0.5px solid #838383;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  box-shadow: none;
+}
+
+.group-input-border:focus,
+.group-input-border:active {
+  border: 0.5px solid #838383;
+  box-shadow: none;
+  outline: none;
+}
+
+input[pInputText]:focus,
+input[pInputText]:active {
+  border: 0.5px solid #838383;
+  box-shadow: none;
+  outline: none;
+}
+
+.d-none {
+  display: none;
+}
+
+// .create-btn-bg {
+//   background: #14AE5C !important;
+// }
+
+// .create-btn-text {
+//   color: #FFFFFF !important;
+// }
+
+.create-btn {
+  background: #14AE5C !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  min-width: 10rem;
+  height: 3rem;
+  font-weight: 500;
+  font-size: 1.15rem;
+  padding: 0 2rem;
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  // Remove all hover/focus/active effects
+  &:hover,
+  &:focus,
+  &:active,
+  &:focus-visible,
+  &.p-button:hover,
+  &.p-button:focus,
+  &.p-button:active,
+  &.p-button:focus-visible {
+    background: #14AE5C !important;
+    color: #FFFFFF !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.trash-icon-color {
+  color: #B3261E;
+}
+
+@media (min-width: 768px) {
+  .d-md-block {
+    display: block;
+  }  
+}  
+
+
+

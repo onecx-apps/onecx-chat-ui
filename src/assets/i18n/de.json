@@ -35,7 +35,8 @@
       "DEFAULT": "Chat",
       "AI": "Chat Assistent",
       "DIRECT": "Direktchat",
-      "GROUP": "Gruppenchat"
+      "GROUP": "Gruppenchat",
+      "NEW_GROUP": "Neue Gruppe"
     },
     "MESSAGE_PLACEHOLDER": "Nachricht...",
     "NEW_CHAT": "Neuer Chat...",

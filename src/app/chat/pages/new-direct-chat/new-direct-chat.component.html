@@ -1,0 +1,21 @@
+<div class="new-direct-chat-wrapper h-full flex flex-column bg-white">
+  <!-- Header (reused component) -->
+  <app-chat-header
+    [title]="'New Direct Chat'"
+    [showBack]="true"
+    [showClose]="false"
+    (backClicked)="back.emit()"
+  ></app-chat-header>
+
+  <app-chat-new-content
+    [chatName$]="chatName$"
+    [recipientInput$]="recipientInput$"
+    [recipients$]="recipients$"
+    [hideAddButton]="true"
+    (chatNameChange)="onChatNameChange($event)"
+    (recipientInputChange)="onRecipientInputChange($event)"
+    (addRecipient)="onAddRecipient()"
+    (createGroup)="createDirectChat()"
+    (removeRecipient)="onRemoveRecipient($event)"
+  ></app-chat-new-content>
+</div>

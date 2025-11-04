@@ -1,0 +1,45 @@
+<div class="chat-new-content position-relative d-flex flex-column justify-content-between" style="height:94vh;min-height:0;box-sizing:border-box;padding:1rem;">
+  <div class="form-section">
+    <!-- Chat Name (desktop only) -->
+    <div class="mb-4">
+      <label class="block text-sm group-text-primary mb-2">Chat Name</label>
+      <input pInputText type="text" class="w-full group-text-secondary group-input-border" [value]="chatName$ | async" (input)="chatNameChange.emit($event)" />
+    </div>
+
+    <!-- Recipients -->
+    <div class="mb-2">
+      <label class="block text-sm group-text-primary mb-2">Recipients</label>
+      <div style="position:relative;">
+        <input pInputText type="text" class="w-full group-text-primary group-input-border"
+               [ngModel]="recipientInput$ | async"
+               (ngModelChange)="recipientInputChange.emit($event)"
+               placeholder="E-Mail or Name..."
+               (keydown.enter)="addRecipient.emit()"
+               [style.padding-right]="!hideAddButton ? '2.5rem' : '0.5rem'" />
+        @if (!hideAddButton) {
+          <button type="button"
+                  class="pi pi-plus cursor-pointer group-text-primary"
+                  (click)="addRecipient.emit()"
+                  [disabled]="!(recipientInput$ | async)?.trim()"
+                  style="background:transparent;border:none;position:absolute;top:50%;right:0.75rem;transform:translateY(-50%);font-size:1.3rem;">
+          </button>
+        }
+      </div>
+      <!-- List users from NGRX Store -->
+      @let recipients = recipients$ | async;
+      @if (recipients) {
+        @if (recipients.length) {
+          <div>
+            @for (recipient of recipients; track recipient; let i = $index) {
+              <div class="px-2 py-2 text-sm text-gray-800 w-full border-box" style="position:relative;" [ngClass]="{'border-bottom-1 border-gray-300': i < recipients.length - 1}">
+                <span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:2.5rem;">{{ recipient }}</span>
+                <i class="pi pi-trash cursor-pointer trash-icon-color" style="position:absolute; right:0.75rem; top:50%; transform:translateY(-50%);" (click)="removeRecipient.emit(i)"></i>
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+  <button pButton type="button" class="create-btn" (click)="createGroup.emit()">Create</button>
+</div>
