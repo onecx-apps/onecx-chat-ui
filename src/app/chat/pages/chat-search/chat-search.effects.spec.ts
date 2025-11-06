@@ -121,7 +121,6 @@ describe('ChatSearchEffects', () => {
     // Create effects instance manually
     effects = new ChatSearchEffects(actionsInstance, routeInstance, chatServiceInstance, routerInstance, storeInstance, messageServiceInstance, exportDataServiceInstance);
     
-    // Get other test instances
     store = TestBed.inject(MockStore);
     chatService = chatServiceSpy as unknown as jest.Mocked<ChatBffService>;
     router = routerSpy as unknown as jest.Mocked<Router>;
@@ -129,14 +128,12 @@ describe('ChatSearchEffects', () => {
     messageService = messageServiceSpy as unknown as jest.Mocked<PortalMessageService>;
     exportDataService = exportDataServiceSpy as unknown as jest.Mocked<ExportDataService>;
 
-    // Setup default store selectors with initial empty criteria
     store.overrideSelector(chatSearchSelectors.selectCriteria, {});
     store.overrideSelector(chatSearchSelectors.selectChartVisible, false);
     store.overrideSelector(selectChatSearchViewModel, mockViewModel);
   });
 
   afterEach(() => {
-    // Clear localStorage after each test
     localStorage.clear();
   });
 
@@ -171,7 +168,6 @@ describe('ChatSearchEffects', () => {
         shouldNavigate: false
       }
     ])('should handle $action correctly', (testCase, done) => {
-      // Setup store and route
       store.overrideSelector(chatSearchSelectors.selectCriteria, testCase.criteria);
       store.refreshState();
       
@@ -193,7 +189,6 @@ describe('ChatSearchEffects', () => {
           done();
         });
       } else {
-        // For no navigation case, use timeout to verify
         effects.syncParamsToUrl$.subscribe();
         setTimeout(() => {
           expect(router.navigate).not.toHaveBeenCalled();
