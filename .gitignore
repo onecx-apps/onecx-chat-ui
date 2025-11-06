@@ -4,6 +4,8 @@
 dist
 tmp
 /out-tsc
+/reports
+test-report.xml
 
 # dependencies
 node_modules
@@ -38,7 +40,6 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.nx/cache
-.nx/workspace-data
-
+.nx
+.github
 .angular
