@@ -49,9 +49,12 @@ describe('ChatAssistant Selectors', () => {
     });
 
     it('should have child selectors created from chatFeature', () => {
+      expect(fromSelectors.chatAssistantSelectors.selectUser).toBeDefined();
       expect(fromSelectors.chatAssistantSelectors.selectChats).toBeDefined();
       expect(fromSelectors.chatAssistantSelectors.selectCurrentChat).toBeDefined();
       expect(fromSelectors.chatAssistantSelectors.selectCurrentMessages).toBeDefined();
+      expect(fromSelectors.chatAssistantSelectors.selectTopic).toBeDefined();
+      expect(fromSelectors.chatAssistantSelectors.selectSelectedChatMode).toBeDefined();
     });
   });
 

@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Actions } from '@ngrx/effects';
-import { routerNavigatedAction } from '@ngrx/router-store';
+import { routerNavigatedAction, RouterNavigatedPayload } from '@ngrx/router-store';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of, throwError } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
   ChatsInternal,
@@ -29,7 +30,6 @@ describe('ChatAssistantEffects', () => {
   let store: MockStore;
   let chatInternalService: any;
   let remoteChatInternalService: any;
-  let router: any;
 
   const mockUser: ChatUser = {
     userId: '123',
@@ -117,7 +117,6 @@ describe('ChatAssistantEffects', () => {
     store = TestBed.inject(MockStore);
     chatInternalService = TestBed.inject(ChatsInternal);
     remoteChatInternalService = TestBed.inject(ChatInternalService);
-    router = TestBed.inject(Router);
 
     // Setup default behavior for remote service
     remoteChatInternalService.getService.mockReturnValue(null);
@@ -148,7 +147,7 @@ describe('ChatAssistantEffects', () => {
       const routerAction = routerNavigatedAction({
         payload: {
           routerState: { url: '/chat-assistant', root: {} as any },
-          event: {} as any
+          event: {} as RouterNavigatedPayload['event']
         }
       });
       
@@ -166,7 +165,7 @@ describe('ChatAssistantEffects', () => {
       const routerAction = routerNavigatedAction({
         payload: {
           routerState: { url: '/chat-assistant', root: {} as any },
-          event: {} as any
+          event: {} as RouterNavigatedPayload['event']
         }
       });
       
@@ -177,17 +176,6 @@ describe('ChatAssistantEffects', () => {
         expect(action.type).toBe('[ChatAssistant] navigated to chat assistant');
         done();
       });
-    });
-
-    it('should verify the switchMap returns the expected action structure', () => {
-      const expectedAction = ChatAssistantActions.navigatedToChatAssistant();
-      
-      expect(expectedAction.type).toBe('[ChatAssistant] navigated to chat assistant');
-      expect(effects.navigatedToChatAssistant).toBeDefined();
-      expect(typeof effects.navigatedToChatAssistant.subscribe).toBe('function');
-      
-      const switchMapResult = of(expectedAction);
-      expect(switchMapResult).toBeDefined();
     });
   });
 
@@ -217,6 +205,53 @@ describe('ChatAssistantEffects', () => {
       });
     });
 
+    it('should load chats when chatCreationSuccessful action is dispatched', (done) => {
+      const action = ChatAssistantActions.chatCreationSuccessful({ chat: mockChat });
+      actions$ = of(action);
+
+      effects.loadAvailableChats$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatsLoaded({ chats: mockChats }));
+        expect(chatInternalService.getChats).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('should load chats when messageSentForNewChat action is dispatched', (done) => {
+      const action = ChatAssistantActions.messageSentForNewChat({ 
+        chat: mockChat, 
+        message: 'Test message' 
+      });
+      actions$ = of(action);
+
+      effects.loadAvailableChats$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatsLoaded({ chats: mockChats }));
+        expect(chatInternalService.getChats).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('should load chats when chatDeletionSuccessful action is dispatched', (done) => {
+      const action = ChatAssistantActions.chatDeletionSuccessful({ chatId: 'chat1' });
+      actions$ = of(action);
+
+      effects.loadAvailableChats$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatsLoaded({ chats: mockChats }));
+        expect(chatInternalService.getChats).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('should load chats when chatDeletionFailed action is dispatched', (done) => {
+      const action = ChatAssistantActions.chatDeletionFailed({ error: 'Deletion failed' });
+      actions$ = of(action);
+
+      effects.loadAvailableChats$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatsLoaded({ chats: mockChats }));
+        expect(chatInternalService.getChats).toHaveBeenCalled();
+        done();
+      });
+    });
+
     it('should handle error when loading chats fails', (done) => {
       const error = 'Failed to load chats';
       chatInternalService.getChats.mockReturnValue(throwError(() => error));
@@ -232,6 +267,30 @@ describe('ChatAssistantEffects', () => {
 
     it('should handle empty chats response', (done) => {
       chatInternalService.getChats.mockReturnValue(of({ stream: undefined }));
+
+      const action = ChatAssistantActions.navigatedToChatAssistant();
+      actions$ = of(action);
+
+      effects.loadAvailableChats$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatsLoaded({ chats: [] }));
+        done();
+      });
+    });
+
+    it('should handle null stream in response', (done) => {
+      chatInternalService.getChats.mockReturnValue(of({ stream: null }));
+
+      const action = ChatAssistantActions.chatPanelOpened();
+      actions$ = of(action);
+
+      effects.loadAvailableChats$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatsLoaded({ chats: [] }));
+        done();
+      });
+    });
+
+    it('should handle response without stream property', (done) => {
+      chatInternalService.getChats.mockReturnValue(of({}));
 
       const action = ChatAssistantActions.navigatedToChatAssistant();
       actions$ = of(action);
@@ -260,8 +319,8 @@ describe('ChatAssistantEffects', () => {
       });
     });
 
-    it('should load messages when messageSendingSuccessfull action is dispatched', (done) => {
-      const action = ChatAssistantActions.messageSendingSuccessfull({ message: mockMessage });
+    it('should load messages when messageSendingSuccessful action is dispatched', (done) => {
+      const action = ChatAssistantActions.messageSendingSuccessful({ message: mockMessage });
       actions$ = of(action);
 
       effects.loadAvailableMessages$.subscribe(result => {
@@ -277,23 +336,10 @@ describe('ChatAssistantEffects', () => {
       const action = ChatAssistantActions.chatSelected({ chat: newChat });
       actions$ = of(action);
 
-      // Since the effect filters out 'new' chats, no result should be emitted
-      let resultReceived = false;
-      effects.loadAvailableMessages$.subscribe({
-        next: () => {
-          resultReceived = true;
-        },
-        complete: () => {
-          expect(resultReceived).toBeFalsy();
-          done();
-        }
+      effects.loadAvailableMessages$.pipe(take(1)).subscribe({
+        next: () => fail('Should not emit'),
+        complete: () => done()
       });
-
-      // Complete the observable manually for testing
-      setTimeout(() => {
-        expect(resultReceived).toBeFalsy();
-        done();
-      }, 100);
     });
 
     it('should handle error when loading messages fails', (done) => {
@@ -321,7 +367,7 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(action);
 
       effects.deleteChat$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessfull({ chatId: 'chat1' }));
+        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: 'chat1' }));
         expect(chatInternalService.deleteChat).toHaveBeenCalledWith('chat1');
         done();
       });
@@ -347,17 +393,10 @@ describe('ChatAssistantEffects', () => {
       const action = ChatAssistantActions.currentChatDeleted();
       actions$ = of(action);
 
-      let resultReceived = false;
-      effects.deleteChat$.subscribe({
-        next: () => {
-          resultReceived = true;
-        }
+      effects.deleteChat$.pipe(take(1)).subscribe({
+        next: () => fail('Should not emit'),
+        complete: () => done()
       });
-
-      setTimeout(() => {
-        expect(resultReceived).toBeFalsy();
-        done();
-      }, 100);
     });
   });
 
@@ -369,11 +408,14 @@ describe('ChatAssistantEffects', () => {
 
     it('should update chat topic when updateCurrentChatTopic action is dispatched', (done) => {
       const newTopic = 'Updated Topic';
+      const updatedChat = { ...mockChat, topic: newTopic };
+      chatInternalService.updateChat.mockReturnValue(of(updatedChat));
+      
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: newTopic });
       actions$ = of(action);
 
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessfull({ chatId: 'chat1' }));
+        expect(result).toEqual(ChatAssistantActions.chatCreationSuccessful({ chat: updatedChat }));
         expect(chatInternalService.updateChat).toHaveBeenCalledWith('chat1', { topic: newTopic });
         done();
       });
@@ -387,7 +429,7 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(action);
 
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionFailed({ error }));
+        expect(result).toEqual(ChatAssistantActions.chatCreationFailed({ error }));
         done();
       });
     });
@@ -405,7 +447,7 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(action);
 
       effects.createChat$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatCreationSuccessfull({ chat: mockChat }));
+        expect(result).toEqual(ChatAssistantActions.chatCreationSuccessful({ chat: mockChat }));
         expect(chatInternalService.createChat).toHaveBeenCalledWith({
           type: ChatType.AiChat,
           topic: 'test-topic',
@@ -441,17 +483,10 @@ describe('ChatAssistantEffects', () => {
       const action = ChatAssistantActions.chatCreated();
       actions$ = of(action);
 
-      let resultReceived = false;
-      effects.createChat$.subscribe({
-        next: () => {
-          resultReceived = true;
-        }
+      effects.createChat$.pipe(take(1)).subscribe({
+        next: () => fail('Should not emit'),
+        complete: () => done()
       });
-
-      setTimeout(() => {
-        expect(resultReceived).toBeFalsy();
-        done();
-      }, 100);
     });
   });
 
@@ -529,7 +564,7 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(action);
 
       effects.sendMessage$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.messageSendingSuccessfull({ message: mockMessage }));
+        expect(result).toEqual(ChatAssistantActions.messageSendingSuccessful({ message: mockMessage }));
         expect(chatInternalService.createChatMessage).toHaveBeenCalledWith('chat1', {
           type: MessageType.Human,
           text: 'Hello'
@@ -590,7 +625,7 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(action);
 
       effects.sendMessage$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.messageSendingSuccessfull({ message: mockMessage }));
+        expect(result).toEqual(ChatAssistantActions.messageSendingSuccessful({ message: mockMessage }));
         expect(chatInternalService.createChatMessage).toHaveBeenCalledWith('chat1', {
           type: MessageType.Human,
           text: 'Hello'

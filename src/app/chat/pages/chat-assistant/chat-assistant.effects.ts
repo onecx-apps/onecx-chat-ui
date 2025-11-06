@@ -5,7 +5,6 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
 import { filterForNavigatedTo } from '@onecx/ngrx-accelerator';
-import { PortalMessageService } from '@onecx/portal-integration-angular';
 import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
@@ -52,9 +51,9 @@ export class ChatAssistantEffects {
       ofType(
         ChatAssistantActions.navigatedToChatAssistant,
         ChatAssistantActions.chatPanelOpened,
-        ChatAssistantActions.chatCreationSuccessfull,
+        ChatAssistantActions.chatCreationSuccessful,
         ChatAssistantActions.messageSentForNewChat,
-        ChatAssistantActions.chatDeletionSuccessfull,
+        ChatAssistantActions.chatDeletionSuccessful,
         ChatAssistantActions.chatDeletionFailed,
       ),
       switchMap(() => {
@@ -80,7 +79,7 @@ export class ChatAssistantEffects {
     return this.actions$.pipe(
       ofType(
         ChatAssistantActions.chatSelected,
-        ChatAssistantActions.messageSendingSuccessfull,
+        ChatAssistantActions.messageSendingSuccessful,
       ),
       concatLatestFrom(() => [
         this.store.select(chatAssistantSelectors.selectCurrentChat),
@@ -115,7 +114,7 @@ export class ChatAssistantEffects {
       switchMap(([, chat]) => {
         return this.chatInternalService.deleteChat(chat?.id ?? '').pipe(
           map(() => {
-            return ChatAssistantActions.chatDeletionSuccessfull({
+            return ChatAssistantActions.chatDeletionSuccessful({
               chatId: chat?.id ?? '',
             });
           }),
@@ -144,14 +143,14 @@ export class ChatAssistantEffects {
             topic: action.topic,
           })
           .pipe(
-            map(() => {
-              return ChatAssistantActions.chatDeletionSuccessfull({
-                chatId: chat?.id ?? '',
+            map((updatedChat) => {
+              return ChatAssistantActions.chatCreationSuccessful({
+                chat: updatedChat,
               });
             }),
             catchError((error) =>
               of(
-                ChatAssistantActions.chatDeletionFailed({
+                ChatAssistantActions.chatCreationFailed({
                   error,
                 }),
               ),
@@ -172,7 +171,7 @@ export class ChatAssistantEffects {
       switchMap(([, user, topic]) => {
         return this.createChat(user as ChatUser, topic).pipe(
           map((chat) => {
-            return ChatAssistantActions.chatCreationSuccessfull({
+            return ChatAssistantActions.chatCreationSuccessful({
               chat,
             });
           }),
@@ -260,7 +259,7 @@ export class ChatAssistantEffects {
           })
           .pipe(
             map((message) =>
-              ChatAssistantActions.messageSendingSuccessfull({
+              ChatAssistantActions.messageSendingSuccessful({
                 message,
               }),
             ),

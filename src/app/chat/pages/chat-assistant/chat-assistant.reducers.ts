@@ -88,7 +88,7 @@ export const chatAssistantReducer = createReducer(
   ),
   on(
     ChatAssistantActions.chatSelected,
-    ChatAssistantActions.chatCreationSuccessfull,
+    ChatAssistantActions.chatCreationSuccessful,
     (state: ChatAssistantState, action) => {
       return {
         ...state,
@@ -98,7 +98,7 @@ export const chatAssistantReducer = createReducer(
     }
   ),
   on(
-    ChatAssistantActions.chatDeletionSuccessfull,
+    ChatAssistantActions.chatDeletionSuccessful,
     (state: ChatAssistantState, action) => {
       return {
         ...state,

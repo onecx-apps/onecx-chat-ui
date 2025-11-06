@@ -59,22 +59,73 @@ describe('ChatAssistantComponent', () => {
   });
 
   it('should set selectedChatMode and emit sidebarVisibleChange on close', () => {
+    jest.spyOn(store, 'dispatch');
     const spy = jest.spyOn(component.sidebarVisibleChange, 'emit');
+    
     component.selectChatMode('close');
+    
     expect(component._sidebarVisible).toBe(false);
     expect(component.selectedChatMode).toBeNull();
     expect(spy).toHaveBeenCalledWith(false);
+    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
   });
 
-  it('should set selectedChatMode to mode', () => {
+  it('should set selectedChatMode to mode and dispatch chatModeSelected', () => {
+    jest.spyOn(store, 'dispatch');
+    
     component.selectChatMode('ai');
+    
     expect(component.selectedChatMode).toBe('ai');
+    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeSelected({ mode: 'ai' }));
   });
 
-  it('should reset selectedChatMode on goBack', () => {
+  it('should handle different chat modes', () => {
+    jest.spyOn(store, 'dispatch');
+    
+    component.selectChatMode('direct');
+    
+    expect(component.selectedChatMode).toBe('direct');
+    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeSelected({ mode: 'direct' }));
+  });
+
+  it('should reset selectedChatMode and dispatch chatModeDeselected on goBack', () => {
+    jest.spyOn(store, 'dispatch');
     component.selectedChatMode = 'ai';
+    
     component.goBack();
+    
     expect(component.selectedChatMode).toBeNull();
+    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeDeselected());
+  });
+
+  describe('closeSidebar', () => {
+    it('should close sidebar, emit event, dispatch action and reset selectedChatMode', () => {
+      jest.spyOn(store, 'dispatch');
+      jest.spyOn(component.sidebarVisibleChange, 'emit');
+      component._sidebarVisible = true;
+      component.selectedChatMode = 'ai';
+      
+      component.closeSidebar();
+      
+      expect(component._sidebarVisible).toBe(false);
+      expect(component.selectedChatMode).toBeNull();
+      expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
+      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
+    });
+
+    it('should work when selectedChatMode is already null', () => {
+      jest.spyOn(store, 'dispatch');
+      jest.spyOn(component.sidebarVisibleChange, 'emit');
+      component._sidebarVisible = true;
+      component.selectedChatMode = null;
+      
+      component.closeSidebar();
+      
+      expect(component._sidebarVisible).toBe(false);
+      expect(component.selectedChatMode).toBeNull();
+      expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
+      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
+    });
   });
 
   describe('onDocumentClick', () => {
@@ -179,14 +230,6 @@ describe('ChatAssistantComponent', () => {
       component.sidebarVisible = false;
       
       expect(store.dispatch).not.toHaveBeenCalled();
-      expect(component._sidebarVisible).toBe(false);
-    });
-
-    it('should set _sidebarVisible regardless of value', () => {
-      component.sidebarVisible = true;
-      expect(component._sidebarVisible).toBe(true);
-      
-      component.sidebarVisible = false;
       expect(component._sidebarVisible).toBe(false);
     });
   });

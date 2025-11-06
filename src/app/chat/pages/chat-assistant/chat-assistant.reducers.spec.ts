@@ -30,13 +30,6 @@ describe('ChatAssistant Reducer', () => {
     }
   ];
 
-  const mockMessage = {
-    id: 'msg3',
-    text: 'New message',
-    type: MessageType.Human,
-    creationDate: '2023-01-01T10:02:00Z'
-  };
-
   describe('initial state', () => {
     it('should have correct initial state', () => {
       expect(initialState).toEqual({
@@ -221,7 +214,7 @@ describe('ChatAssistant Reducer', () => {
     });
   });
 
-  describe('chatSelected and chatCreationSuccessfull actions', () => {
+  describe('chatSelected and chatCreationSuccessful actions', () => {
     it('should set currentChat and clear messages when chatSelected is dispatched', () => {
       const stateWithMessages: ChatAssistantState = {
         ...initialState,
@@ -241,13 +234,13 @@ describe('ChatAssistant Reducer', () => {
       });
     });
 
-    it('should set currentChat and clear messages when chatCreationSuccessfull is dispatched', () => {
+    it('should set currentChat and clear messages when chatCreationSuccessful is dispatched', () => {
       const stateWithMessages: ChatAssistantState = {
         ...initialState,
         currentMessages: mockMessages
       };
 
-      const action = ChatAssistantActions.chatCreationSuccessfull({
+      const action = ChatAssistantActions.chatCreationSuccessful({
         chat: mockChat
       });
 
@@ -261,8 +254,8 @@ describe('ChatAssistant Reducer', () => {
     });
   });
 
-  describe('chatDeletionSuccessfull action', () => {
-    it('should remove chat from chats array and clear current chat when chatDeletionSuccessfull is dispatched', () => {
+  describe('chatDeletionSuccessful action', () => {
+    it('should remove chat from chats array and clear current chat when chatDeletionSuccessful is dispatched', () => {
       const stateWithChats: ChatAssistantState = {
         ...initialState,
         chats: mockChats,
@@ -270,7 +263,7 @@ describe('ChatAssistant Reducer', () => {
         currentMessages: mockMessages
       };
 
-      const action = ChatAssistantActions.chatDeletionSuccessfull({
+      const action = ChatAssistantActions.chatDeletionSuccessful({
         chatId: 'chat1'
       });
 
@@ -291,7 +284,7 @@ describe('ChatAssistant Reducer', () => {
         currentMessages: mockMessages
       };
 
-      const action = ChatAssistantActions.chatDeletionSuccessfull({
+      const action = ChatAssistantActions.chatDeletionSuccessful({
         chatId: 'non-existent-chat'
       });
 
