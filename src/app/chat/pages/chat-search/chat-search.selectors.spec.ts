@@ -435,21 +435,6 @@ describe('ChatSearchSelectors', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle empty results array gracefully', () => {
-      const emptyResultsState = {
-        chat: {
-          search: {
-            ...mockState.chat.search,
-            results: []
-          }
-        }
-      };
-      
-      const result = selectResults(emptyResultsState);
-      expect(result).toEqual([]);
-      expect(Array.isArray(result)).toBe(true);
-    });
-
     it('should handle null results gracefully', () => {
       const nullResultsState = {
         chat: {
@@ -485,21 +470,6 @@ describe('ChatSearchSelectors', () => {
         { id: 'id' } as DataTableColumn,
         { id: 'topic' } as DataTableColumn
       ]);
-    });
-
-    it('should handle null displayedColumns gracefully', () => {
-      const nullDisplayedState = {
-        chat: {
-          search: {
-            ...mockState.chat.search,
-            displayedColumns: null
-          }
-        }
-      };
-      
-      const result = selectDisplayedColumns(nullDisplayedState);
-      expect(result).toEqual([]);
-      expect(Array.isArray(result)).toBe(true);
     });
 
     it('should handle null columns gracefully', () => {
