@@ -29,4 +29,15 @@ export default {
   coveragePathIgnorePatterns: ['src/app/shared/generated'],
   coverageReporters: ['clover', 'json', 'lcov', 'text', 'text-summary', 'html'],
   testResultsProcessor: 'jest-sonar-reporter',
+  reporters: [
+    'default',
+    [
+      'jest-sonar',
+      {
+        outputDirectory: 'reports',
+        outputName: 'sonarqube_report.xml',
+        reportedFilePath: 'absolute',
+      },
+    ],
+  ],
 };
