@@ -9,8 +9,7 @@
     <div class="onecx-companion-container">
       @if (!selectedChatMode) {
         <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
-      }
-      @if (selectedChatMode) {
+      } @else {
         <div class="chat-interface" [@slideIn]>
           <app-chat-header
             [title]="vm.chatTitleKey | translate"

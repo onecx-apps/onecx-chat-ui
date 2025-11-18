@@ -9,7 +9,6 @@ import {
   HostListener,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LetDirective } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MenuItem, SharedModule } from 'primeng/api';
@@ -37,7 +36,6 @@ import { ChatInitialScreenComponent } from '../../shared/components/chat-initial
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    LetDirective,
     CalendarModule,
     SidebarModule,
     TranslateModule,
@@ -78,12 +76,12 @@ export class ChatAssistantComponent implements OnChanges {
       this.viewModel$,
       this.translateService.get(['CHAT.ACTIONS.DELETE']),
     ]).pipe(
-      map(([vm, t]) => {
+      map(([viewModel, translations]) => {
         return [
           {
-            label: t['CHAT.ACTIONS.DELETE'],
+            label: translations['CHAT.ACTIONS.DELETE'],
             icon: 'pi pi-trash',
-            disabled: vm.currentChat?.id === 'new',
+            disabled: viewModel.currentChat?.id === 'new',
             command: () => {
               this.store.dispatch(ChatAssistantActions.currentChatDeleted());
             },
