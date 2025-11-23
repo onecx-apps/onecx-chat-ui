@@ -121,6 +121,20 @@ describe('ChatSearchSelectors', () => {
       ]);
     });
 
+    it('should handle item as undefined in results array', () => {
+  const state = {
+    chat: {
+      search: {
+        ...mockState.chat.search,
+        results: [undefined]
+      }
+    }
+  };
+  const result = selectResults(state);
+  expect(result[0].id).toBe('');
+  expect(result[0].imagePath).toBe('');
+});
+
     it('should handle empty results array', () => {
       const emptyState = {
         chat: {
@@ -150,6 +164,7 @@ describe('ChatSearchSelectors', () => {
       
       const result = selectResults(stateWithUndefinedId);
       expect(result[0].id).toBe('');
+      expect(result[0].imagePath).toBe('');
     });
 
     it('should preserve all original properties', () => {
@@ -211,6 +226,7 @@ describe('ChatSearchSelectors', () => {
         chat: {
           search: {
             ...mockState.chat.search,
+            columns: mockColumns,
             displayedColumns: []
           }
         }
@@ -260,6 +276,7 @@ describe('ChatSearchSelectors', () => {
         chat: {
           search: {
             ...mockState.chat.search,
+            columns: mockColumns,
             displayedColumns: ['id', 'topic', 'id', 'type']
           }
         }
@@ -488,4 +505,19 @@ describe('ChatSearchSelectors', () => {
       expect(Array.isArray(result)).toBe(true);
     });
   });
+
+  it('should handle columns array with undefined element', () => {
+  const state = {
+    chat: {
+      search: {
+        ...mockState.chat.search,
+        columns: [undefined, { id: 'id' }, { id: 'topic' }],
+        displayedColumns: ['id', 'topic', 'missing']
+      }
+    }
+  };
+  const result = selectDisplayedColumns(state);
+  expect(result).toEqual([{ id: 'id' }, { id: 'topic' }]);
+});
+
 });

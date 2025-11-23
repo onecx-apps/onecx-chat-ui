@@ -1,12 +1,11 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { ChatHeaderComponent } from '../chat-header/chat-header.component';
 import { ChatOptionButtonComponent } from '../chat-option-button/chat-option-button.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardModule } from 'primeng/card';
 import { AppStateService } from '@onecx/portal-integration-angular';
-import { Location } from '@angular/common';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -20,7 +19,7 @@ export class ChatInitialScreenComponent {
   @Output() selectMode = new EventEmitter<string>();
   logoUrl = '';
 
-  constructor(private appState: AppStateService) {
+  constructor(private readonly appState: AppStateService) {
     this.appState.currentMfe$
       .pipe(
         map((mfe) => {

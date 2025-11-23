@@ -38,7 +38,7 @@ export const selectDisplayedColumns = createSelector(
     return (
       displayedColumns
         .map((d) => columns.find((c) => c?.id === d))
-        .filter((d) => d) as DataTableColumn[]
+        .filter(Boolean) as DataTableColumn[]
     ) ?? [];
   }
 );
