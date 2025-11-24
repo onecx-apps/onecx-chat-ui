@@ -50,6 +50,7 @@
     "@onecx/portal-layout-styles": "^5.32.0",
     "@webcomponents/webcomponentsjs": "^2.8.0",
     "keycloak-angular": "^16.0.1",
+    "koa": "^3.1.1",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.9",

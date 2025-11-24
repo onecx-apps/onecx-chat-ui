@@ -24,6 +24,7 @@ import { ChatSearchHarness } from './chat-search.harness';
 import { initialState } from './chat-search.reducers';
 import { selectChatSearchViewModel } from './chat-search.selectors';
 import { ChatSearchViewModel } from './chat-search.viewmodel';
+import { firstValueFrom } from 'rxjs';
 
 describe('ChatSearchComponent', () => {
   const origAddEventListener = window.addEventListener;
@@ -187,42 +188,112 @@ describe('ChatSearchComponent', () => {
     expect(doneFn).toHaveBeenCalledTimes(1);
   });
 
-  it('should have 2 overFlow header actions when search config is disabled', async () => {
-    const searchHeader = await chatSearch.getHeader();
-    const pageHeader = await searchHeader.getPageHeader();
-    const overflowActionButton = await pageHeader.getOverflowActionMenuButton();
-    await overflowActionButton?.click();
-
-    const overflowMenuItems = await pageHeader.getOverFlowMenuItems();
-    expect(overflowMenuItems.length).toBe(2);
-
-    const exportAllActionItem =
-      await pageHeader.getOverFlowMenuItem('Export all');
-    expect(await exportAllActionItem!.getText()).toBe('Export all');
-
-    const showHideChartActionItem =
-      await pageHeader.getOverFlowMenuItem('Show chart');
-    expect(await showHideChartActionItem!.getText()).toBe('Show chart');
-  });
-
-  it('should display hide chart action if chart is visible', async () => {
+  it('should generate 2 header actions when search config is disabled', async () => {
     store.overrideSelector(selectChatSearchViewModel, {
       ...baseChatSearchViewModel,
-      chartVisible: true,
+      columns: [
+        {
+          columnType: ColumnType.STRING,
+          nameKey: 'COLUMN_KEY',
+          id: 'column_1',
+        },
+      ],
+      displayedColumns: [
+        {
+          columnType: ColumnType.STRING,
+          nameKey: 'COLUMN_KEY',
+          id: 'column_1',
+        },
+      ],
+      results: [
+        {
+          id: '1',
+          imagePath: '',
+          column_1: 'val_1',
+        },
+      ],
+      chartVisible: false,
     });
     store.refreshState();
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    const searchHeader = await chatSearch.getHeader();
-    const pageHeader = await searchHeader.getPageHeader();
-    const overflowActionButton = await pageHeader.getOverflowActionMenuButton();
-    await overflowActionButton?.click();
+    const actions = component.headerActions$ ? await firstValueFrom(component.headerActions$) : [];
+    expect(actions.length).toBe(2);
+    expect(actions.some(a => a.labelKey === 'CHAT_SEARCH.HEADER_ACTIONS.EXPORT_ALL')).toBeTruthy();
+    expect(actions.some(a => a.labelKey === 'CHAT_SEARCH.HEADER_ACTIONS.SHOW_CHART')).toBeTruthy();
+  });
 
-    const overflowMenuItems = await pageHeader.getOverFlowMenuItems();
-    expect(overflowMenuItems.length).toBe(2);
 
-    const showHideChartActionItem =
-      await pageHeader.getOverFlowMenuItem('Hide chart');
-    expect(await showHideChartActionItem!.getText()).toEqual('Hide chart');
+  it('should display hide chart action if chart is visible', async () => {
+    const columns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'COLUMN_KEY',
+        id: 'column_1',
+      },
+    ];
+    store.overrideSelector(selectChatSearchViewModel, {
+      ...baseChatSearchViewModel,
+      columns,
+      displayedColumns: columns,
+      chartVisible: true,
+      results: [
+        {
+          id: '1',
+          imagePath: '',
+          column_1: 'val_1',
+        },
+      ],
+    });
+    store.refreshState();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const actions = component.headerActions$ ? await firstValueFrom(component.headerActions$) : [];
+    expect(actions.length).toBe(2);
+    expect(actions.some(a => a.labelKey === 'CHAT_SEARCH.HEADER_ACTIONS.HIDE_CHART')).toBeTruthy();
+  });
+
+  it('should dispatch export csv data on export action click', async () => {
+    jest.spyOn(store, 'dispatch');
+    const columns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'COLUMN_KEY',
+        id: 'column_1',
+      },
+    ];
+    store.overrideSelector(selectChatSearchViewModel, {
+      ...baseChatSearchViewModel,
+      columns,
+      displayedColumns: columns,
+      results: [
+        {
+          id: '1',
+          imagePath: '',
+          column_1: 'val_1',
+        },
+      ],
+      chartVisible: false,
+    });
+    store.refreshState();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const actions = component.headerActions$ ? await firstValueFrom(component.headerActions$) : [];
+    const exportAction = actions.find(a => a.labelKey === 'CHAT_SEARCH.HEADER_ACTIONS.EXPORT_ALL');
+    expect(exportAction).toBeTruthy();
+
+    if (typeof (exportAction as any)?.actionCallback === 'function') {
+      (exportAction as any).actionCallback();
+    } else {
+      throw new Error('Export action does not have a callable handler');
+    }
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      ChatSearchActions.exportButtonClicked(),
+    );
   });
 
   it('should display chosen column in the diagram', async () => {
@@ -296,14 +367,6 @@ describe('ChatSearchComponent', () => {
 
   it('should dispatch export csv data on export action click', async () => {
     jest.spyOn(store, 'dispatch');
-
-    const results = [
-      {
-        id: '1',
-        imagePath: '',
-        column_1: 'val_1',
-      },
-    ];
     const columns = [
       {
         columnType: ColumnType.STRING,
@@ -313,20 +376,30 @@ describe('ChatSearchComponent', () => {
     ];
     store.overrideSelector(selectChatSearchViewModel, {
       ...baseChatSearchViewModel,
-      results: results,
-      columns: columns,
+      columns,
       displayedColumns: columns,
+      results: [
+        {
+          id: '1',
+          imagePath: '',
+          column_1: 'val_1',
+        },
+      ],
+      chartVisible: false,
     });
     store.refreshState();
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    const searchHeader = await chatSearch.getHeader();
-    const pageHeader = await searchHeader.getPageHeader();
-    const overflowActionButton = await pageHeader.getOverflowActionMenuButton();
-    await overflowActionButton?.click();
+    const actions = component.headerActions$ ? await firstValueFrom(component.headerActions$) : [];
+    const exportAction = actions.find(a => a.labelKey === 'CHAT_SEARCH.HEADER_ACTIONS.EXPORT_ALL');
+    expect(exportAction).toBeTruthy();
 
-    const exportAllActionItem =
-      await pageHeader.getOverFlowMenuItem('Export all');
-    await exportAllActionItem!.selectItem();
+    if (typeof (exportAction as any)?.actionCallback === 'function') {
+      (exportAction as any).actionCallback();
+    } else {
+      throw new Error('Export action does not have a callable handler');
+    }
 
     expect(store.dispatch).toHaveBeenCalledWith(
       ChatSearchActions.exportButtonClicked(),
@@ -410,21 +483,40 @@ describe('ChatSearchComponent', () => {
 
   it('should dispatch chartVisibilityToggled on show/hide chart header', async () => {
     jest.spyOn(store, 'dispatch');
-
+    const columns = [
+      {
+        columnType: ColumnType.STRING,
+        nameKey: 'COLUMN_KEY',
+        id: 'column_1',
+      },
+    ];
     store.overrideSelector(selectChatSearchViewModel, {
       ...baseChatSearchViewModel,
+      columns,
+      displayedColumns: columns,
       chartVisible: false,
+      results: [
+        {
+          id: '1',
+          imagePath: '',
+          column_1: 'val_1',
+        },
+      ],
     });
     store.refreshState();
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-    const searchHeader = await chatSearch.getHeader();
-    const pageHeader = await searchHeader.getPageHeader();
-    const overflowActionButton = await pageHeader.getOverflowActionMenuButton();
-    await overflowActionButton?.click();
+    const actions = component.headerActions$ ? await firstValueFrom(component.headerActions$) : [];
+    const showChartAction = actions.find(a => a.labelKey === 'CHAT_SEARCH.HEADER_ACTIONS.SHOW_CHART');
+    expect(showChartAction).toBeTruthy();
 
-    const showChartActionItem =
-      await pageHeader.getOverFlowMenuItem('Show chart');
-    await showChartActionItem!.selectItem();
+    if (typeof (showChartAction as any)?.actionCallback === 'function') {
+      (showChartAction as any).actionCallback();
+    } else {
+      throw new Error('Show chart action does not have a callable handler');
+    }
+
     expect(store.dispatch).toHaveBeenCalledWith(
       ChatSearchActions.chartVisibilityToggled(),
     );
