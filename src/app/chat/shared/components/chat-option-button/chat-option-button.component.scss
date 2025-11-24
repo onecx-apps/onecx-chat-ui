@@ -14,18 +14,18 @@
 }
 
 :host ::ng-deep .p-button.w-100.ai-companion {
-  background: #3680C0 !important;
-  color: #FFFFFF !important;
+  background: var(--chat-ai-companion-bg) !important;
+  color: var(--chat-button-text-color) !important;
 }
 
 :host ::ng-deep .p-button.w-100.direct-chat {
-  background: #F49F43 !important;
-  color: #FFFFFF !important;
+  background: var(--chat-direct-chat-bg) !important;
+  color: var(--chat-button-text-color) !important;
 }
 
 :host ::ng-deep .p-button.w-100.group-chat {
-  background: #ED6A54 !important;
-  color: #FFFFFF !important;
+  background: var(--chat-group-chat-bg) !important;
+  color: var(--chat-button-text-color) !important;
 }
 
 :host ::ng-deep .p-button .arrow-icon {

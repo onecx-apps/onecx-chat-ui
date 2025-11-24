@@ -83,4 +83,5 @@ bootstrapRemoteComponent(
     },
     ChatInternalService,
   ],
+  {usePortalLayoutStyles: false}
 );
