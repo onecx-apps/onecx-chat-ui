@@ -9,7 +9,11 @@
     <div class="onecx-companion-container">
       @if (!selectedChatMode) {
         <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
-      } @else {
+      }
+      @if (selectedChatMode === 'direct') {
+        <app-new-direct-chat (back)="selectedChatMode = null"></app-new-direct-chat>
+      }
+      @if (selectedChatMode && selectedChatMode !== 'direct') {
         <div class="chat-interface" [@slideIn]>
           <app-chat-header
             [title]="vm.chatTitleKey | translate"

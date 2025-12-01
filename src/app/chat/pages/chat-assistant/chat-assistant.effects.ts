@@ -5,6 +5,7 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
 import { filterForNavigatedTo } from '@onecx/ngrx-accelerator';
+import { PortalMessageService } from '@onecx/portal-integration-angular';
 import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
@@ -28,6 +29,7 @@ export class ChatAssistantEffects {
     private _chatInternalService: ChatsInternal,
     private router: Router,
     private store: Store,
+    private messageService: PortalMessageService,
   ) {}
 
   get chatInternalService() {
@@ -143,14 +145,14 @@ export class ChatAssistantEffects {
             topic: action.topic,
           })
           .pipe(
-            map((updatedChat) => {
-              return ChatAssistantActions.chatCreationSuccessful({
-                chat: updatedChat,
+            map(() => {
+              return ChatAssistantActions.chatDeletionSuccessful({
+                chatId: chat?.id ?? '',
               });
             }),
             catchError((error) =>
               of(
-                ChatAssistantActions.chatCreationFailed({
+                ChatAssistantActions.chatDeletionFailed({
                   error,
                 }),
               ),

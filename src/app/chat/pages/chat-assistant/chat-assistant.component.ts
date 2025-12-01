@@ -9,6 +9,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LetDirective } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MenuItem, SharedModule } from 'primeng/api';
@@ -26,6 +27,7 @@ import { environment } from 'src/environments/environment';
 import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
 import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
 import { ChatInitialScreenComponent } from '../../shared/components/chat-initial-screen/chat-initial-screen.component';
+import { NewDirectChatComponent } from '../new-direct-chat/new-direct-chat.component';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -36,6 +38,7 @@ import { ChatInitialScreenComponent } from '../../shared/components/chat-initial
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    LetDirective,
     CalendarModule,
     SidebarModule,
     TranslateModule,
@@ -46,6 +49,7 @@ import { ChatInitialScreenComponent } from '../../shared/components/chat-initial
     ChatSliderComponent,
     ChatHeaderComponent,
     ChatInitialScreenComponent,
+    NewDirectChatComponent,
   ],
 })
 export class ChatAssistantComponent implements OnChanges {
@@ -71,17 +75,17 @@ export class ChatAssistantComponent implements OnChanges {
     private translateService: TranslateService,
   ) {
     this.viewModel$ = this.store.select(selectChatAssistantViewModel);
-    
+
     this.menuItems = combineLatest([
       this.viewModel$,
       this.translateService.get(['CHAT.ACTIONS.DELETE']),
     ]).pipe(
-      map(([viewModel, translations]) => {
+      map(([vm, t]) => {
         return [
           {
-            label: translations['CHAT.ACTIONS.DELETE'],
+            label: t['CHAT.ACTIONS.DELETE'],
             icon: 'pi pi-trash',
-            disabled: viewModel.currentChat?.id === 'new',
+            disabled: vm.currentChat?.id === 'new',
             command: () => {
               this.store.dispatch(ChatAssistantActions.currentChatDeleted());
             },
@@ -109,7 +113,7 @@ export class ChatAssistantComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['sidebarVisible']) {
-      this.sidebarVisibleChange.emit(changes['sidebarVisible'].currentValue);
+      this.sidebarVisibleChange.emit(this.sidebarVisible);
     }
   }
 
@@ -145,25 +149,25 @@ export class ChatAssistantComponent implements OnChanges {
     }
 
     const clickedElement = event.target as HTMLElement;
-    
+
     // Check if clicked INSIDE sidebar - if so, do nothing
-    const isInsideSidebar = clickedElement.closest('.p-sidebar') || 
+    const isInsideSidebar = clickedElement.closest('.p-sidebar') ||
                            clickedElement.closest('[role="complementary"]') ||
                            clickedElement.closest('app-chat-slider') ||
                            clickedElement.closest('app-chat-initial-screen') ||
                            clickedElement.closest('app-chat-option-button') ||
                            clickedElement.closest('app-chat-header');
-    
+
     if (isInsideSidebar) {
       return;
     }
-    
+
     // Check if clicked on chat TOGGLE button - if so, let the toggle manage the state
     const isChatToggleButton = clickedElement.closest('[aria-label*="Chat"]') || 
                                clickedElement.closest('.chat-toggle-button') ||
                                clickedElement.closest('.chat-button') ||
                                clickedElement.id === 'chat-toggle-button';
-    
+                               
     if (!isChatToggleButton) {
       this.closeSidebar();
     }

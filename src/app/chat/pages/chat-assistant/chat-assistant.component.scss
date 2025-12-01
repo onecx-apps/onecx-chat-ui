@@ -1,12 +1,29 @@
 :host ::ng-deep {
-  .chat-button {
+  .chat-button.p-button.p-button-text,
+  .chat-button.p-button.p-button-rounded.p-button-text {
     color: var(--topbar-item-text-color) !important;
+    background: transparent !important;
+    border: none !important;
 
-    &:hover,
-    &:focus {
+    &:enabled:hover,
+    &:enabled:focus,
+    &:not(:disabled):hover,
+    &:not(:disabled):focus {
       color: var(--topbar-item-text-hover-color) !important;
-      background-color: var(--topbar-item-text-hover-bg-color) !important;
+      background: var(--menuitem-hover-bg, rgba(0, 0, 0, .04)) !important;
+      border: none !important;
       transition: background-color var(--transition-duration);
+    }
+
+    &:enabled:active,
+    &:not(:disabled):active {
+      background: var(--plain-button-active-bg-color, rgba(0, 0, 0, .16)) !important;
+      border: none !important;
+    }
+
+    .p-button-icon {
+      background: transparent !important;
+      border: none !important;
     }
   }
 }

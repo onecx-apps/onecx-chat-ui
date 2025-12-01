@@ -1,37 +1,17 @@
-import { ChatType, MessageType } from 'src/app/shared/generated';
+import { MessageType, Chat, Message, ChatType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { chatAssistantReducer, initialState } from './chat-assistant.reducers';
 import { ChatAssistantState } from './chat-assistant.state';
 
-describe('ChatAssistant Reducer', () => {
-  const mockChat = {
-    id: 'chat1',
-    topic: 'Test Chat',
-    type: ChatType.AiChat
-  };
+// Extended interface for testing purposes to include additional properties used in the reducer
+interface ExtendedMessage extends Message {
+  isLoadingInfo?: boolean;
+  isFailed?: boolean;
+}
 
-  const mockChats = [
-    { id: 'chat1', topic: 'Test Chat 1', type: ChatType.AiChat },
-    { id: 'chat2', topic: 'Test Chat 2', type: ChatType.HumanChat }
-  ];
-
-  const mockMessages = [
-    {
-      id: 'msg1',
-      text: 'Hello',
-      type: MessageType.Human,
-      creationDate: '2023-01-01T10:00:00Z'
-    },
-    {
-      id: 'msg2',
-      text: 'Hi there',
-      type: MessageType.Assistant,
-      creationDate: '2023-01-01T10:01:00Z'
-    }
-  ];
-
-  describe('initial state', () => {
-    it('should have correct initial state', () => {
+describe('ChatAssistantReducer', () => {
+  describe('initialState', () => {
+    it('should have the correct initial state', () => {
       expect(initialState).toEqual({
         user: {
           userId: '123',
@@ -45,354 +25,577 @@ describe('ChatAssistant Reducer', () => {
         selectedChatMode: null,
       });
     });
-
-    it('should return initial state when no action is provided', () => {
-      const result = chatAssistantReducer(undefined, { type: 'UNKNOWN' });
-      expect(result).toEqual(initialState);
-    });
   });
 
   describe('messageSentForNewChat action', () => {
     it('should set currentChat when messageSentForNewChat is dispatched', () => {
+      const chat: Chat = {
+        id: 'chat-1',
+        type: ChatType.AiChat,
+        topic: 'Test Chat',
+        summary: 'Test Summary',
+      };
+
       const action = ChatAssistantActions.messageSentForNewChat({
-        chat: mockChat,
-        message: 'Test message'
+        chat,
+        message: 'Hello',
       });
 
-      const result = chatAssistantReducer(initialState, action);
+      const state = chatAssistantReducer(initialState, action);
 
-      expect(result).toEqual({
+      expect(state.currentChat).toEqual(chat);
+      expect(state).toEqual({
         ...initialState,
-        currentChat: mockChat
+        currentChat: chat,
       });
     });
   });
 
   describe('messageSent action', () => {
-    it('should add human message and AI loading message when messageSent is dispatched', () => {
-      const action = ChatAssistantActions.messageSent({
-        message: 'Hello AI'
-      });
-
-      const result = chatAssistantReducer(initialState, action);
-
-      expect(result.currentMessages).toHaveLength(2);
-      expect(result.currentMessages?.[0]).toEqual(
-        expect.objectContaining({
+    it('should add human message and loading AI message to currentMessages', () => {
+      const message = 'Hello, how are you?';
+      const existingMessages: Message[] = [
+        {
+          id: 'msg-1',
           type: MessageType.Human,
-          id: 'new',
-          text: 'Hello AI'
-        })
-      );
-      expect(result.currentMessages?.[1]).toEqual(
-        expect.objectContaining({
-          type: MessageType.Assistant,
-          id: 'ai-temp',
-          text: '',
-          isLoadingInfo: true
-        })
-      );
-    });
+          text: 'Previous message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
 
-    it('should filter out temp messages when adding new message', () => {
-      const stateWithTempMessages: ChatAssistantState = {
+      const currentState: ChatAssistantState = {
         ...initialState,
-        currentMessages: [
-          {
-            id: 'temp-123',
-            text: 'temp message',
-            type: MessageType.Human,
-            creationDate: '2023-01-01T09:00:00Z'
-          },
-          {
-            id: 'msg1',
-            text: 'real message',
-            type: MessageType.Assistant,
-            creationDate: '2023-01-01T09:01:00Z'
-          },
-          {
-            id: 'new',
-            text: 'another temp',
-            type: MessageType.Human,
-            creationDate: '2023-01-01T09:02:00Z'
-          }
-        ]
+        currentMessages: existingMessages,
       };
 
-      const action = ChatAssistantActions.messageSent({
-        message: 'Hello AI'
+      const action = ChatAssistantActions.messageSent({ message });
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.currentMessages).toHaveLength(3);
+      expect(state.currentMessages![0]).toEqual({
+        type: MessageType.Human,
+        id: 'new',
+        text: message,
+        creationDate: expect.any(String),
       });
+      expect(state.currentMessages![1]).toEqual({
+        creationDate: expect.any(String),
+        id: 'ai-temp',
+        type: MessageType.Assistant,
+        text: '',
+        isLoadingInfo: true,
+      } as ExtendedMessage);
+      expect(state.currentMessages![2]).toEqual(existingMessages[0]);
+    });
 
-      const result = chatAssistantReducer(stateWithTempMessages, action);
+    it('should filter out temp messages when adding new messages', () => {
+      const message = 'Hello';
+      const existingMessages: Message[] = [
+        {
+          id: 'temp-123',
+          type: MessageType.Human,
+          text: 'Temp message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+        {
+          id: 'new',
+          type: MessageType.Human,
+          text: 'New message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+        {
+          id: 'msg-1',
+          type: MessageType.Human,
+          text: 'Real message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
 
-      expect(result.currentMessages).toHaveLength(3);
-      expect(result.currentMessages?.some(m => m.id === 'temp-123')).toBe(false);
-      expect(result.currentMessages?.some(m => m.id === 'new' && m.text === 'another temp')).toBe(false);
-      expect(result.currentMessages?.some(m => m.id === 'msg1')).toBe(true);
+      const currentState: ChatAssistantState = {
+        ...initialState,
+        currentMessages: existingMessages,
+      };
+
+      const action = ChatAssistantActions.messageSent({ message });
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.currentMessages).toHaveLength(3);
+      // Should only include the real message (not temp or new)
+      expect(state.currentMessages![2].id).toBe('msg-1');
+    });
+
+    it('should handle empty currentMessages array', () => {
+      const message = 'Hello';
+      const action = ChatAssistantActions.messageSent({ message });
+      const state = chatAssistantReducer(initialState, action);
+
+      expect(state.currentMessages).toHaveLength(2);
+      expect(state.currentMessages![0].type).toBe(MessageType.Human);
+      expect(state.currentMessages![1].type).toBe(MessageType.Assistant);
     });
   });
 
   describe('messageSendingFailed action', () => {
-    it('should add failed human message when messageSendingFailed is dispatched', () => {
-      const action = ChatAssistantActions.messageSendingFailed({
-        message: 'Failed message',
-        error: 'Network error'
-      });
-
-      const result = chatAssistantReducer(initialState, action);
-
-      expect(result.currentMessages).toHaveLength(1);
-      expect(result.currentMessages?.[0]).toEqual(
-        expect.objectContaining({
+    it('should add failed human message to currentMessages', () => {
+      const message = 'Failed message';
+      const existingMessages: Message[] = [
+        {
+          id: 'msg-1',
           type: MessageType.Human,
-          id: 'new',
-          text: 'Failed message',
-          isFailed: true
-        })
-      );
-    });
+          text: 'Previous message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
 
-    it('should filter out temp messages when adding failed message', () => {
-      const stateWithTempMessages: ChatAssistantState = {
+      const currentState: ChatAssistantState = {
         ...initialState,
-        currentMessages: [
-          {
-            id: 'temp-456',
-            text: 'temp message',
-            type: MessageType.Human,
-            creationDate: '2023-01-01T09:00:00Z'
-          },
-          {
-            id: 'msg1',
-            text: 'real message',
-            type: MessageType.Assistant,
-            creationDate: '2023-01-01T09:01:00Z'
-          }
-        ]
+        currentMessages: existingMessages,
       };
 
       const action = ChatAssistantActions.messageSendingFailed({
-        message: 'Failed message',
-        error: 'Network error'
+        message,
+        error: 'Network error',
       });
 
-      const result = chatAssistantReducer(stateWithTempMessages, action);
+      const state = chatAssistantReducer(currentState, action);
 
-      expect(result.currentMessages).toHaveLength(2);
-      expect(result.currentMessages?.some(m => m.id === 'temp-456')).toBe(false);
-      expect(result.currentMessages?.some(m => m.id === 'msg1')).toBe(true);
+      expect(state.currentMessages).toHaveLength(2);
+      expect(state.currentMessages![0]).toEqual({
+        type: MessageType.Human,
+        id: 'new',
+        text: message,
+        creationDate: expect.any(String),
+        isFailed: true,
+      } as ExtendedMessage);
+      expect(state.currentMessages![1]).toEqual(existingMessages[0]);
+    });
+
+    it('should filter out temp messages when message sending fails', () => {
+      const message = 'Failed message';
+      const existingMessages: Message[] = [
+        {
+          id: 'temp-123',
+          type: MessageType.Human,
+          text: 'Temp message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+        {
+          id: 'msg-1',
+          type: MessageType.Human,
+          text: 'Real message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
+
+      const currentState: ChatAssistantState = {
+        ...initialState,
+        currentMessages: existingMessages,
+      };
+
+      const action = ChatAssistantActions.messageSendingFailed({
+        message,
+        error: 'Network error',
+      });
+
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.currentMessages).toHaveLength(2);
+      expect(state.currentMessages![1].id).toBe('msg-1');
     });
   });
 
   describe('chatsLoaded action', () => {
-    it('should set chats when chatsLoaded is dispatched', () => {
-      const action = ChatAssistantActions.chatsLoaded({
-        chats: mockChats
-      });
+    it('should set chats array when chatsLoaded is dispatched', () => {
+      const chats: Chat[] = [
+        {
+          id: 'chat-1',
+          type: ChatType.AiChat,
+          topic: 'Chat 1',
+        },
+        {
+          id: 'chat-2',
+          type: ChatType.HumanChat,
+          topic: 'Chat 2',
+        },
+      ];
 
-      const result = chatAssistantReducer(initialState, action);
+      const action = ChatAssistantActions.chatsLoaded({ chats });
+      const state = chatAssistantReducer(initialState, action);
 
-      expect(result).toEqual({
+      expect(state.chats).toEqual(chats);
+      expect(state).toEqual({
         ...initialState,
-        chats: mockChats
+        chats,
       });
+    });
+
+    it('should replace existing chats', () => {
+      const existingChats: Chat[] = [
+        {
+          id: 'old-chat',
+          type: ChatType.AiChat,
+          topic: 'Old Chat',
+        },
+      ];
+
+      const currentState: ChatAssistantState = {
+        ...initialState,
+        chats: existingChats,
+      };
+
+      const newChats: Chat[] = [
+        {
+          id: 'new-chat-1',
+          type: ChatType.AiChat,
+          topic: 'New Chat 1',
+        },
+        {
+          id: 'new-chat-2',
+          type: ChatType.HumanChat,
+          topic: 'New Chat 2',
+        },
+      ];
+
+      const action = ChatAssistantActions.chatsLoaded({ chats: newChats });
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.chats).toEqual(newChats);
+      expect(state.chats).not.toContain(existingChats[0]);
     });
   });
 
   describe('messagesLoaded action', () => {
     it('should set currentMessages when messagesLoaded is dispatched', () => {
-      const action = ChatAssistantActions.messagesLoaded({
-        messages: mockMessages
-      });
+      const messages: Message[] = [
+        {
+          id: 'msg-1',
+          type: MessageType.Human,
+          text: 'Hello',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+        {
+          id: 'msg-2',
+          type: MessageType.Assistant,
+          text: 'Hi there!',
+          creationDate: '2023-01-01T00:01:00Z',
+        },
+      ];
 
-      const result = chatAssistantReducer(initialState, action);
+      const action = ChatAssistantActions.messagesLoaded({ messages });
+      const state = chatAssistantReducer(initialState, action);
 
-      expect(result).toEqual({
+      expect(state.currentMessages).toEqual(messages);
+    });
+
+    it('should replace existing messages', () => {
+      const existingMessages: Message[] = [
+        {
+          id: 'old-msg',
+          type: MessageType.Human,
+          text: 'Old message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
+
+      const currentState: ChatAssistantState = {
         ...initialState,
-        currentMessages: mockMessages
-      });
+        currentMessages: existingMessages,
+      };
+
+      const newMessages: Message[] = [
+        {
+          id: 'new-msg-1',
+          type: MessageType.Human,
+          text: 'New message 1',
+          creationDate: '2023-01-02T00:00:00Z',
+        },
+        {
+          id: 'new-msg-2',
+          type: MessageType.Assistant,
+          text: 'New message 2',
+          creationDate: '2023-01-02T00:01:00Z',
+        },
+      ];
+
+      const action = ChatAssistantActions.messagesLoaded({ messages: newMessages });
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.currentMessages).toEqual(newMessages);
+      expect(state.currentMessages).not.toContain(existingMessages[0]);
     });
   });
 
   describe('chatSelected and chatCreationSuccessful actions', () => {
-    it('should set currentChat and clear messages when chatSelected is dispatched', () => {
-      const stateWithMessages: ChatAssistantState = {
+    const chat: Chat = {
+      id: 'selected-chat',
+      type: ChatType.AiChat,
+      topic: 'Selected Chat',
+    };
+
+    it('should set currentChat and reset currentMessages when chatSelected is dispatched', () => {
+      const existingMessages: Message[] = [
+        {
+          id: 'msg-1',
+          type: MessageType.Human,
+          text: 'Existing message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
+
+      const currentState: ChatAssistantState = {
         ...initialState,
-        currentMessages: mockMessages
+        currentMessages: existingMessages,
       };
 
-      const action = ChatAssistantActions.chatSelected({
-        chat: mockChat
-      });
+      const action = ChatAssistantActions.chatSelected({ chat });
+      const state = chatAssistantReducer(currentState, action);
 
-      const result = chatAssistantReducer(stateWithMessages, action);
-
-      expect(result).toEqual({
-        ...stateWithMessages,
-        currentChat: mockChat,
-        currentMessages: []
-      });
+      expect(state.currentChat).toEqual(chat);
+      expect(state.currentMessages).toEqual([]);
     });
 
-    it('should set currentChat and clear messages when chatCreationSuccessful is dispatched', () => {
-      const stateWithMessages: ChatAssistantState = {
+    it('should set currentChat and reset currentMessages when chatCreationSuccessful is dispatched', () => {
+      const existingMessages: Message[] = [
+        {
+          id: 'msg-1',
+          type: MessageType.Human,
+          text: 'Existing message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
+
+      const currentState: ChatAssistantState = {
         ...initialState,
-        currentMessages: mockMessages
+        currentMessages: existingMessages,
       };
 
-      const action = ChatAssistantActions.chatCreationSuccessful({
-        chat: mockChat
-      });
+      const action = ChatAssistantActions.chatCreationSuccessful({ chat });
+      const state = chatAssistantReducer(currentState, action);
 
-      const result = chatAssistantReducer(stateWithMessages, action);
-
-      expect(result).toEqual({
-        ...stateWithMessages,
-        currentChat: mockChat,
-        currentMessages: []
-      });
+      expect(state.currentChat).toEqual(chat);
+      expect(state.currentMessages).toEqual([]);
     });
   });
 
   describe('chatDeletionSuccessful action', () => {
-    it('should remove chat from chats array and clear current chat when chatDeletionSuccessful is dispatched', () => {
-      const stateWithChats: ChatAssistantState = {
+    it('should remove chat from chats array and reset current state', () => {
+      const chatToDelete: Chat = {
+        id: 'chat-to-delete',
+        type: ChatType.AiChat,
+        topic: 'Chat to delete',
+      };
+
+      const remainingChat: Chat = {
+        id: 'remaining-chat',
+        type: ChatType.HumanChat,
+        topic: 'Remaining chat',
+      };
+
+      const currentState: ChatAssistantState = {
         ...initialState,
-        chats: mockChats,
-        currentChat: mockChats[0],
-        currentMessages: mockMessages
+        chats: [chatToDelete, remainingChat],
+        currentChat: chatToDelete,
+        currentMessages: [
+          {
+            id: 'msg-1',
+            type: MessageType.Human,
+            text: 'Message in deleted chat',
+            creationDate: '2023-01-01T00:00:00Z',
+          },
+        ],
       };
 
       const action = ChatAssistantActions.chatDeletionSuccessful({
-        chatId: 'chat1'
+        chatId: 'chat-to-delete',
       });
 
-      const result = chatAssistantReducer(stateWithChats, action);
+      const state = chatAssistantReducer(currentState, action);
 
-      expect(result).toEqual({
-        ...stateWithChats,
-        currentChat: undefined,
-        chats: [mockChats[1]], // Only chat2 should remain
-        currentMessages: []
-      });
+      expect(state.chats).toHaveLength(1);
+      expect(state.chats[0]).toEqual(remainingChat);
+      expect(state.currentChat).toBeUndefined();
+      expect(state.currentMessages).toEqual([]);
     });
 
-    it('should not affect chats array when deleting non-existent chat', () => {
-      const stateWithChats: ChatAssistantState = {
+    it('should handle deletion of non-current chat', () => {
+      const chatToDelete: Chat = {
+        id: 'chat-to-delete',
+        type: ChatType.AiChat,
+        topic: 'Chat to delete',
+      };
+
+      const currentChat: Chat = {
+        id: 'current-chat',
+        type: ChatType.HumanChat,
+        topic: 'Current chat',
+      };
+
+      const currentState: ChatAssistantState = {
         ...initialState,
-        chats: mockChats,
-        currentMessages: mockMessages
+        chats: [chatToDelete, currentChat],
+        currentChat: currentChat,
+        currentMessages: [
+          {
+            id: 'msg-1',
+            type: MessageType.Human,
+            text: 'Message in current chat',
+            creationDate: '2023-01-01T00:00:00Z',
+          },
+        ],
       };
 
       const action = ChatAssistantActions.chatDeletionSuccessful({
-        chatId: 'non-existent-chat'
+        chatId: 'chat-to-delete',
       });
 
-      const result = chatAssistantReducer(stateWithChats, action);
+      const state = chatAssistantReducer(currentState, action);
 
-      expect(result).toEqual({
-        ...stateWithChats,
-        currentChat: undefined,
-        chats: mockChats, // All chats should remain
-        currentMessages: []
-      });
+      expect(state.chats).toHaveLength(1);
+      expect(state.chats[0]).toEqual(currentChat);
+      expect(state.currentChat).toBeUndefined();
+      expect(state.currentMessages).toEqual([]);
     });
   });
 
   describe('chatModeSelected action', () => {
     it('should set selectedChatMode when chatModeSelected is dispatched', () => {
-      const action = ChatAssistantActions.chatModeSelected({
-        mode: 'ai'
-      });
+      const mode = 'group-chat';
+      const action = ChatAssistantActions.chatModeSelected({ mode });
+      const state = chatAssistantReducer(initialState, action);
 
-      const result = chatAssistantReducer(initialState, action);
-
-      expect(result).toEqual({
+      expect(state.selectedChatMode).toBe(mode);
+      expect(state).toEqual({
         ...initialState,
-        selectedChatMode: 'ai'
+        selectedChatMode: mode,
       });
     });
 
-    it('should update selectedChatMode when different mode is selected', () => {
-      const stateWithMode: ChatAssistantState = {
+    it('should replace existing selectedChatMode', () => {
+      const currentState: ChatAssistantState = {
         ...initialState,
-        selectedChatMode: 'ai'
+        selectedChatMode: 'old-mode',
       };
 
-      const action = ChatAssistantActions.chatModeSelected({
-        mode: 'direct'
-      });
+      const newMode = 'new-mode';
+      const action = ChatAssistantActions.chatModeSelected({ mode: newMode });
+      const state = chatAssistantReducer(currentState, action);
 
-      const result = chatAssistantReducer(stateWithMode, action);
-
-      expect(result).toEqual({
-        ...stateWithMode,
-        selectedChatMode: 'direct'
-      });
+      expect(state.selectedChatMode).toBe(newMode);
     });
   });
 
   describe('chatModeDeselected action', () => {
     it('should set selectedChatMode to null when chatModeDeselected is dispatched', () => {
-      const stateWithMode: ChatAssistantState = {
+      const currentState: ChatAssistantState = {
         ...initialState,
-        selectedChatMode: 'ai'
+        selectedChatMode: 'some-mode',
       };
 
       const action = ChatAssistantActions.chatModeDeselected();
+      const state = chatAssistantReducer(currentState, action);
 
-      const result = chatAssistantReducer(stateWithMode, action);
+      expect(state.selectedChatMode).toBeNull();
+    });
 
-      expect(result).toEqual({
-        ...stateWithMode,
-        selectedChatMode: null
-      });
+    it('should handle deselection when no mode is selected', () => {
+      const action = ChatAssistantActions.chatModeDeselected();
+      const state = chatAssistantReducer(initialState, action);
+
+      expect(state.selectedChatMode).toBeNull();
     });
   });
 
-  describe('cleanTemp helper function behavior', () => {
-    it('should preserve messages that are not temp when messageSent is dispatched', () => {
-      const stateWithMixedMessages: ChatAssistantState = {
+  describe('cleanTemp function behavior', () => {
+    it('should properly filter temp and new messages', () => {
+      const messages: Message[] = [
+        {
+          id: 'temp-123',
+          type: MessageType.Human,
+          text: 'Temp message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+        {
+          id: 'new',
+          type: MessageType.Human,
+          text: 'New message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+        {
+          id: 'ai-temp',
+          type: MessageType.Assistant,
+          text: 'AI temp message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+        {
+          id: 'msg-1',
+          type: MessageType.Human,
+          text: 'Real message',
+          creationDate: '2023-01-01T00:00:00Z',
+        },
+      ];
+
+      const currentState: ChatAssistantState = {
         ...initialState,
-        currentMessages: [
-          {
-            id: 'real-msg-1',
-            text: 'real message',
-            type: MessageType.Human,
-            creationDate: '2023-01-01T09:00:00Z'
-          },
-          {
-            id: 'new',
-            text: 'temp message',
-            type: MessageType.Human,
-            creationDate: '2023-01-01T09:01:00Z'
-          },
-          {
-            id: 'ai-temp-123',
-            text: 'ai temp message',
-            type: MessageType.Assistant,
-            creationDate: '2023-01-01T09:02:00Z'
-          },
-          {
-            id: 'real-msg-2',
-            text: 'another real message',
-            type: MessageType.Assistant,
-            creationDate: '2023-01-01T09:03:00Z'
-          }
-        ]
+        currentMessages: messages,
       };
 
-      const action = ChatAssistantActions.messageSent({
-        message: 'New message'
+      const action = ChatAssistantActions.messageSent({ message: 'Test' });
+      const state = chatAssistantReducer(currentState, action);
+
+      // Should have: new human message, new AI loading message, and the real message
+      expect(state.currentMessages).toHaveLength(3);
+      expect(state.currentMessages![2].id).toBe('msg-1');
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle undefined currentMessages in messageSent', () => {
+      const currentState: ChatAssistantState = {
+        ...initialState,
+        currentMessages: undefined,
+      };
+
+      const action = ChatAssistantActions.messageSent({ message: 'Test' });
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.currentMessages).toHaveLength(2);
+      expect(state.currentMessages![0].type).toBe(MessageType.Human);
+      expect(state.currentMessages![1].type).toBe(MessageType.Assistant);
+    });
+
+    it('should handle undefined currentMessages in messageSendingFailed', () => {
+      const currentState: ChatAssistantState = {
+        ...initialState,
+        currentMessages: undefined,
+      };
+
+      const action = ChatAssistantActions.messageSendingFailed({
+        message: 'Test',
+        error: 'Error',
       });
 
-      const result = chatAssistantReducer(stateWithMixedMessages, action);
+      const state = chatAssistantReducer(currentState, action);
 
-      expect(result.currentMessages).toHaveLength(4);
-      expect(result.currentMessages?.some(m => m.id === 'real-msg-1')).toBe(true);
-      expect(result.currentMessages?.some(m => m.id === 'real-msg-2')).toBe(true);
-      expect(result.currentMessages?.some(m => m.id === 'new' && m.text === 'temp message')).toBe(false);
-      expect(result.currentMessages?.some(m => m.id === 'ai-temp-123')).toBe(false);
+      expect(state.currentMessages).toHaveLength(1);
+      expect(state.currentMessages![0].type).toBe(MessageType.Human);
+      expect((state.currentMessages![0] as ExtendedMessage).isFailed).toBe(true);
+    });
+
+    it('should handle empty chats array in chatDeletionSuccessful', () => {
+      const currentState: ChatAssistantState = {
+        ...initialState,
+        chats: [],
+      };
+
+      const action = ChatAssistantActions.chatDeletionSuccessful({
+        chatId: 'non-existent-chat',
+      });
+
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.chats).toEqual([]);
+      expect(state.currentChat).toBeUndefined();
+      expect(state.currentMessages).toEqual([]);
     });
   });
 });

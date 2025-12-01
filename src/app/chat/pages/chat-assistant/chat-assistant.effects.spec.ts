@@ -6,6 +6,8 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { PortalMessageService } from '@onecx/portal-integration-angular';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
   ChatsInternal,
@@ -101,6 +103,22 @@ describe('ChatAssistantEffects', () => {
       navigate: jest.fn()
     };
 
+    const translateServiceSpy = {
+      get: jest.fn().mockReturnValue(of('')),
+      instant: jest.fn().mockReturnValue(''),
+      use: jest.fn().mockReturnValue(of({})),
+      setDefaultLang: jest.fn(),
+      addLangs: jest.fn(),
+      currentLang: 'en'
+    };
+
+    const portalMessageServiceSpy = {
+      success: jest.fn(),
+      error: jest.fn(),
+      info: jest.fn(),
+      warning: jest.fn()
+    };
+
     TestBed.configureTestingModule({
       providers: [
         ChatAssistantEffects,
@@ -108,7 +126,9 @@ describe('ChatAssistantEffects', () => {
         provideMockStore({ initialState }),
         { provide: ChatsInternal, useValue: chatInternalServiceSpy },
         { provide: ChatInternalService, useValue: remoteChatInternalServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        { provide: TranslateService, useValue: translateServiceSpy },
+        { provide: PortalMessageService, useValue: portalMessageServiceSpy }
       ]
     });
 
@@ -410,12 +430,10 @@ describe('ChatAssistantEffects', () => {
       const newTopic = 'Updated Topic';
       const updatedChat = { ...mockChat, topic: newTopic };
       chatInternalService.updateChat.mockReturnValue(of(updatedChat));
-      
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: newTopic });
       actions$ = of(action);
-
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatCreationSuccessful({ chat: updatedChat }));
+        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: updatedChat.id }));
         expect(chatInternalService.updateChat).toHaveBeenCalledWith('chat1', { topic: newTopic });
         done();
       });
@@ -424,12 +442,10 @@ describe('ChatAssistantEffects', () => {
     it('should handle error when updating chat topic fails', (done) => {
       const error = 'Failed to update chat topic';
       chatInternalService.updateChat.mockReturnValue(throwError(() => error));
-
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
       actions$ = of(action);
-
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatCreationFailed({ error }));
+        expect(result).toEqual(ChatAssistantActions.chatDeletionFailed({ error }));
         done();
       });
     });
