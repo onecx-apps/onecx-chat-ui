@@ -157,4 +157,11 @@ describe('ChatAssistantComponent', () => {
       expect(spy).not.toHaveBeenCalled();
     });
   });
+
+  it('should emit sidebarVisibleChange when sidebarVisible changes in ngOnChanges', () => {
+    const spy = jest.spyOn(component.sidebarVisibleChange, 'emit');
+    component.sidebarVisible = true;
+    component.ngOnChanges({ sidebarVisible: { currentValue: true, previousValue: false, firstChange: false, isFirstChange: () => false } });
+    expect(spy).toHaveBeenCalledWith(true);
+  });
 });

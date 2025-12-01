@@ -67,6 +67,9 @@ export class ChatAssistantComponent implements OnChanges {
     }
     this._sidebarVisible = val;
   }
+  get sidebarVisible(): boolean {
+    return this._sidebarVisible;
+  }
 
   @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
