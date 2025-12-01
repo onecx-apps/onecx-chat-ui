@@ -3,8 +3,9 @@
      style="min-height:95vh;height:95vh;box-sizing:border-box;display:flex;flex-direction:column;position:relative;overflow:visible;">
   <!-- Chat Name Section -->
   <div class="mb-4 desktop-only">
-    <label class="text-gray-500 text-sm mb-2 d-block" style="margin-bottom:6px !important;display:block;">Chat Name</label>
-    <input type="text"
+    <label for="chatNameInput" class="text-gray-500 text-sm mb-2 d-block" style="margin-bottom:6px !important;display:block;">Chat Name</label>
+    <input id="chatNameInput"
+           type="text"
            class="chat-name-input w-full p-2 rounded-full"
            [value]="(chatName$ | async) || ('Group Chat ' + (today | date:'dd.MM.yyyy'))"
            (input)="chatNameChange.emit($event)"
@@ -13,9 +14,10 @@
 
   <!-- Recipients Section -->
   <div class="mb-4">
-    <label class="text-gray-500 text-sm mb-2 d-block desktop-only" style="margin-bottom:6px !important;display:block;">Recipients</label>
+    <label for="recipientInput" class="text-gray-500 text-sm mb-2 d-block desktop-only" style="margin-bottom:6px !important;display:block;">Recipients</label>
     <div class="flex align-items-center mb-2" style="position:relative;">
-      <input type="text"
+      <input id="recipientInput"
+             type="text"
              class="recipient-input w-full p-2 rounded-full"
              style="padding-right:2.5rem;"
              [value]="recipientInput$ | async"

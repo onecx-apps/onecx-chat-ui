@@ -14,7 +14,7 @@ import { ChatNewContentComponent } from '../../shared/components/new-content-cha
 export class NewDirectChatComponent {
   @Output() back = new EventEmitter<void>();
 
-  private recipientInputSubject = new BehaviorSubject<string>('');
+  private readonly recipientInputSubject = new BehaviorSubject<string>('');
   
   chatName$ = new BehaviorSubject<string>('Direct Chat');
   recipients$ = new BehaviorSubject<string[]>([]);

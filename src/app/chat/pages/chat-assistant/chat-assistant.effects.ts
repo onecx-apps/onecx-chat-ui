@@ -5,7 +5,6 @@ import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
 import { filterForNavigatedTo } from '@onecx/ngrx-accelerator';
-import { PortalMessageService } from '@onecx/portal-integration-angular';
 import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
@@ -25,11 +24,10 @@ const CHAT_TOPIC_LENGTH = 30;
 export class ChatAssistantEffects {
   constructor(
     private actions$: Actions,
-    private _remoteChatInternalService: ChatInternalService,
-    private _chatInternalService: ChatsInternal,
-    private router: Router,
-    private store: Store,
-    private messageService: PortalMessageService,
+    private readonly _remoteChatInternalService: ChatInternalService,
+    private readonly _chatInternalService: ChatsInternal,
+    private readonly router: Router,
+    private readonly store: Store,
   ) {}
 
   get chatInternalService() {

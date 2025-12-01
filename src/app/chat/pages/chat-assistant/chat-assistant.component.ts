@@ -80,12 +80,12 @@ export class ChatAssistantComponent implements OnChanges {
       this.viewModel$,
       this.translateService.get(['CHAT.ACTIONS.DELETE']),
     ]).pipe(
-      map(([vm, t]) => {
+      map(([viewModel, translations]) => {
         return [
           {
-            label: t['CHAT.ACTIONS.DELETE'],
+            label: translations['CHAT.ACTIONS.DELETE'],
             icon: 'pi pi-trash',
-            disabled: vm.currentChat?.id === 'new',
+            disabled: viewModel.currentChat?.id === 'new',
             command: () => {
               this.store.dispatch(ChatAssistantActions.currentChatDeleted());
             },
@@ -167,7 +167,7 @@ export class ChatAssistantComponent implements OnChanges {
                                clickedElement.closest('.chat-toggle-button') ||
                                clickedElement.closest('.chat-button') ||
                                clickedElement.id === 'chat-toggle-button';
-                               
+
     if (!isChatToggleButton) {
       this.closeSidebar();
     }
