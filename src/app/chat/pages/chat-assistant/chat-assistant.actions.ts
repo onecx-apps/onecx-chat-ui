@@ -6,6 +6,7 @@ export const ChatAssistantActions = createActionGroup({
   events: {
     'navigated to chat assistant': emptyProps(),
     'chat panel opened': emptyProps(),
+    'chat panel closed': emptyProps(),
     'chats loaded': props<{
       chats: Chat[];
     }>(),
@@ -19,7 +20,7 @@ export const ChatAssistantActions = createActionGroup({
       chat: Chat;
       message: string;
     }>(),
-    'message sending successfull': props<{
+    'message sending successful': props<{
       message: Message;
     }>(),
     'message sending failed': props<{
@@ -30,14 +31,14 @@ export const ChatAssistantActions = createActionGroup({
       message: string;
     }>(),
     'chat created': emptyProps(),
-    'chat creation successfull': props<{
+    'chat creation successful': props<{
       chat: Chat;
     }>(),
     'chat creation failed': props<{
       error: string | null;
     }>(),
     'current chat deleted': emptyProps(),
-    'chat deletion successfull': props<{
+    'chat deletion successful': props<{
       chatId: string;
     }>(),
     'chat deletion failed': props<{
@@ -55,5 +56,7 @@ export const ChatAssistantActions = createActionGroup({
     'messages loading failed': props<{
       error: string | null;
     }>(),
+    'chat mode selected': props<{ mode: string }>(),
+    'chat mode deselected': emptyProps(),
   },
 });

@@ -1,21 +1,6 @@
-.chat-assistant-container {
-  /* height: calc(100vh - 83px); */
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-app-chat {
-  height: calc(100% - 46px);
-}
-
-:host ::ng-deep .p-sidebar-content {
-  padding: 0px;
-}
-
 :host ::ng-deep {
   .chat-button {
-    color: var(--topbar-item-text-color);
+    color: var(--topbar-item-text-color) !important;
 
     &:hover,
     &:focus {
@@ -23,9 +8,5 @@ app-chat {
       background-color: var(--topbar-item-text-hover-bg-color) !important;
       transition: background-color var(--transition-duration);
     }
-  }
-
-  .chat-button > .p-button-icon {
-    color: var(--topbar-item-text-color);
   }
 }

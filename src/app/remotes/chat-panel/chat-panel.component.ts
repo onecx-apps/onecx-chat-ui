@@ -22,6 +22,8 @@ import {
 } from '@onecx/portal-integration-angular';
 import { RippleModule } from 'primeng/ripple';
 import { TabViewModule } from 'primeng/tabview';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 import { ReplaySubject } from 'rxjs';
 import { ChatAssistantComponent } from 'src/app/chat/pages/chat-assistant/chat-assistant.component';
 import { ChatsInternal } from 'src/app/shared/generated';
@@ -45,6 +47,8 @@ export function slotInitializer(slotService: SlotService) {
     PortalCoreModule,
     TranslateModule,
     TabViewModule,
+    ButtonModule,
+    TooltipModule,
   ],
   providers: [
     {

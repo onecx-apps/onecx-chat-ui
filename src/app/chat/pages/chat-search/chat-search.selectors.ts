@@ -16,9 +16,12 @@ export const chatSearchSelectors = createChildSelectors(
 export const selectResults = createSelector(
   chatSearchSelectors.selectResults,
   (results): RowListGridData[] => {
+    if (!results || !Array.isArray(results)) {
+      return [];
+    }
     return results.map((item) => ({
       imagePath: '',
-      id: item.id ?? '',
+      id: item?.id ?? '',
       ...item,
       // ACTION S7: Here you can create a mapping of the items and their corresponding translation strings
     }));
@@ -29,11 +32,14 @@ export const selectDisplayedColumns = createSelector(
   chatSearchSelectors.selectColumns,
   chatSearchSelectors.selectDisplayedColumns,
   (columns, displayedColumns): DataTableColumn[] => {
+    if (!columns || !Array.isArray(columns) || !displayedColumns || !Array.isArray(displayedColumns)) {
+      return [];
+    }
     return (
-      (displayedColumns
-        ?.map((d) => columns.find((c) => c.id === d))
-        .filter((d) => d) as DataTableColumn[]) ?? []
-    );
+      displayedColumns
+        .map((d) => columns.find((c) => c?.id === d))
+        .filter(Boolean) as DataTableColumn[]
+    ) ?? [];
   }
 );
 

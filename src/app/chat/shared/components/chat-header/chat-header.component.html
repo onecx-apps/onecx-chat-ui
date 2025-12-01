@@ -1,0 +1,20 @@
+<div class="chat-header position-relative border-bottom-1 min-h-3rem bg-content-bg-color flex align-items-center justify-content-center">
+  <button *ngIf="showBack"
+    pButton pIconButton type="button"
+    icon="pi pi-angle-left"
+    [style]="'position:absolute;left:0.5em;top:50%;transform:translateY(-50%);'"
+    class="border-round"
+    (click)="backClicked.emit()"
+    aria-label="Back">
+  </button>
+  <span class="chat-title position-absolute left-50 top-50 translate--50--50 font-normal text-900 text-lg line-height-3">{{ title }}</span>
+  <button *ngIf="showClose"
+    pButton pIconButton type="button"
+    icon="pi pi-times"
+    [style]="'position:absolute;right:0.5em;top:50%;transform:translateY(-50%);'"
+    class="border-circle"
+    (click)="closed.emit()"
+    aria-label="Close">
+  </button>
+</div>
+<div class="header-separator"></div>

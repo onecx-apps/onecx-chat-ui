@@ -1,0 +1,29 @@
+<div>
+  <app-chat-header [title]="'CHAT.INITIAL.GREETING' | translate" [showClose]="true" (closed)="selectMode.emit('close')"></app-chat-header>
+  <div class="flex flex-column align-items-center text-center">
+    <img [src]="logoUrl" alt="OneCX Logo" class="mb-4" />
+    <p class="text-sm text-secondary mt-4 mb-8">
+      {{ 'CHAT.INITIAL.NO_CHATS' | translate }}<br>{{ 'CHAT.INITIAL.CREATE_NEW' | translate }}
+    </p>
+  </div>
+</div>
+<div class="chat-options">
+  <app-chat-option-button
+    [title]="'CHAT.TITLE.AI' | translate"
+    [subtitle]="'CHAT.OPTION.AI_SUBTITLE' | translate"
+    colorClass="ai-companion"
+    (buttonClick)="selectMode.emit('ai')"
+  ></app-chat-option-button>
+  <app-chat-option-button
+    [title]="'CHAT.TITLE.DIRECT' | translate"
+    [subtitle]="'CHAT.OPTION.DIRECT_SUBTITLE' | translate"
+    colorClass="direct-chat"
+    (buttonClick)="selectMode.emit('direct')"
+  ></app-chat-option-button>
+  <app-chat-option-button
+    [title]="'CHAT.TITLE.GROUP' | translate"
+    [subtitle]="'CHAT.OPTION.GROUP_SUBTITLE' | translate"
+    colorClass="group-chat"
+    (buttonClick)="selectMode.emit('group')"
+  ></app-chat-option-button>
+</div>

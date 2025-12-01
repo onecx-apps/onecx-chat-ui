@@ -6,9 +6,9 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  HostListener,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LetDirective } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MenuItem, SharedModule } from 'primeng/api';
@@ -22,6 +22,10 @@ import { Chat } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { selectChatAssistantViewModel } from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
+import { environment } from 'src/environments/environment';
+import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
+import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
+import { ChatInitialScreenComponent } from '../../shared/components/chat-initial-screen/chat-initial-screen.component';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -32,7 +36,6 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    LetDirective,
     CalendarModule,
     SidebarModule,
     TranslateModule,
@@ -40,14 +43,18 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
     ChatComponent,
     ChatListComponent,
     TooltipModule,
+    ChatSliderComponent,
+    ChatHeaderComponent,
+    ChatInitialScreenComponent,
   ],
 })
 export class ChatAssistantComponent implements OnChanges {
-  viewModel$: Observable<ChatAssistantViewModel> = this.store.select(
-    selectChatAssistantViewModel,
-  );
+  environment = environment;
+  viewModel$: Observable<ChatAssistantViewModel>;
+  menuItems: Observable<MenuItem[]>;
 
   _sidebarVisible = false;
+  selectedChatMode: string | null = null;
 
   @Input()
   set sidebarVisible(val: boolean) {
@@ -62,25 +69,27 @@ export class ChatAssistantComponent implements OnChanges {
   constructor(
     private readonly store: Store,
     private translateService: TranslateService,
-  ) {}
-
-  menuItems: Observable<MenuItem[]> = combineLatest([
-    this.viewModel$,
-    this.translateService.get(['CHAT.ACTIONS.DELETE']),
-  ]).pipe(
-    map(([vm, t]) => {
-      return [
-        {
-          label: t['CHAT.ACTIONS.DELETE'],
-          icon: 'pi pi-trash',
-          disabled: vm.currentChat?.id === 'new',
-          command: () => {
-            this.store.dispatch(ChatAssistantActions.currentChatDeleted());
+  ) {
+    this.viewModel$ = this.store.select(selectChatAssistantViewModel);
+    
+    this.menuItems = combineLatest([
+      this.viewModel$,
+      this.translateService.get(['CHAT.ACTIONS.DELETE']),
+    ]).pipe(
+      map(([viewModel, translations]) => {
+        return [
+          {
+            label: translations['CHAT.ACTIONS.DELETE'],
+            icon: 'pi pi-trash',
+            disabled: viewModel.currentChat?.id === 'new',
+            command: () => {
+              this.store.dispatch(ChatAssistantActions.currentChatDeleted());
+            },
           },
-        },
-      ] as MenuItem[];
-    }),
-  );
+        ] as MenuItem[];
+      }),
+    );
+  }
 
   sendMessage(message: string) {
     this.store.dispatch(
@@ -100,7 +109,63 @@ export class ChatAssistantComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['sidebarVisible']) {
-      this.sidebarVisibleChange.emit(this.sidebarVisible);
+      this.sidebarVisibleChange.emit(changes['sidebarVisible'].currentValue);
+    }
+  }
+
+  // NEW METHODS ONECX COMPANION
+  selectChatMode(mode: string) {
+    if (mode === 'close') {
+      this._sidebarVisible = false;
+      this.sidebarVisibleChange.emit(false);
+      this.store.dispatch(ChatAssistantActions.chatPanelClosed());
+      this.selectedChatMode = null;
+      return;
+    }
+    this.store.dispatch(ChatAssistantActions.chatModeSelected({ mode }));
+    this.selectedChatMode = mode;
+  }
+
+  goBack() {
+    this.store.dispatch(ChatAssistantActions.chatModeDeselected());
+    this.selectedChatMode = null;
+  }
+
+  closeSidebar() {
+    this._sidebarVisible = false;
+    this.sidebarVisibleChange.emit(false);
+    this.store.dispatch(ChatAssistantActions.chatPanelClosed());
+    this.selectedChatMode = null;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this._sidebarVisible) {
+      return;
+    }
+
+    const clickedElement = event.target as HTMLElement;
+    
+    // Check if clicked INSIDE sidebar - if so, do nothing
+    const isInsideSidebar = clickedElement.closest('.p-sidebar') || 
+                           clickedElement.closest('[role="complementary"]') ||
+                           clickedElement.closest('app-chat-slider') ||
+                           clickedElement.closest('app-chat-initial-screen') ||
+                           clickedElement.closest('app-chat-option-button') ||
+                           clickedElement.closest('app-chat-header');
+    
+    if (isInsideSidebar) {
+      return;
+    }
+    
+    // Check if clicked on chat TOGGLE button - if so, let the toggle manage the state
+    const isChatToggleButton = clickedElement.closest('[aria-label*="Chat"]') || 
+                               clickedElement.closest('.chat-toggle-button') ||
+                               clickedElement.closest('.chat-button') ||
+                               clickedElement.id === 'chat-toggle-button';
+    
+    if (!isChatToggleButton) {
+      this.closeSidebar();
     }
   }
 }

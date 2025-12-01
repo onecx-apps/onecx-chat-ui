@@ -11,6 +11,7 @@ export const environment = {
   KEYCLOAK_REALM: 'OneCX',
   KEYCLOAK_CLIENT_ID: 'portal-mf-shell',
   TKIT_PORTAL_ID: 'ADMIN',
+  DEFAULT_LOGO_PATH: '/assets/img/logo.png'
 };
 
 /*
