@@ -25,7 +25,11 @@ export class NewDirectChatComponent {
     this.recipientInputSubject.next(value);
   }
 
-  onAddRecipient() {}
-  
-  onRemoveRecipient(index: number) {}
+  onAddRecipient(): void {
+    // intentionally empty
+  }
+
+  onRemoveRecipient(_index: number): void {
+    // intentionally empty
+}
 }
