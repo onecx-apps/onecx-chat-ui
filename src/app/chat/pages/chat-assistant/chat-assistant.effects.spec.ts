@@ -398,6 +398,19 @@ describe('ChatAssistantEffects', () => {
         complete: () => done()
       });
     });
+
+    it('should delete chat and emit chatId as empty string when chat id is empty string', (done) => {
+      const emptyChat = { ...mockChat, id: '' };
+      store.overrideSelector(chatAssistantSelectors.selectCurrentChat, emptyChat);
+      chatInternalService.deleteChat.mockReturnValue(of({}));
+      const action = ChatAssistantActions.currentChatDeleted();
+      actions$ = of(action);
+      effects.deleteChat$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: '' }));
+        expect(chatInternalService.deleteChat).toHaveBeenCalledWith('');
+        done();
+      });
+    });
   });
 
   describe('updateChatTopic$', () => {
@@ -426,6 +439,31 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(action);
       effects.updateChatTopic$.subscribe(result => {
         expect(result).toEqual(ChatAssistantActions.chatDeletionFailed({ error }));
+        done();
+      });
+    });
+
+    it('should update chat and emit chatId as empty string when chat is undefined', (done) => {
+      store.overrideSelector(chatAssistantSelectors.selectCurrentChat, undefined);
+      chatInternalService.updateChat.mockReturnValue(of({}));
+      const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
+      actions$ = of(action);
+      effects.updateChatTopic$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: '' }));
+        expect(chatInternalService.updateChat).toHaveBeenCalledWith('', { topic: 'New Topic' });
+        done();
+      });
+    });
+
+    it('should update chat and emit chatId as empty string when chat id is empty string', (done) => {
+      const emptyChat = { ...mockChat, id: '' };
+      store.overrideSelector(chatAssistantSelectors.selectCurrentChat, emptyChat);
+      chatInternalService.updateChat.mockReturnValue(of(emptyChat));
+      const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
+      actions$ = of(action);
+      effects.updateChatTopic$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: '' }));
+        expect(chatInternalService.updateChat).toHaveBeenCalledWith('', { topic: 'New Topic' });
         done();
       });
     });

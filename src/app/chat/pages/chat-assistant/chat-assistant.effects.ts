@@ -136,7 +136,7 @@ export class ChatAssistantEffects {
       concatLatestFrom(() => [
         this.store.select(chatAssistantSelectors.selectCurrentChat),
       ]),
-      filter(([, chat]) => chat?.id !== undefined && chat.id !== 'new'),
+      filter(([, chat]) => chat?.id !== 'new'),
       switchMap(([action, chat]) => {
         return this.chatInternalService
           .updateChat(chat?.id ?? '', {
