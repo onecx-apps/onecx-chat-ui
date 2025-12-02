@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { NewDirectChatComponent } from './new-direct-chat.component';
 
@@ -9,10 +9,9 @@ describe('NewDirectChatComponent', () => {
 
   const initialState = {
     chat: {
-      newGroup: {
+      direct: {
         chatName: 'Direct Chat',
-        recipientInput: '',
-        recipients: []
+        recipientInput: ''
       }
     }
   };
@@ -78,24 +77,5 @@ describe('NewDirectChatComponent', () => {
     jest.spyOn(component.back, 'emit');
     component.back.emit();
     expect(component.back.emit).toHaveBeenCalled();
-  });
-  it('should dispatch addRecipient action when onAddRecipient is called', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-    component.onAddRecipient();
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        recipient: ''
-      })
-    );
-  });
-
-  it('should dispatch removeRecipient action when onRemoveRecipient is called', () => {
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-    component.onRemoveRecipient(0);
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        index: 0
-      })
-    );
   });
 });

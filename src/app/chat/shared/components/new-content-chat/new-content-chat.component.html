@@ -32,16 +32,11 @@
         </button>
       }
     </div>
-    @if (recipients$ | async; as recipients) {
+    @if (recipient$ | async; as recipient) {
       <div class="desktop-only">
-        @for (recipient of recipients; track $index) {
+        @if (recipient) {
           <div class="flex align-items-center mb-1">
             <span class="flex-grow-1">{{ recipient }}</span>
-            <button type="button"
-                    class="remove-recipient-btn ml-2 p-1 rounded-full bg-transparent"
-                    (click)="removeRecipient.emit($index)">
-              <i class="pi pi-trash"></i>
-            </button>
           </div>
         }
       </div>

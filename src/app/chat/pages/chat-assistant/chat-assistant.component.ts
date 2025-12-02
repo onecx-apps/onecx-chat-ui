@@ -159,7 +159,8 @@ export class ChatAssistantComponent implements OnChanges {
                            clickedElement.closest('app-chat-slider') ||
                            clickedElement.closest('app-chat-initial-screen') ||
                            clickedElement.closest('app-chat-option-button') ||
-                           clickedElement.closest('app-chat-header');
+                           clickedElement.closest('app-chat-header') ||
+                           clickedElement.closest('.pi-trash');
 
     if (isInsideSidebar) {
       return;

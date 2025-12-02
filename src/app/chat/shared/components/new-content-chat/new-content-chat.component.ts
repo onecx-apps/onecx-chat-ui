@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 export class ChatNewContentComponent {
   @Input() chatName$?: Observable<string>;
   @Input() recipientInput$?: Observable<string>;
+  @Input() recipient$?: Observable<string>;
   @Input() recipients$?: Observable<string[]>;
   @Input() hideAddButton?: boolean = false;
 

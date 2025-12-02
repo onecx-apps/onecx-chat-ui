@@ -7,12 +7,10 @@
   ></app-chat-header>
 
   <app-chat-new-content
-    [chatName]="(chatName$ | async) ?? ''"
-    [recipientInput]="(recipientInput$ | async) ?? ''"
-    [recipients]="(recipients$ | async) ?? []"
+    [chatName$]="chatName$"
+    [recipientInput$]="recipientInput$"
+    [recipient$]="recipientInput$"
     [hideAddButton]="true"
     (recipientInputChange)="onRecipientInputChange($event)"
-    (addRecipient)="onAddRecipient()"
-    (removeRecipient)="onRemoveRecipient($event)"
   ></app-chat-new-content>
 </div>
