@@ -7,9 +7,9 @@
   ></app-chat-header>
 
   <app-chat-new-content
-    [chatName$]="chatName$"
-    [recipientInput$]="recipientInput$"
-    [recipients$]="recipients$"
+    [chatName]="(chatName$ | async) ?? ''"
+    [recipientInput]="(recipientInput$ | async) ?? ''"
+    [recipients]="(recipients$ | async) ?? []"
     [hideAddButton]="true"
     (recipientInputChange)="onRecipientInputChange($event)"
     (addRecipient)="onAddRecipient()"
