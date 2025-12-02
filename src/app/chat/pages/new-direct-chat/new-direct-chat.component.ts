@@ -21,7 +21,7 @@ export class NewDirectChatComponent {
   chatName$: Observable<string>;
   recipientInput$: Observable<string>;
 
-  constructor(private store: Store) {
+  constructor(private readonly store: Store) {
     this.chatName$ = this.store.select(DirectChatSelectors.selectChatName);
     this.recipientInput$ = this.store.select(DirectChatSelectors.selectRecipientInput);
   }
