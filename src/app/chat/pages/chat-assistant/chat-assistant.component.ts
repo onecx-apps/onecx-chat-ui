@@ -93,12 +93,13 @@ export class ChatAssistantComponent {
     );
   }
 
-  setSidebarVisible(val: boolean) {
-    if (val) {
-      this.store.dispatch(ChatAssistantActions.chatPanelOpened());
-    } else {
-      this.store.dispatch(ChatAssistantActions.chatPanelClosed());
-    }
+  openSidebar() {
+    this.store.dispatch(ChatAssistantActions.chatPanelOpened());
+  }
+
+  closeSidebar() {
+    this.store.dispatch(ChatAssistantActions.chatPanelClosed());
+    this.store.dispatch(ChatAssistantActions.chatModeDeselected());
   }
 
   // NEW METHODS ONECX COMPANION
@@ -112,11 +113,6 @@ export class ChatAssistantComponent {
   }
 
   goBack() {
-    this.store.dispatch(ChatAssistantActions.chatModeDeselected());
-  }
-
-  closeSidebar() {
-    this.store.dispatch(ChatAssistantActions.chatPanelClosed());
     this.store.dispatch(ChatAssistantActions.chatModeDeselected());
   }
 

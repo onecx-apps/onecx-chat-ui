@@ -1,1 +1,5 @@
-/*  Styles for the new chat component */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+}

@@ -154,21 +154,13 @@ describe('ChatAssistantComponent', () => {
     });
   });
 
-  describe('setSidebarVisible', () => {
-    it('should dispatch chatPanelOpened when val is true', () => {
+  describe('openSidebar', () => {
+    it('should dispatch chatPanelOpened', () => {
       const dispatchSpy = jest.spyOn(store, 'dispatch');
 
-      component.setSidebarVisible(true);
+      component.openSidebar();
 
       expect(dispatchSpy).toHaveBeenCalledWith(ChatAssistantActions.chatPanelOpened());
-    });
-
-    it('should dispatch chatPanelClosed when val is false', () => {
-      const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-      component.setSidebarVisible(false);
-
-      expect(dispatchSpy).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
     });
   });
 

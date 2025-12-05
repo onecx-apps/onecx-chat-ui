@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angu
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import * as NewChatActions from './new-chat.actions';
+import { Subject, takeUntil } from 'rxjs';
+import { NewChatActions } from './new-chat.actions';
 import * as NewChatSelectors from './new-chat.selectors';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -22,13 +22,13 @@ export class NewChatComponent implements OnInit, OnDestroy {
 
   chatForm!: FormGroup;
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
   today = new Date();
 
   constructor(
     private readonly store: Store,
-    private translate: TranslateService,
-    private fb: FormBuilder
+    private readonly translate: TranslateService,
+    private readonly fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -66,11 +66,11 @@ export class NewChatComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
         if (this.chatType === 'direct') {
-          this.store.dispatch(NewChatActions.setDirectChatName({ chatName: value }));
+          this.store.dispatch(NewChatActions.directChatNameChanged({ chatName: value }));
         } else if (this.chatType === 'group') {
-          this.store.dispatch(NewChatActions.setGroupChatName({ chatName: value }));
+          this.store.dispatch(NewChatActions.groupChatNameChanged({ chatName: value }));
         } else if (this.chatType === 'ai') {
-          this.store.dispatch(NewChatActions.setAIChatName({ chatName: value }));
+          this.store.dispatch(NewChatActions.aiChatNameChanged({ chatName: value }));
         }
       });
 
@@ -78,7 +78,7 @@ export class NewChatComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(value => {
         if (this.chatType === 'direct') {
-          this.store.dispatch(NewChatActions.setDirectRecipientInput({ recipientInput: value }));
+          this.store.dispatch(NewChatActions.directRecipientInputChanged({ recipientInput: value }));
         } 
       });
   }

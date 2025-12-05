@@ -3,7 +3,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NewChatComponent } from './new-chat.component';
-import * as NewChatActions from './new-chat.actions';
+import { NewChatActions } from './new-chat.actions';
 import * as NewChatSelectors from './new-chat.selectors';
 
 describe('NewChatComponent', () => {
@@ -130,7 +130,7 @@ describe('NewChatComponent', () => {
   });
 
   describe('setupFormValueChanges', () => {
-    it('should dispatch setDirectChatName and setDirectRecipientInput for direct chat', (done) => {
+    it('should dispatch directChatNameChanged and directRecipientInputChanged for direct chat', (done) => {
       component.chatType = 'direct';
       component.ngOnInit();
       jest.clearAllMocks();
@@ -140,16 +140,16 @@ describe('NewChatComponent', () => {
 
       setTimeout(() => {
         expect(store.dispatch).toHaveBeenCalledWith(
-          NewChatActions.setDirectChatName({ chatName: 'New Name' })
+          NewChatActions.directChatNameChanged({ chatName: 'New Name' })
         );
         expect(store.dispatch).toHaveBeenCalledWith(
-          NewChatActions.setDirectRecipientInput({ recipientInput: 'user@test.com' })
+          NewChatActions.directRecipientInputChanged({ recipientInput: 'user@test.com' })
         );
         done();
       }, 100);
     });
 
-    it('should dispatch setGroupChatName for group chat', (done) => {
+    it('should dispatch groupChatNameChanged for group chat', (done) => {
       component.chatType = 'group';
       component.ngOnInit();
       jest.clearAllMocks();
@@ -158,13 +158,13 @@ describe('NewChatComponent', () => {
 
       setTimeout(() => {
         expect(store.dispatch).toHaveBeenCalledWith(
-          NewChatActions.setGroupChatName({ chatName: 'Group Name' })
+          NewChatActions.groupChatNameChanged({ chatName: 'Group Name' })
         );
         done();
       }, 100);
     });
 
-    it('should dispatch setAIChatName for AI chat', (done) => {
+    it('should dispatch aiChatNameChanged for AI chat', (done) => {
       component.chatType = 'ai';
       component.ngOnInit();
       jest.clearAllMocks();
@@ -173,7 +173,7 @@ describe('NewChatComponent', () => {
 
       setTimeout(() => {
         expect(store.dispatch).toHaveBeenCalledWith(
-          NewChatActions.setAIChatName({ chatName: 'AI Chat Name' })
+          NewChatActions.aiChatNameChanged({ chatName: 'AI Chat Name' })
         );
         done();
       }, 100);
@@ -270,10 +270,10 @@ describe('NewChatComponent', () => {
 
         setTimeout(() => {
           expect(store.dispatch).toHaveBeenCalledWith(
-            NewChatActions.setDirectChatName({ chatName: 'My Chat' })
+            NewChatActions.directChatNameChanged({ chatName: 'My Chat' })
           );
           expect(store.dispatch).toHaveBeenCalledWith(
-            NewChatActions.setDirectRecipientInput({ recipientInput: 'user@test.com' })
+            NewChatActions.directRecipientInputChanged({ recipientInput: 'user@test.com' })
           );
           
           const emitSpy = jest.spyOn(component.createChat, 'emit');
