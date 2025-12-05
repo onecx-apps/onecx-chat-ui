@@ -24,10 +24,10 @@ const CHAT_TOPIC_LENGTH = 30;
 export class ChatAssistantEffects {
   constructor(
     private actions$: Actions,
-    private _remoteChatInternalService: ChatInternalService,
-    private _chatInternalService: ChatsInternal,
-    private router: Router,
-    private store: Store,
+    private readonly _remoteChatInternalService: ChatInternalService,
+    private readonly _chatInternalService: ChatsInternal,
+    private readonly router: Router,
+    private readonly store: Store,
   ) {}
 
   get chatInternalService() {
@@ -136,21 +136,22 @@ export class ChatAssistantEffects {
       concatLatestFrom(() => [
         this.store.select(chatAssistantSelectors.selectCurrentChat),
       ]),
-      filter(([, chat]) => chat?.id !== undefined && chat.id !== 'new'),
+      filter(([, chat]) => chat?.id !== 'new'),
       switchMap(([action, chat]) => {
         return this.chatInternalService
           .updateChat(chat?.id ?? '', {
             topic: action.topic,
           })
           .pipe(
-            map((updatedChat) => {
-              return ChatAssistantActions.chatCreationSuccessful({
-                chat: updatedChat,
+            map(() => {
+              return ChatAssistantActions.chatTopicUpdateSuccessful({
+                chatId: chat?.id ?? '',
+                topic: action.topic,
               });
             }),
             catchError((error) =>
               of(
-                ChatAssistantActions.chatCreationFailed({
+                ChatAssistantActions.chatTopicUpdateFailed({
                   error,
                 }),
               ),

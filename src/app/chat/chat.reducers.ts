@@ -3,6 +3,7 @@ import { ChatState } from './chat.state';
 import { chatAssistantReducer } from './pages/chat-assistant/chat-assistant.reducers';
 import { ChatAssistantState } from './pages/chat-assistant/chat-assistant.state';
 import { chatSearchReducer } from './pages/chat-search/chat-search.reducers';
+import { newChatReducer } from './shared/components/new-chat/new-chat.reducers';
 
 export const chatFeature = createFeature({
   name: 'chat',
@@ -10,6 +11,11 @@ export const chatFeature = createFeature({
     search: chatSearchReducer,
     assistant: chatAssistantReducer,
   }),
+});
+
+export const newChatFeature = createFeature({
+  name: 'newChat',
+  reducer: newChatReducer,
 });
 
 export interface GlobalChatAssistantState {

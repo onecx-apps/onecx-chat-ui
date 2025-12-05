@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { APP_INITIALIZER, Component, Inject, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AngularAuthModule } from '@onecx/angular-auth';
 import {
@@ -26,6 +27,7 @@ import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { ReplaySubject } from 'rxjs';
 import { ChatAssistantComponent } from 'src/app/chat/pages/chat-assistant/chat-assistant.component';
+import { ChatAssistantActions } from 'src/app/chat/pages/chat-assistant/chat-assistant.actions';
 import { ChatsInternal } from 'src/app/shared/generated';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -74,7 +76,6 @@ export class OneCXChatPanelComponent
   permissions: string[] = [];
   bookmarkLoadingError = false;
   loading = true;
-  sidebarVisible = false;
 
   @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {
     this.ocxInitRemoteComponent(config);
@@ -86,6 +87,7 @@ export class OneCXChatPanelComponent
     private readonly chatInternal: ChatInternalService,
     private readonly userService: UserService,
     private readonly translateService: TranslateService, // private readonly bookmarkApiUtils: BookmarkAPIUtilsService
+    private readonly store: Store,
   ) {
     this.translateService.use(this.userService.lang$.getValue());
   }
@@ -114,6 +116,6 @@ export class OneCXChatPanelComponent
   };
 
   showSidebar() {
-    this.sidebarVisible = true;
+    this.store.dispatch(ChatAssistantActions.chatPanelOpened());
   }
 }

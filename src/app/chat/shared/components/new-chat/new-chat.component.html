@@ -1,0 +1,47 @@
+<form [formGroup]="chatForm" 
+      (ngSubmit)="onCreate()"
+      class="new-chat-wrapper flex flex-column h-full bg-white p-3" 
+      style="min-height:95vh;height:95vh;box-sizing:border-box;display:flex;flex-direction:column;position:relative;overflow:visible;">
+  
+  <!-- Chat Name Section -->
+  @if (showChatNameInput) {
+    <div class="mb-4 desktop-only">
+      <label for="chatNameInput" class="text-gray-500 text-sm mb-2 d-block" style="margin-bottom:6px !important;display:block;">{{ 'CHAT.INPUT.CHAT_NAME' | translate }}</label>
+      <input id="chatNameInput"
+             type="text"
+             class="chat-name-input w-full p-2"
+             style="border-radius: 2px !important; border: 1px solid var(--input-border-color);"
+             formControlName="chatName"
+             [placeholder]="chatNamePlaceholder" />
+    </div>
+  }
+
+  <!-- Recipients Section -->
+  <div class="mb-4">
+    <label for="recipientInput" class="text-gray-500 text-sm mb-2 d-block" style="margin-bottom:6px !important;display:block;">
+      {{ recipientLabel }}
+    </label>
+    <div class="flex align-items-center mb-2">
+      <input id="recipientInput"
+             type="text"
+             class="recipient-input w-full p-2"
+             style="border-radius: 2px !important; border: 1px solid var(--input-border-color);"
+             formControlName="recipientInput"
+             [placeholder]="'CHAT.INPUT.RECIPIENT_PLACEHOLDER' | translate" />
+    </div>
+  </div>
+
+  <!-- Spacer -->
+  <div class="flex-grow-1"></div>
+
+  <!-- Create Button -->
+  <div class="create-btn-bar" 
+       style="position:absolute;bottom:0;left:0;right:0;padding:12px;display:flex;justify-content:flex-end;">
+    <button type="submit" 
+            class="create-btn py-2 px-4 text-white"
+            style="background: var(--chat-content-button); border:none; border-radius: 2px !important; padding: 1.5rem 5rem;"
+            [disabled]="chatForm.invalid">
+      {{ 'CHAT.ACTIONS.CREATE' | translate }}
+    </button>
+  </div>
+</form>

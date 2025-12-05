@@ -1,0 +1,13 @@
+<div class="new-direct-chat-wrapper h-full flex flex-column bg-white">
+  <app-chat-header
+    [title]="'New Direct Chat'"
+    [showBack]="true"
+    [showClose]="false"
+    (backClicked)="back.emit()"
+  ></app-chat-header>
+
+  <app-new-chat
+    [chatType]="'direct'"
+    (createChat)="onCreateDirectChat()"
+  ></app-new-chat>
+</div>

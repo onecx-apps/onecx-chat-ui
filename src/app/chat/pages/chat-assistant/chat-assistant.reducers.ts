@@ -14,6 +14,7 @@ export const initialState: ChatAssistantState = {
   currentChat: undefined,
   currentMessages: undefined,
   topic: 'chat-assistant',
+  sidebarVisible: false,
   selectedChatMode: null,
 };
 
@@ -108,6 +109,14 @@ export const chatAssistantReducer = createReducer(
       };
     }
   ),
+  on(ChatAssistantActions.chatPanelOpened, (state) => ({
+    ...state,
+    sidebarVisible: true,
+  })),
+  on(ChatAssistantActions.chatPanelClosed, (state) => ({
+    ...state,
+    sidebarVisible: false,
+  })),
   on(ChatAssistantActions.chatModeSelected, (state, action) => ({
     ...state,
     selectedChatMode: action.mode,

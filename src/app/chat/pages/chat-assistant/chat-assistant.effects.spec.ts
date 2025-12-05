@@ -398,6 +398,19 @@ describe('ChatAssistantEffects', () => {
         complete: () => done()
       });
     });
+
+    it('should delete chat and emit chatId as empty string when chat id is empty string', (done) => {
+      const emptyChat = { ...mockChat, id: '' };
+      store.overrideSelector(chatAssistantSelectors.selectCurrentChat, emptyChat);
+      chatInternalService.deleteChat.mockReturnValue(of({}));
+      const action = ChatAssistantActions.currentChatDeleted();
+      actions$ = of(action);
+      effects.deleteChat$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: '' }));
+        expect(chatInternalService.deleteChat).toHaveBeenCalledWith('');
+        done();
+      });
+    });
   });
 
   describe('updateChatTopic$', () => {
@@ -410,12 +423,13 @@ describe('ChatAssistantEffects', () => {
       const newTopic = 'Updated Topic';
       const updatedChat = { ...mockChat, topic: newTopic };
       chatInternalService.updateChat.mockReturnValue(of(updatedChat));
-      
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: newTopic });
       actions$ = of(action);
-
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatCreationSuccessful({ chat: updatedChat }));
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateSuccessful({ 
+          chatId: mockChat.id, 
+          topic: newTopic 
+        }));
         expect(chatInternalService.updateChat).toHaveBeenCalledWith('chat1', { topic: newTopic });
         done();
       });
@@ -424,12 +438,41 @@ describe('ChatAssistantEffects', () => {
     it('should handle error when updating chat topic fails', (done) => {
       const error = 'Failed to update chat topic';
       chatInternalService.updateChat.mockReturnValue(throwError(() => error));
-
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
       actions$ = of(action);
-
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatCreationFailed({ error }));
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateFailed({ error }));
+        done();
+      });
+    });
+
+    it('should update chat and emit chatId as empty string when chat is undefined', (done) => {
+      store.overrideSelector(chatAssistantSelectors.selectCurrentChat, undefined);
+      chatInternalService.updateChat.mockReturnValue(of({}));
+      const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
+      actions$ = of(action);
+      effects.updateChatTopic$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateSuccessful({ 
+          chatId: '', 
+          topic: 'New Topic' 
+        }));
+        expect(chatInternalService.updateChat).toHaveBeenCalledWith('', { topic: 'New Topic' });
+        done();
+      });
+    });
+
+    it('should update chat and emit chatId as empty string when chat id is empty string', (done) => {
+      const emptyChat = { ...mockChat, id: '' };
+      store.overrideSelector(chatAssistantSelectors.selectCurrentChat, emptyChat);
+      chatInternalService.updateChat.mockReturnValue(of(emptyChat));
+      const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
+      actions$ = of(action);
+      effects.updateChatTopic$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateSuccessful({ 
+          chatId: '', 
+          topic: 'New Topic' 
+        }));
+        expect(chatInternalService.updateChat).toHaveBeenCalledWith('', { topic: 'New Topic' });
         done();
       });
     });
