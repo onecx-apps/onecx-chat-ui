@@ -6,11 +6,8 @@
     (backClicked)="back.emit()"
   ></app-chat-header>
 
-  <app-chat-new-content
-    [chatName$]="chatName$"
-    [recipientInput$]="recipientInput$"
-    [recipient$]="recipientInput$"
-    [hideAddButton]="true"
-    (recipientInputChange)="onRecipientInputChange($event)"
-  ></app-chat-new-content>
+  <app-new-chat
+    [chatType]="'direct'"
+    (createChat)="onCreateDirectChat()"
+  ></app-new-chat>
 </div>

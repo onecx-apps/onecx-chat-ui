@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
   HostListener,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,7 +11,7 @@ import { MenuItem, SharedModule } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { SidebarModule } from 'primeng/sidebar';
 import { TooltipModule } from 'primeng/tooltip';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, firstValueFrom, map, Observable } from 'rxjs';
 import { ChatListComponent } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatComponent } from 'src/app/shared/components/chat/chat.component';
 import { Chat } from 'src/app/shared/generated';
@@ -52,26 +47,10 @@ import { NewDirectChatComponent } from '../new-direct-chat/new-direct-chat.compo
     NewDirectChatComponent,
   ],
 })
-export class ChatAssistantComponent implements OnChanges {
+export class ChatAssistantComponent {
   environment = environment;
   viewModel$: Observable<ChatAssistantViewModel>;
   menuItems: Observable<MenuItem[]>;
-
-  _sidebarVisible = false;
-  selectedChatMode: string | null = null;
-
-  @Input()
-  set sidebarVisible(val: boolean) {
-    if (val) {
-      this.store.dispatch(ChatAssistantActions.chatPanelOpened());
-    }
-    this._sidebarVisible = val;
-  }
-  get sidebarVisible(): boolean {
-    return this._sidebarVisible;
-  }
-
-  @Output() sidebarVisibleChange = new EventEmitter<boolean>();
 
   constructor(
     private readonly store: Store,
@@ -114,40 +93,37 @@ export class ChatAssistantComponent implements OnChanges {
     );
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['sidebarVisible']) {
-      this.sidebarVisibleChange.emit(this.sidebarVisible);
+  setSidebarVisible(val: boolean) {
+    if (val) {
+      this.store.dispatch(ChatAssistantActions.chatPanelOpened());
+    } else {
+      this.store.dispatch(ChatAssistantActions.chatPanelClosed());
     }
   }
 
   // NEW METHODS ONECX COMPANION
   selectChatMode(mode: string) {
     if (mode === 'close') {
-      this._sidebarVisible = false;
-      this.sidebarVisibleChange.emit(false);
       this.store.dispatch(ChatAssistantActions.chatPanelClosed());
-      this.selectedChatMode = null;
+      this.store.dispatch(ChatAssistantActions.chatModeDeselected());
       return;
     }
     this.store.dispatch(ChatAssistantActions.chatModeSelected({ mode }));
-    this.selectedChatMode = mode;
   }
 
   goBack() {
     this.store.dispatch(ChatAssistantActions.chatModeDeselected());
-    this.selectedChatMode = null;
   }
 
   closeSidebar() {
-    this._sidebarVisible = false;
-    this.sidebarVisibleChange.emit(false);
     this.store.dispatch(ChatAssistantActions.chatPanelClosed());
-    this.selectedChatMode = null;
+    this.store.dispatch(ChatAssistantActions.chatModeDeselected());
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    if (!this._sidebarVisible) {
+  async onDocumentClick(event: MouseEvent) {
+    const viewModel = await firstValueFrom(this.viewModel$);
+    if (!viewModel.sidebarVisible) {
       return;
     }
 

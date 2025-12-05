@@ -144,13 +144,14 @@ export class ChatAssistantEffects {
           })
           .pipe(
             map(() => {
-              return ChatAssistantActions.chatDeletionSuccessful({
+              return ChatAssistantActions.chatTopicUpdateSuccessful({
                 chatId: chat?.id ?? '',
+                topic: action.topic,
               });
             }),
             catchError((error) =>
               of(
-                ChatAssistantActions.chatDeletionFailed({
+                ChatAssistantActions.chatTopicUpdateFailed({
                   error,
                 }),
               ),

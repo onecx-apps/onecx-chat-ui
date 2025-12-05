@@ -426,7 +426,10 @@ describe('ChatAssistantEffects', () => {
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: newTopic });
       actions$ = of(action);
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: updatedChat.id }));
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateSuccessful({ 
+          chatId: mockChat.id, 
+          topic: newTopic 
+        }));
         expect(chatInternalService.updateChat).toHaveBeenCalledWith('chat1', { topic: newTopic });
         done();
       });
@@ -438,7 +441,7 @@ describe('ChatAssistantEffects', () => {
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
       actions$ = of(action);
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionFailed({ error }));
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateFailed({ error }));
         done();
       });
     });
@@ -449,7 +452,10 @@ describe('ChatAssistantEffects', () => {
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
       actions$ = of(action);
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: '' }));
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateSuccessful({ 
+          chatId: '', 
+          topic: 'New Topic' 
+        }));
         expect(chatInternalService.updateChat).toHaveBeenCalledWith('', { topic: 'New Topic' });
         done();
       });
@@ -462,7 +468,10 @@ describe('ChatAssistantEffects', () => {
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: 'New Topic' });
       actions$ = of(action);
       effects.updateChatTopic$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: '' }));
+        expect(result).toEqual(ChatAssistantActions.chatTopicUpdateSuccessful({ 
+          chatId: '', 
+          topic: 'New Topic' 
+        }));
         expect(chatInternalService.updateChat).toHaveBeenCalledWith('', { topic: 'New Topic' });
         done();
       });

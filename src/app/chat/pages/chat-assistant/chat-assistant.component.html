@@ -1,19 +1,19 @@
-<app-chat-slider
-  [(visible)]="_sidebarVisible"
-  [modal]="false"
-  [position]="'right'"
-  [styleClass]="'onecx-chat-sidebar p-0'"
->
-  @let vm = viewModel$ | async;
-  @if (vm) {
+@let vm = viewModel$ | async;
+@if (vm) {
+  <app-chat-slider
+    [visible]="vm.sidebarVisible"
+    [modal]="false"
+    [position]="'right'"
+    [styleClass]="'onecx-chat-sidebar p-0'"
+  >
     <div class="onecx-companion-container">
-      @if (!selectedChatMode) {
+      @if (!vm.selectedChatMode) {
         <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
       }
-      @if (selectedChatMode === 'direct') {
-        <app-new-direct-chat (back)="selectedChatMode = null"></app-new-direct-chat>
+      @if (vm.selectedChatMode === 'direct') {
+        <app-new-direct-chat (back)="goBack()"></app-new-direct-chat>
       }
-      @if (selectedChatMode && selectedChatMode !== 'direct') {
+      @if (vm.selectedChatMode && vm.selectedChatMode !== 'direct') {
         <div class="chat-interface" [@slideIn]>
           <app-chat-header
             [title]="vm.chatTitleKey | translate"
@@ -21,7 +21,7 @@
             [showClose]="false"
             (backClicked)="goBack()"
           ></app-chat-header>
-          @if (selectedChatMode === 'ai') {
+          @if (vm.selectedChatMode === 'ai') {
             <app-chat-list
               [chats]="vm.chats"
               [loading]="vm.chats === undefined"
@@ -38,8 +38,8 @@
         </div>
       }
     </div>
-  }
-</app-chat-slider>
+  </app-chat-slider>
+}
 <div class="layout-topbar-item">
   <p-button
     styleClass="chat-button p-button-rounded p-button-text"
@@ -47,7 +47,7 @@
     [pTooltip]="'CHAT.TITLE_AI' | translate"
     tooltipPosition="top"
     tooltipEvent="hover"
-    (onClick)="_sidebarVisible = true"
+    (onClick)="setSidebarVisible(true)"
   >
     <i class="pi pi-comments fs-xlarge p-button-icon" style="background: transparent; border: none;"></i>
   </p-button>

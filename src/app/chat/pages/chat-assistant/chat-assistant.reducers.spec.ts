@@ -22,6 +22,7 @@ describe('ChatAssistantReducer', () => {
         currentChat: undefined,
         currentMessages: undefined,
         topic: 'chat-assistant',
+        sidebarVisible: false,
         selectedChatMode: null,
       });
     });
@@ -454,6 +455,29 @@ describe('ChatAssistantReducer', () => {
       expect(state.chats[0]).toEqual(currentChat);
       expect(state.currentChat).toBeUndefined();
       expect(state.currentMessages).toEqual([]);
+    });
+  });
+
+  describe('chatPanelOpened action', () => {
+    it('should set sidebarVisible to true when chatPanelOpened is dispatched', () => {
+      const action = ChatAssistantActions.chatPanelOpened();
+      const state = chatAssistantReducer(initialState, action);
+
+      expect(state.sidebarVisible).toBe(true);
+    });
+  });
+
+  describe('chatPanelClosed action', () => {
+    it('should set sidebarVisible to false when chatPanelClosed is dispatched', () => {
+      const currentState: ChatAssistantState = {
+        ...initialState,
+        sidebarVisible: true,
+      };
+
+      const action = ChatAssistantActions.chatPanelClosed();
+      const state = chatAssistantReducer(currentState, action);
+
+      expect(state.sidebarVisible).toBe(false);
     });
   });
 
