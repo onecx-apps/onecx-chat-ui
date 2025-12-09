@@ -4,37 +4,10 @@
   [position]="'right'"
   [styleClass]="'onecx-chat-sidebar p-0'"
 >
-  @let vm = viewModel$ | async;
-  @if (vm) {
-    <div class="onecx-companion-container">
-      @if (!selectedChatMode) {
-        <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
-      } @else {
-        <div class="chat-interface" [@slideIn]>
-          <app-chat-header
-            [title]="vm.chatTitleKey | translate"
-            [showBack]="true"
-            [showClose]="false"
-            (backClicked)="goBack()"
-          ></app-chat-header>
-          @if (selectedChatMode === 'ai') {
-            <app-chat-list
-              [chats]="vm.chats"
-              [loading]="vm.chats === undefined"
-              [selectedChat]="vm.currentChat"
-              (chatSelected)="chatSelected($event)"
-              [menuItems]="(menuItems | async) ?? []"
-            ></app-chat-list>
-          }
-          <app-chat
-            [chatMessages]="vm.currentMessages ?? []"
-            (sendMessage)="sendMessage($event)"
-            (retrySendMessage)="sendMessage($event)"
-          ></app-chat>
-        </div>
-      }
-    </div>
-  }
+  <div class="onecx-companion-container">
+    <!-- Navigator manages all page navigation -->
+    <app-navigator></app-navigator>
+  </div>
 </app-chat-slider>
 <div class="layout-topbar-item">
   <p-button

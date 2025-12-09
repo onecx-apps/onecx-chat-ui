@@ -1,0 +1,56 @@
+<div class="navigator-container">
+  @let currentPage = (currentPage$ | async);
+  
+  <!-- Initial Screen (mode selection) -->
+  @if (currentPage === null) {
+      <app-chat-initial-screen
+        (selectMode)="onChatModeSelected($event)"
+      ></app-chat-initial-screen>
+  }
+  
+  <!-- New Chat Form -->
+  @if (currentPage === 'newChat') {
+      <app-chat-header
+        [title]="'New Chat'"
+        [showBack]="true"
+        (backClicked)="onBackFromNewChat()"
+      ></app-chat-header>
+      <div class="flex-grow-1 overflow-auto">
+        <app-chat-settings></app-chat-settings>
+      </div>
+    }
+    
+    <!-- Chat List -->
+    @if (currentPage === 'chatList') {
+      <app-chat-header
+        [title]="'Chat List'"
+        [showBack]="true"
+        (backClicked)="onBackFromChatList()"
+      ></app-chat-header>
+      <div class="flex-grow-1 overflow-auto">
+        <app-chat-list
+          [chats]="(chats$ | async) || []"
+          [selectedChat]="(viewModel$ | async)?.currentChat"
+          [loading]="(viewModel$ | async)?.isLoadingChats || false"
+          [menuItems]="menuItems"
+          (chatSelected)="onChatSelected($event)"
+        ></app-chat-list>
+      </div>
+    }
+    
+    <!-- Chat View -->
+    @if (currentPage === 'chat') {
+      <app-chat-header
+        [title]="(viewModel$ | async)?.currentChat?.topic || 'Chat'"
+        [showBack]="true"
+        (backClicked)="onBackFromChat()"
+      ></app-chat-header>
+      <div class="flex-grow-1 overflow-auto">
+        <app-chat
+          [chatMessages]="(chatMessages$ | async) || []"
+          [sendMessageDisabled]="(viewModel$ | async)?.isLoadingMessages || false"
+          (sendMessage)="onMessageSent($event)"
+        ></app-chat>
+      </div>
+    }
+</div>

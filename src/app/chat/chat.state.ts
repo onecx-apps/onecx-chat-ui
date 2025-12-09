@@ -1,6 +1,7 @@
-import { ChatAssistantState } from './pages/chat-assistant/chat-assistant.state';
 import { ChatSearchState } from './pages/chat-search/chat-search.state';
+import { ChatSettingsState } from './shared/components/chat-settings/chat-settings.state';
+
 export interface ChatState {
   search: ChatSearchState;
-  assistant: ChatAssistantState;
+  chatSettings: ChatSettingsState;
 }

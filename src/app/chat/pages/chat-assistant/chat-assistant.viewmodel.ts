@@ -6,4 +6,6 @@ export interface ChatAssistantViewModel {
   currentChat: Chat | undefined;
   currentMessages: ChatMessage[] | undefined;
   chatTitleKey: string;
+  currentPage: 'chatList' | 'chat' | 'newChat' | null;
+  selectedChatMode: string | null;
 }

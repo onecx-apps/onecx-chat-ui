@@ -1,24 +1,22 @@
-import { combineReducers, createFeature } from '@ngrx/store';
-import { ChatState } from './chat.state';
+import { createFeature } from '@ngrx/store';
 import { chatAssistantReducer } from './pages/chat-assistant/chat-assistant.reducers';
-import { ChatAssistantState } from './pages/chat-assistant/chat-assistant.state';
 import { chatSearchReducer } from './pages/chat-search/chat-search.reducers';
+import { chatSettingsReducer } from './shared/components/chat-settings/chat-settings.reducers';
 
-export const chatFeature = createFeature({
-  name: 'chat',
-  reducer: combineReducers<ChatState>({
-    search: chatSearchReducer,
-    assistant: chatAssistantReducer,
-  }),
+// chatAssistant feature
+export const chatAssistantFeature = createFeature({
+  name: 'chatAssistant',
+  reducer: chatAssistantReducer,
 });
 
-export interface GlobalChatAssistantState {
-  assistant: ChatAssistantState;
-}
+// chatSearch feature
+export const chatSearchFeature = createFeature({
+  name: 'chatSearch',
+  reducer: chatSearchReducer,
+});
 
-export const chatAssistantFeature = createFeature({
-  name: 'chat',
-  reducer: combineReducers<GlobalChatAssistantState>({
-    assistant: chatAssistantReducer,
-  }),
+// chatSettings feature
+export const chatSettingsFeature = createFeature({
+  name: 'chatSettings',
+  reducer: chatSettingsReducer,
 });

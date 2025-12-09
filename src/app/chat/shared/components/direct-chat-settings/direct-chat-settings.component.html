@@ -1,0 +1,15 @@
+<div [formGroup]="formGroup" class="direct-settings-section">
+ <!-- Recipients Section -->
+  <div class="mb-4">
+    <label for="recipientInput" class="form-label">
+      {{ 'CHAT.INPUT.RECIPIENT' | translate }}
+    </label>
+    <div class="flex align-items-center mb-2">
+      <input id="recipientInput"
+             type="text"
+             class="form-input w-full p-2"
+             formControlName="recipientInput"
+             [placeholder]="'CHAT.INPUT.RECIPIENT_PLACEHOLDER' | translate" />
+    </div>
+  </div>
+</div>

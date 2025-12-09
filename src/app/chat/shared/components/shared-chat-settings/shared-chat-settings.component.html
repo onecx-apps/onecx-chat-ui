@@ -1,0 +1,12 @@
+<div class="shared-settings mb-4">
+  <label for="chatNameInput" class="form-label">
+    {{ 'CHAT.INPUT.CHAT_NAME' | translate }}
+  </label>
+  <input 
+    id="chatNameInput"
+    type="text"
+    class="form-input w-full p-2"
+    [formControl]="$any(chatNameControl)"
+    [placeholder]="chatNamePlaceholder" 
+  />
+</div>

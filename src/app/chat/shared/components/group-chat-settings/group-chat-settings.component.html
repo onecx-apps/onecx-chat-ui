@@ -1,0 +1,43 @@
+<div [formGroup]="formGroup" class="group-settings-section">
+ <!-- Recipients Section -->
+  <div class="mb-4">
+    <label for="recipientInput" class="text-gray-500 text-sm mb-2 d-block" style="margin-bottom:6px !important;display:block;">
+      {{ 'CHAT.INPUT.RECIPIENT' | translate }}
+    </label>
+    <div class="flex align-items-center mb-2" style="position:relative;">
+      <input id="recipientInput"
+             type="text"
+             class="recipient-input w-full p-2"
+             style="padding-right:2.5rem; border-radius: 2px !important; border: 1px solid var(--input-border-color);"
+             [formControl]="recipientInputControl"
+             [placeholder]="'CHAT.INPUT.RECIPIENT_PLACEHOLDER' | translate" />
+      @if (showAddButton) {
+        <button type="button"
+                class="add-recipient-btn"
+                style="background:none;border:none;box-shadow:none;padding:0;position:absolute;right:8px;top:50%;transform:translateY(-50%);"
+                (click)="onAddRecipient()">
+          <i class="pi pi-plus"></i>
+        </button>
+      }
+    </div>
+   
+    <!-- Recipients List (for group chats) -->
+    @if (recipients$ | async; as recipients) {
+      <div class="desktop-only">
+        @for (recipient of recipients; track recipient; let i = $index) {
+          <div class="flex align-items-center mb-1" 
+               [style.padding]="'4px 0'"
+               [style.border-bottom]="i < recipients.length - 1 ? '1px solid var(--input-border-color)' : 'none'">
+            <span class="flex-grow-1">{{ recipient }}</span>
+            <button type="button"
+                    class="remove-recipient-btn"
+                    style="background:none;border:none;padding:4px;cursor:pointer;"
+                    (click)="onRemoveRecipient(i)">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

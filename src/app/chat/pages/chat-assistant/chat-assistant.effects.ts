@@ -8,6 +8,7 @@ import { filterForNavigatedTo } from '@onecx/ngrx-accelerator';
 import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
+  Chat,
   ChatsInternal,
   ChatType,
   MessageType,
@@ -66,6 +67,34 @@ export class ChatAssistantEffects {
           catchError((error) =>
             of(
               ChatAssistantActions.chatsLoadingFailed({
+                error,
+              }),
+            ),
+          ),
+        );
+      }),
+    );
+  });
+
+  chatChosen$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(ChatAssistantActions.chatChosen),
+      filter((action) => action.chatId !== 'new'),
+      switchMap((action) => {
+        return this.chatInternalService.getChatMessages(action.chatId).pipe(
+          switchMap((messages) => {
+            return this.chatInternalService.getChatById(action.chatId).pipe(
+              map((chat: Chat) => {
+                return ChatAssistantActions.chatDetailsReceived({
+                  chat,
+                  messages,
+                });
+              }),
+            );
+          }),
+          catchError((error) =>
+            of(
+              ChatAssistantActions.chatDetailsLoadingFailed({
                 error,
               }),
             ),

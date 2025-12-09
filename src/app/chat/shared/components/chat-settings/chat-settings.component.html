@@ -1,0 +1,40 @@
+<form [formGroup]="chatForm" 
+      (ngSubmit)="onCreate()"
+      class="new-chat-wrapper flex flex-column h-full bg-white p-3" 
+      style="min-height:95vh;height:95vh;box-sizing:border-box;display:flex;flex-direction:column;position:relative;overflow:visible;">
+
+  <!-- Shared Settings (ALWAYS visible - used by all chat types) -->
+  <app-shared-chat-settings
+    [formGroup]="chatForm"
+    [chatNamePlaceholder]="(chatNamePlaceholder$ | async) || ''"
+  ></app-shared-chat-settings>
+
+  <!-- Type-Specific Settings (conditional based on chat mode) -->
+  @let settingsType = (settingsType$ | async);
+  
+  @if (settingsType === 'ai') {
+    <app-ai-chat-settings [formGroup]="chatForm"></app-ai-chat-settings>
+  }
+
+  @if (settingsType === 'direct') {
+    <app-direct-chat-settings [formGroup]="chatForm"></app-direct-chat-settings>
+  }
+
+  @if (settingsType === 'group') {
+    <app-group-chat-settings [formGroup]="chatForm"></app-group-chat-settings>
+  }
+
+  <!-- Spacer -->
+  <div class="flex-grow-1"></div>
+
+  <!-- Create Button -->
+  <div class="create-btn-bar" 
+       style="position:absolute;bottom:0;left:0;right:0;padding:12px;display:flex;justify-content:flex-end;">
+    <button type="submit" 
+            class="create-btn py-2 px-4 text-white"
+            style="background: var(--chat-content-button); border: 1px solid var(--input-border-color); border-radius: 2px !important; padding: 1.5rem 5rem;"
+            [disabled]="chatForm.invalid">
+      {{ 'CHAT.ACTIONS.CREATE' | translate }}
+    </button>
+  </div>
+</form>

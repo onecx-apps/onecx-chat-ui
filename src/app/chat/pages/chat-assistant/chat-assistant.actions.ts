@@ -47,6 +47,16 @@ export const ChatAssistantActions = createActionGroup({
     'chat selected': props<{
       chat: Chat;
     }>(),
+    'chat chosen': props<{
+      chatId: string;
+    }>(),
+    'chat details received': props<{
+      chat: Chat;
+      messages: Message[];
+    }>(),
+    'chat details loading failed': props<{
+      error: string | null;
+    }>(),
     'update current chat topic': props<{
       topic: string;
     }>(),
@@ -58,5 +68,13 @@ export const ChatAssistantActions = createActionGroup({
     }>(),
     'chat mode selected': props<{ mode: string }>(),
     'chat mode deselected': emptyProps(),
+    'new chat button clicked': emptyProps(),
+    'navigate to chat list': emptyProps(),
+    'chat create button clicked': props<{
+      chatName: string;
+      chatMode: string;
+      recipientUserId?: string;
+      participants?: string[];
+    }>(),
   },
 });
