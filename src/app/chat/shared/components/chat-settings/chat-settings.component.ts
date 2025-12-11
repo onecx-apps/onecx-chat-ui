@@ -39,7 +39,6 @@ export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.initializeForm();
-    this.updateFormForType(this.settingsType);
     this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
   }
 
@@ -49,13 +48,8 @@ export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.chatForm) {
-      if (changes['settingsType']) {
-        this.updateFormForType(this.settingsType);
-      }
-      if (changes['chatNamePlaceholder']) {
-        this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
-      }
+    if (this.chatForm && changes['chatNamePlaceholder']) {
+      this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
     }
   }
 
@@ -63,45 +57,6 @@ export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
     this.chatForm = new FormGroup({
       chatName: new FormControl('', [Validators.maxLength(50)]),
     });
-  }
-
-  private updateFormForType(type: ChatSettingsType) {
-    const recipientInputExists = this.chatForm.contains('recipientInput');
-    const recipientsExists = this.chatForm.contains('recipients');
-    if (type === 'direct') {
-      if (recipientsExists) {
-        this.chatForm.removeControl('recipients');
-      }
-      if (!recipientInputExists) {
-        this.chatForm.addControl(
-          'recipientInput',
-          new FormControl('', [Validators.required])
-        );
-      }
-    } else if (type === 'group') {
-      if (recipientInputExists) {
-        this.chatForm.removeControl('recipientInput');
-      }
-      if (!recipientsExists) {
-        this.chatForm.addControl(
-          'recipients',
-          new FormControl([], [
-            Validators.required,
-            (control) => {
-              const value = control.value;
-              return Array.isArray(value) && value.length > 0 ? null : { minLength: true };
-            },
-          ])
-        );
-      }
-    } else {
-      if (recipientInputExists) {
-        this.chatForm.removeControl('recipientInput');
-      }
-      if (recipientsExists) {
-        this.chatForm.removeControl('recipients');
-      }
-    }
   }
 
   onCreate(): void {

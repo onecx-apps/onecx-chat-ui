@@ -110,8 +110,6 @@ export class ChatAssistantComponent implements OnChanges {
       recipientUserId: formValue.recipientInput,
       participants: formValue.recipients,
     }));
-    this.currentPage = 'initial';
-    this.currentChatMode = null;
   }
 
   @HostListener('document:click', ['$event'])

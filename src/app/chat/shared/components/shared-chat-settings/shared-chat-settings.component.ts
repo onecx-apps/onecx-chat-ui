@@ -11,10 +11,10 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './shared-chat-settings.component.scss'
 })
 export class SharedChatSettingsComponent {
-  @Input() formGroup!: FormGroup;
+  @Input() form!: FormGroup;
   @Input() chatNamePlaceholder = '';
   
   get chatNameControl() {
-    return this.formGroup.get('chatName');
+    return this.form.get('chatName');
   }
 }

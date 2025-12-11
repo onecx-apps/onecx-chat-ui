@@ -234,10 +234,6 @@ const baseChatAssistantReducer = createReducer(
           participants: action.participants,
         },
       },
-      chatList: {
-        ...state.chatList,
-        selectedChatMode: null,
-      },
     };
   })
 );

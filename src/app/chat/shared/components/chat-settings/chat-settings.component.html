@@ -5,17 +5,17 @@
 
   <!-- Shared Settings (ALWAYS visible - used by all chat types) -->
   <app-shared-chat-settings
-    [formGroup]="chatForm"
+    [form]="chatForm"
     [chatNamePlaceholder]="chatNamePlaceholder"
   ></app-shared-chat-settings>
 
   <!-- Type-Specific Settings (conditional based on chat mode) -->
   @if (settingsType === 'direct') {
-    <app-direct-chat-settings [formGroup]="chatForm"></app-direct-chat-settings>
+    <app-direct-chat-settings [form]="chatForm"></app-direct-chat-settings>
   }
 
   @if (settingsType === 'group') {
-    <app-group-chat-settings [formGroup]="chatForm"></app-group-chat-settings>
+    <app-group-chat-settings [form]="chatForm"></app-group-chat-settings>
   }
 
   <!-- Spacer -->
