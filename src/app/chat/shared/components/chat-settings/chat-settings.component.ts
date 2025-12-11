@@ -34,7 +34,7 @@ export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() chatNamePlaceholder = '';
   @Output() create = new EventEmitter<ChatSettingsFormValue>();
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
   chatForm!: FormGroup;
 
   ngOnInit() {

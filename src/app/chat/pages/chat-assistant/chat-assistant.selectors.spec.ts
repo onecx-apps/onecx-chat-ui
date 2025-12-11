@@ -33,7 +33,6 @@ describe('ChatAssistant Selectors', () => {
     type: ChatType.AiChat
   };
 
-  // Poprawiony baseMockState - tylko selectedChatMode jako string
   const selectedChatMode = 'ai';
 
   describe('chatAssistantSelectors', () => {

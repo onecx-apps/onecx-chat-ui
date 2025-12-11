@@ -362,5 +362,23 @@ describe('ChatAssistantComponent', () => {
         participants: ['user1', 'user2'],
       }));
     });
+
+    it('should use default chatMode "ai" if currentChatMode is null', () => {
+      jest.spyOn(store, 'dispatch');
+      component.currentChatMode = null;
+      component.chatNamePlaceholder = 'PLACEHOLDER';
+      const formValue = {
+        chatName: 'TestName',
+        recipientInput: 'user1',
+        recipients: ['user1', 'user2'],
+      };
+      component.onCreateChat(formValue as any);
+      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatCreateButtonClicked({
+        chatName: 'TestName',
+        chatMode: 'ai',
+        recipientUserId: 'user1',
+        participants: ['user1', 'user2'],
+      }));
+    });
   });
 });

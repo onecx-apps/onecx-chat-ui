@@ -82,9 +82,7 @@ describe('ChatSettingsComponent', () => {
 
   it('should mark all controls as touched if form is invalid onCreate (multiple controls)', () => {
     component.ngOnInit();
-    // Dodaj dodatkową kontrolkę z required
     component.chatForm.addControl('extra', new FormControl('', Validators.required));
-    // Obie kontrolki puste, więc formularz nieprawidłowy
     const emitSpy = jest.spyOn(component.create, 'emit');
     component.onCreate();
     expect(component.chatForm.get('chatName')?.touched).toBe(true);
