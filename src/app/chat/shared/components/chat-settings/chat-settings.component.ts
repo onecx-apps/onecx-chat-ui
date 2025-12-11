@@ -31,7 +31,7 @@ export interface ChatSettingsFormValue {
 })
 export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() settingsType: ChatSettingsType = 'ai';
-  @Input() chatNamePlaceholder: string = '';
+  @Input() chatNamePlaceholder = '';
   @Output() create = new EventEmitter<ChatSettingsFormValue>();
 
   private destroy$ = new Subject<void>();
@@ -55,7 +55,7 @@ export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
 
   private initializeForm() {
     this.chatForm = new FormGroup({
-      chatName: new FormControl('', [Validators.maxLength(50)]),
+      chatName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
     });
   }
 

@@ -196,7 +196,7 @@ export class ChatAssistantEffects {
         this.store.select(chatAssistantSelectors.selectUser),
         this.store.select(chatAssistantSelectors.selectTopic),
       ]),
-      filter(([, user]) => user !== undefined),
+      filter(([, user]) => user != null),
       switchMap(([, user, topic]) => {
         return this.createChat(user as ChatUser, topic).pipe(
           map((chat) => {

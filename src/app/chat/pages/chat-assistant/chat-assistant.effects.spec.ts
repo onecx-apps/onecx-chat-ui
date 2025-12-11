@@ -478,7 +478,7 @@ describe('ChatAssistantEffects', () => {
     });
 
     it('should not create chat when user is undefined', (done) => {
-      store.overrideSelector(chatAssistantSelectors.selectUser, undefined);
+      store.overrideSelector(chatAssistantSelectors.selectUser, null);
 
       const action = ChatAssistantActions.chatCreated();
       actions$ = of(action);
@@ -656,6 +656,62 @@ describe('ChatAssistantEffects', () => {
           ]
         });
         done();
+      });
+    });
+  });
+
+  describe('chatChosen$', () => {
+    beforeEach(() => {
+      chatInternalService.getChatMessages.mockReturnValue(of(mockMessages));
+      chatInternalService.getChatById = jest.fn().mockReturnValue(of(mockChat));
+    });
+
+    it('should dispatch chatDetailsReceived when chatChosen is dispatched and chatId is valid', (done) => {
+      const action = ChatAssistantActions.chatChosen({ chatId: 'chat1' });
+      actions$ = of(action);
+
+      effects.chatChosen$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatDetailsReceived({
+          chat: mockChat,
+          messages: mockMessages
+        }));
+        expect(chatInternalService.getChatMessages).toHaveBeenCalledWith('chat1');
+        expect(chatInternalService.getChatById).toHaveBeenCalledWith('chat1');
+        done();
+      });
+    });
+
+    it('should dispatch chatDetailsLoadingFailed when getChatMessages fails', (done) => {
+      const error = 'Failed to load messages';
+      chatInternalService.getChatMessages.mockReturnValue(throwError(() => error));
+      const action = ChatAssistantActions.chatChosen({ chatId: 'chat1' });
+      actions$ = of(action);
+
+      effects.chatChosen$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatDetailsLoadingFailed({ error }));
+        done();
+      });
+    });
+
+    it('should dispatch chatDetailsLoadingFailed when getChatById fails', (done) => {
+      const error = 'Failed to load chat';
+      chatInternalService.getChatById = jest.fn().mockReturnValue(throwError(() => error));
+      const action = ChatAssistantActions.chatChosen({ chatId: 'chat1' });
+      actions$ = of(action);
+
+      effects.chatChosen$.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatDetailsLoadingFailed({ error }));
+        done();
+      });
+    });
+
+    it('should not emit when chatId is "new"', (done) => {
+      const action = ChatAssistantActions.chatChosen({ chatId: 'new' });
+      actions$ = of(action);
+
+      effects.chatChosen$.pipe(take(1)).subscribe({
+        next: () => fail('Should not emit'),
+        complete: () => done()
       });
     });
   });

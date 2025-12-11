@@ -27,6 +27,7 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.recipients = this.form.get('recipients')?.value || [];
     if (!this.form.contains('recipients')) {
       this.form.addControl(
         'recipients',
@@ -39,8 +40,6 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
         ])
       );
     }
-    
-    this.recipients = this.form.get('recipients')?.value || [];
     this.recipientInputControl.setValue('');
   }
 
