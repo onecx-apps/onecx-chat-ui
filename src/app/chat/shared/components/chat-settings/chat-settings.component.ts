@@ -1,13 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
-import { ChatAssistantActions } from '../../../pages/chat-assistant/chat-assistant.actions';
-import { selectSelectedChatMode } from '../../../pages/chat-assistant/chat-assistant.selectors';
-import { selectChatNamePlaceholder } from './chat-settings.selectors';
+import { Subject } from 'rxjs';
 import { SharedChatSettingsComponent } from '../shared-chat-settings/shared-chat-settings.component';
 import { DirectChatSettingsComponent } from '../direct-chat-settings/direct-chat-settings.component';
 import { GroupChatSettingsComponent } from '../group-chat-settings/group-chat-settings.component';
@@ -20,16 +15,6 @@ export interface ChatSettingsFormValue {
   recipients?: string[];
 }
 
-/**
- * SMART COMPONENT: Chat Settings (Aggregator)
- * 
- * Structure:
- * - ALWAYS renders: SharedChatSettingsComponent (DUMB) - common settings (chat name)
- * - CONDITIONALLY renders based on chat mode:
- *   - AiChatSettingsComponent (DUMB) - when mode = 'ai'
- *   - DirectChatSettingsComponent (DUMB) - when mode = 'direct'
- *   - GroupChatSettingsComponent (DUMB) - when mode = 'group'
- */
 @Component({
   selector: 'app-chat-settings',
   standalone: true,
@@ -44,43 +29,34 @@ export interface ChatSettingsFormValue {
   templateUrl: './chat-settings.component.html',
   styleUrls: ['./chat-settings.component.scss'],
 })
-export class ChatSettingsComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-  
-  settingsType$: Observable<ChatSettingsType>;
-  chatNamePlaceholder$: Observable<string>;
-  currentChatMode: ChatSettingsType = 'ai';
-  
-  chatForm!: FormGroup;
+export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() settingsType: ChatSettingsType = 'ai';
+  @Input() chatNamePlaceholder: string = '';
+  @Output() create = new EventEmitter<ChatSettingsFormValue>();
 
-  constructor(private store: Store) {
-    this.settingsType$ = this.store.select(selectSelectedChatMode).pipe(
-      map(mode => (mode as ChatSettingsType) || 'ai')
-    );
-    
-    this.chatNamePlaceholder$ = this.store.select(selectChatNamePlaceholder);
-  }
+  private destroy$ = new Subject<void>();
+  chatForm!: FormGroup;
 
   ngOnInit() {
     this.initializeForm();
-    
-    this.settingsType$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(type => {
-        this.currentChatMode = type;
-        this.updateFormForType(type);
-      });
-    
-    this.chatNamePlaceholder$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(placeholder => {
-        this.chatForm.patchValue({ chatName: placeholder });
-      });
+    this.updateFormForType(this.settingsType);
+    this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
   }
-  
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.chatForm) {
+      if (changes['settingsType']) {
+        this.updateFormForType(this.settingsType);
+      }
+      if (changes['chatNamePlaceholder']) {
+        this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
+      }
+    }
   }
 
   private initializeForm() {
@@ -88,11 +64,10 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
       chatName: new FormControl('', [Validators.maxLength(50)]),
     });
   }
-  
+
   private updateFormForType(type: ChatSettingsType) {
     const recipientInputExists = this.chatForm.contains('recipientInput');
     const recipientsExists = this.chatForm.contains('recipients');
-    
     if (type === 'direct') {
       if (recipientsExists) {
         this.chatForm.removeControl('recipients');
@@ -115,7 +90,7 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
             (control) => {
               const value = control.value;
               return Array.isArray(value) && value.length > 0 ? null : { minLength: true };
-            }
+            },
           ])
         );
       }
@@ -134,16 +109,8 @@ export class ChatSettingsComponent implements OnInit, OnDestroy {
       this.chatForm.markAllAsTouched();
       return;
     }
-
     const formValue = this.chatForm.value as ChatSettingsFormValue;
-    const chatName = formValue.chatName?.trim() || '';
-    
-    this.store.dispatch(ChatAssistantActions.chatCreateButtonClicked({
-      chatName,
-      chatMode: this.currentChatMode,
-      recipientUserId: formValue.recipientInput,
-      participants: formValue.recipients,
-    }));
+    this.create.emit(formValue);
   }
 
   get chatNameControl() {

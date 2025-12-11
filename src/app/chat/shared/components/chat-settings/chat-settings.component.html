@@ -6,16 +6,10 @@
   <!-- Shared Settings (ALWAYS visible - used by all chat types) -->
   <app-shared-chat-settings
     [formGroup]="chatForm"
-    [chatNamePlaceholder]="(chatNamePlaceholder$ | async) || ''"
+    [chatNamePlaceholder]="chatNamePlaceholder"
   ></app-shared-chat-settings>
 
   <!-- Type-Specific Settings (conditional based on chat mode) -->
-  @let settingsType = (settingsType$ | async);
-  
-  @if (settingsType === 'ai') {
-    <app-ai-chat-settings [formGroup]="chatForm"></app-ai-chat-settings>
-  }
-
   @if (settingsType === 'direct') {
     <app-direct-chat-settings [formGroup]="chatForm"></app-direct-chat-settings>
   }

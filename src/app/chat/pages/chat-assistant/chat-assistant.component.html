@@ -4,16 +4,37 @@
   [position]="'right'"
   [styleClass]="'onecx-chat-sidebar p-0'"
 >
-  <div class="onecx-companion-container">
-    <!-- Navigator manages all page navigation -->
-    <app-navigator></app-navigator>
+  <div class="navigator-container h-full flex flex-column">
+    @if (currentPage === 'initial') {
+      <app-chat-initial-screen
+        (selectMode)="onChatModeSelected($event)"
+      ></app-chat-initial-screen>
+    }
+
+    @if (currentPage === 'newChat') {
+      @let chatMode = selectedChatMode$ | async;
+      @let translatedTitle = (chatMode === 'ai' ? 'CHAT.TITLE.AI' : (chatMode === 'direct' ? 'CHAT.TITLE.DIRECT' : (chatMode === 'group' ? 'CHAT.TITLE.GROUP' : 'CHAT.TITLE.AI'))) | translate;
+      <app-chat-header
+        [title]="translatedTitle"
+        [showBack]="true"
+        [showClose]="false"
+        (backClicked)="onBackFromNewChat()"
+      ></app-chat-header>
+      <div class="flex-grow-1 overflow-auto">
+        <app-chat-settings
+          [settingsType]="(chatMode === 'ai' || chatMode === 'direct' || chatMode === 'group') ? chatMode : 'ai'"
+          [chatNamePlaceholder]="chatNamePlaceholder"
+          (create)="onCreateChat($event)"
+        ></app-chat-settings>
+      </div>
+    }
   </div>
 </app-chat-slider>
 <div class="layout-topbar-item">
   <p-button
     styleClass="chat-button p-button-rounded p-button-text"
-    [attr.aria-label]="'CHAT.TITLE_AI' | translate"
-    [pTooltip]="'CHAT.TITLE_AI' | translate"
+    [attr.aria-label]="'CHAT.TITLE.AI' | translate"
+    [pTooltip]="'CHAT.TITLE.AI' | translate"
     tooltipPosition="top"
     tooltipEvent="hover"
     (onClick)="_sidebarVisible = true"
