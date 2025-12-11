@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-group-chat-settings',
@@ -21,34 +20,28 @@ export class GroupChatSettingsComponent implements OnInit {
   @Input() formGroup!: FormGroup;
 
   recipientInputControl = new FormControl('');
-  private recipientsSubject = new BehaviorSubject<string[]>([]);
-  recipients$: Observable<string[]> = this.recipientsSubject.asObservable();
+  recipients: string[] = [];
   
   get showAddButton(): boolean {
     return !!this.recipientInputControl.value && this.recipientInputControl.value.trim().length > 0;
   }
 
   ngOnInit() {
-    const initialRecipients = this.formGroup.get('recipients')?.value || [];
-    this.recipientsSubject.next(initialRecipients);
+    this.recipients = this.formGroup.get('recipients')?.value || [];
     this.recipientInputControl.setValue('');
   }
 
   onAddRecipient() {
     const value = this.recipientInputControl.value?.trim();
     if (value) {
-      const currentRecipients = this.recipientsSubject.value;
-      const updatedRecipients = [...currentRecipients, value];
-      this.recipientsSubject.next(updatedRecipients);
-      this.formGroup.patchValue({ recipients: updatedRecipients });
+      this.recipients = [...this.recipients, value];
+      this.formGroup.patchValue({ recipients: this.recipients });
       this.recipientInputControl.setValue('');
     }
   }
 
   onRemoveRecipient(index: number) {
-    const currentRecipients = this.recipientsSubject.value;
-    const updatedRecipients = currentRecipients.filter((_, i) => i !== index);
-    this.recipientsSubject.next(updatedRecipients);
-    this.formGroup.patchValue({ recipients: updatedRecipients });
+    this.recipients = this.recipients.filter((_, i) => i !== index);
+    this.formGroup.patchValue({ recipients: this.recipients });
   }
 }

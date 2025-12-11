@@ -22,7 +22,7 @@
     </div>
    
     <!-- Recipients List (for group chats) -->
-    @if (recipients$ | async; as recipients) {
+    @if (recipients.length > 0) {
       <div class="desktop-only">
         @for (recipient of recipients; track recipient; let i = $index) {
           <div class="flex align-items-center mb-1" 

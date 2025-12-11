@@ -52,6 +52,7 @@ export class ChatAssistantComponent implements OnChanges {
   _sidebarVisible = false;
   currentPage: CurrentPage = 'initial';
   selectedChatMode$: Observable<string | null>;
+  currentChatMode: string | null = null;
   chatNamePlaceholder = '';
 
   @Input()
@@ -89,6 +90,7 @@ export class ChatAssistantComponent implements OnChanges {
       this.closeSidebar();
       return;
     }
+    this.currentChatMode = mode;
     this.store.dispatch(ChatAssistantActions.chatModeSelected({ mode }));
     this.currentPage = 'newChat';
     this.chatNamePlaceholder = generatePlaceholder(mode as ChatSettingsType);
@@ -96,20 +98,20 @@ export class ChatAssistantComponent implements OnChanges {
 
   onBackFromNewChat() {
     this.currentPage = 'initial';
+    this.currentChatMode = null;
     this.store.dispatch(ChatAssistantActions.chatModeDeselected());
   }
 
   onCreateChat(formValue: ChatSettingsFormValue) {
-    this.selectedChatMode$.subscribe(mode => {
-      const chatName = formValue.chatName?.trim() || this.chatNamePlaceholder;
-      this.store.dispatch(ChatAssistantActions.chatCreateButtonClicked({
-        chatName,
-        chatMode: mode || 'ai',
-        recipientUserId: formValue.recipientInput,
-        participants: formValue.recipients,
-      }));
-      this.currentPage = 'initial';
-    }).unsubscribe();
+    const chatName = formValue.chatName?.trim() || this.chatNamePlaceholder;
+    this.store.dispatch(ChatAssistantActions.chatCreateButtonClicked({
+      chatName,
+      chatMode: this.currentChatMode || 'ai',
+      recipientUserId: formValue.recipientInput,
+      participants: formValue.recipients,
+    }));
+    this.currentPage = 'initial';
+    this.currentChatMode = null;
   }
 
   @HostListener('document:click', ['$event'])
