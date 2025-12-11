@@ -2,12 +2,8 @@ import { createReducer, on } from '@ngrx/store';
 import { Chat, MessageType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantState } from './chat-assistant.state';
-import { navigatorReducer } from './navigator/navigator.reducers';
 
 export const initialState: ChatAssistantState = {
-  navigator: {
-    currentPage: null,
-  },
   chat: {
     chatId: null,
     messages: [],
@@ -66,10 +62,6 @@ const baseChatAssistantReducer = createReducer(
       isLoadingMessages: true,
       messageError: null,
     },
-    navigator: {
-      ...state.navigator,
-      currentPage: 'chat' as const,
-    },
   })),
   on(ChatAssistantActions.chatDetailsReceived, (state: ChatAssistantState, action) => ({
     ...state,
@@ -85,10 +77,6 @@ const baseChatAssistantReducer = createReducer(
         recipientUserId: undefined,
         participants: undefined,
       },
-    },
-    navigator: {
-      ...state.navigator,
-      currentPage: 'chat' as const,
     },
   })),
   on(ChatAssistantActions.chatDetailsLoadingFailed, (state: ChatAssistantState, action) => ({
@@ -196,20 +184,12 @@ const baseChatAssistantReducer = createReducer(
       ...state.chatList,
       chats: state.chatList.chats.filter((c: Chat) => c.id !== action.chatId),
     },
-    navigator: {
-      ...state.navigator,
-      currentPage: 'chatList' as const,
-    },
   })),
   on(ChatAssistantActions.chatModeSelected, (state, action) => ({
     ...state,
     chatList: {
       ...state.chatList,
       selectedChatMode: action.mode,
-    },
-    navigator: {
-      ...state.navigator,
-      currentPage: 'newChat' as const,
     },
     chat: {
       ...initialState.chat,
@@ -221,24 +201,12 @@ const baseChatAssistantReducer = createReducer(
       ...state.chatList,
       selectedChatMode: null,
     },
-    navigator: {
-      ...state.navigator,
-      currentPage: null,
-    },
   })),
   on(ChatAssistantActions.chatPanelOpened, (state) => ({
     ...state,
-    navigator: {
-      ...state.navigator,
-      currentPage: state.navigator.currentPage ?? null,
-    },
   })),
   on(ChatAssistantActions.chatPanelClosed, (state) => ({
     ...state,
-    navigator: {
-      ...state.navigator,
-      currentPage: null,
-    },
     chatList: {
       ...state.chatList,
       selectedChatMode: null,
@@ -246,20 +214,12 @@ const baseChatAssistantReducer = createReducer(
   })),
   on(ChatAssistantActions.newChatButtonClicked, (state) => ({
     ...state,
-    navigator: {
-      ...state.navigator,
-      currentPage: 'newChat' as const,
-    },
     chat: {
       ...initialState.chat,
     },
   })),
   on(ChatAssistantActions.navigateToChatList, (state) => ({
     ...state,
-    navigator: {
-      ...state.navigator,
-      currentPage: 'chatList' as const,
-    },
   })),
   on(ChatAssistantActions.chatCreateButtonClicked, (state, action) => {
     return {
@@ -274,9 +234,9 @@ const baseChatAssistantReducer = createReducer(
           participants: action.participants,
         },
       },
-      navigator: {
-        ...state.navigator,
-        currentPage: 'chatList' as const,
+      chatList: {
+        ...state.chatList,
+        selectedChatMode: null,
       },
     };
   })
@@ -284,9 +244,7 @@ const baseChatAssistantReducer = createReducer(
 
 export function chatAssistantReducer(state: ChatAssistantState | undefined, action: any): ChatAssistantState {
   const newState = baseChatAssistantReducer(state, action);
-  const navigatorState = navigatorReducer(newState.navigator, action);
   return {
-    ...newState,
-    navigator: navigatorState,
+    ...newState
   };
 }

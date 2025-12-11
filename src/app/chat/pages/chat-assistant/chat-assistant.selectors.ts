@@ -12,17 +12,6 @@ const baseSelectors = createChildSelectors(
   initialState
 );
 
-// NEW SELECTORS for nested state structure using chatAssistantFeature
-export const selectNavigator = createSelector(
-  chatAssistantFeature.selectChatAssistantState,
-  (state) => state.navigator
-);
-
-export const selectCurrentPage = createSelector(
-  selectNavigator,
-  (nav) => nav.currentPage
-);
-
 export const selectChatList = createSelector(
   chatAssistantFeature.selectChatAssistantState,
   (state) => state.chatList
@@ -68,7 +57,6 @@ export const selectCurrentUser = createSelector(
   (shared) => shared.currentUser
 );
 
-// Legacy selectors for backward compatibility
 const selectCurrentChatFromState = createSelector(
   selectChatId,
   selectChats,
@@ -82,7 +70,6 @@ const selectTopicFromState = createSelector(
   (settings) => settings?.chatName ?? 'chat-assistant'
 );
 
-// Export combined selectors with backward compatibility
 export const chatAssistantSelectors = {
   ...baseSelectors,
   selectCurrentChat: selectCurrentChatFromState,
@@ -91,7 +78,6 @@ export const chatAssistantSelectors = {
   selectTopic: selectTopicFromState,
   selectChat,
   selectChatList,
-  selectNavigator,
   selectShared,
   selectChats,
   selectChatId,
@@ -99,7 +85,6 @@ export const chatAssistantSelectors = {
   selectChatSettings,
   selectCurrentUser,
   selectSelectedChatMode,
-  selectCurrentPage,
 };
 
 export const selectChatAssistantViewModel = createSelector(
@@ -107,13 +92,11 @@ export const selectChatAssistantViewModel = createSelector(
   selectCurrentChatFromState,
   selectMessages,
   selectSelectedChatMode,
-  selectCurrentPage,
   (
     chats: Chat[],
     currentChat: Chat | undefined,
     currentMessages: Message[],
-    selectedChatMode: string | null,
-    currentPage: 'chatList' | 'chat' | 'newChat' | null
+    selectedChatMode: string | null
   ): ChatAssistantViewModel => {
     let chatTitleKey = 'CHAT.TITLE.DEFAULT';
     switch (selectedChatMode) {
@@ -144,7 +127,6 @@ export const selectChatAssistantViewModel = createSelector(
         )
         .sort((a, b) => a.creationDate.getTime() - b.creationDate.getTime()),
       chatTitleKey,
-      currentPage,
       selectedChatMode,
     };
   }

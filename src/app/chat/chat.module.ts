@@ -17,7 +17,6 @@ import { chatAssistantFeature, chatSearchFeature, chatSettingsFeature } from './
 import { routes } from './chat.routes';
 import { ChatAssistantComponent } from './pages/chat-assistant/chat-assistant.component';
 import { ChatAssistantEffects } from './pages/chat-assistant/chat-assistant.effects';
-import { NavigatorEffects } from './pages/chat-assistant/navigator/navigator.effects';
 import { ChatSearchComponent } from './pages/chat-search/chat-search.component';
 import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
 
@@ -35,7 +34,7 @@ import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
     StoreModule.forFeature(chatAssistantFeature),
     StoreModule.forFeature(chatSearchFeature),
     StoreModule.forFeature(chatSettingsFeature),
-    EffectsModule.forFeature([ChatSearchEffects, ChatAssistantEffects, NavigatorEffects]),
+    EffectsModule.forFeature([ChatSearchEffects, ChatAssistantEffects]),
     TranslateModule,
     SidebarModule,
     ChatAssistantComponent,

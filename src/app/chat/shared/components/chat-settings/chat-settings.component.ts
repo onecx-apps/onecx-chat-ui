@@ -11,7 +11,6 @@ import { selectChatNamePlaceholder } from './chat-settings.selectors';
 import { SharedChatSettingsComponent } from '../shared-chat-settings/shared-chat-settings.component';
 import { DirectChatSettingsComponent } from '../direct-chat-settings/direct-chat-settings.component';
 import { GroupChatSettingsComponent } from '../group-chat-settings/group-chat-settings.component';
-import { AiChatSettingsComponent } from '../ai-chat-settings/ai-chat-settings.component';
 
 export type ChatSettingsType = 'ai' | 'direct' | 'group';
 
@@ -41,7 +40,6 @@ export interface ChatSettingsFormValue {
     SharedChatSettingsComponent,
     DirectChatSettingsComponent,
     GroupChatSettingsComponent,
-    AiChatSettingsComponent,
   ],
   templateUrl: './chat-settings.component.html',
   styleUrls: ['./chat-settings.component.scss'],

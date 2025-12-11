@@ -18,7 +18,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { environment } from 'src/environments/environment';
 import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
-import { NavigatorComponent } from './navigator/navigator.component';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -35,7 +34,6 @@ import { NavigatorComponent } from './navigator/navigator.component';
     SharedModule,
     TooltipModule,
     ChatSliderComponent,
-    NavigatorComponent,
   ],
 })
 export class ChatAssistantComponent implements OnChanges {

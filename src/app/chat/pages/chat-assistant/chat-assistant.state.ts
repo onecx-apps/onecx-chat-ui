@@ -6,10 +6,6 @@ export interface ChatUser {
   email: string;
 }
 
-export interface NavigatorState {
-  currentPage: 'chatList' | 'chat' | 'newChat' | null;
-}
-
 export interface ChatPageState {
   chatId: string | null;
   messages: Message[];
@@ -35,7 +31,6 @@ export interface SharedState {
 }
 
 export interface ChatAssistantState {
-  navigator: NavigatorState;
   chat: ChatPageState;
   chatList: ChatListPageState;
   shared: SharedState;
