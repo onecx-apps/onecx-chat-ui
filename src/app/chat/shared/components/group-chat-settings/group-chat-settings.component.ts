@@ -51,7 +51,7 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
 
   onAddRecipient() {
     const value = this.recipientInputControl.value?.trim();
-    if (value) {
+    if (value && !this.recipients.includes(value)) {
       this.recipients = [...this.recipients, value];
       this.form.patchValue({ recipients: this.recipients });
       this.recipientInputControl.setValue('');

@@ -56,13 +56,6 @@ describe('ChatSettingsComponent', () => {
     expect(() => component.ngOnChanges({ chatNamePlaceholder: { currentValue: 'x', previousValue: '', firstChange: true, isFirstChange: () => true } })).not.toThrow();
   });
 
-  it('should clean up destroy$ on ngOnDestroy', () => {
-    component.ngOnInit();
-    const completeSpy = jest.spyOn((component as any).destroy$, 'complete');
-    component.ngOnDestroy();
-    expect(completeSpy).toHaveBeenCalled();
-  });
-
   it('should mark all as touched and not emit if form is invalid onCreate', () => {
     component.ngOnInit();
     const emitSpy = jest.spyOn(component.create, 'emit');

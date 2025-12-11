@@ -197,4 +197,15 @@ describe('GroupChatSettingsComponent', () => {
     expect(form.get('recipients')?.value).toEqual([]);
   });
 
+  it('onAddRecipient should not add duplicate recipient', () => {
+    form = new FormGroup({ recipients: new FormControl(['user1']) });
+    fixture = TestBed.createComponent(GroupChatSettingsComponent);
+    component = fixture.componentInstance;
+    component.form = form;
+    fixture.detectChanges();
+    component.recipientInputControl.setValue('user1');
+    component.onAddRecipient();
+    expect(component.recipients).toEqual(['user1']);
+    expect(form.get('recipients')?.value).toEqual(['user1']);
+  });
 });

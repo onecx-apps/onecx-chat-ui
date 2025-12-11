@@ -1,8 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
 import { SharedChatSettingsComponent } from '../shared-chat-settings/shared-chat-settings.component';
 import { DirectChatSettingsComponent } from '../direct-chat-settings/direct-chat-settings.component';
 import { GroupChatSettingsComponent } from '../group-chat-settings/group-chat-settings.component';
@@ -29,22 +28,16 @@ export interface ChatSettingsFormValue {
   templateUrl: './chat-settings.component.html',
   styleUrls: ['./chat-settings.component.scss'],
 })
-export class ChatSettingsComponent implements OnInit, OnDestroy, OnChanges {
+export class ChatSettingsComponent implements OnInit, OnChanges {
   @Input() settingsType: ChatSettingsType = 'ai';
   @Input() chatNamePlaceholder = '';
   @Output() create = new EventEmitter<ChatSettingsFormValue>();
 
-  private readonly destroy$ = new Subject<void>();
   chatForm!: FormGroup;
 
   ngOnInit() {
     this.initializeForm();
     this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   ngOnChanges(changes: SimpleChanges) {
