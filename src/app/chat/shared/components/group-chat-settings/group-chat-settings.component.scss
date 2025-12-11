@@ -1,0 +1,16 @@
+.group-settings {
+  .field {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.remove-recipient-btn {
+  .pi-trash {
+    color: var(--trash-color, #B3261E);
+    font-size: 1rem;
+  }
+  
+  &:hover .pi-trash {
+    color: darken(#B3261E, 10%);
+  }
+}

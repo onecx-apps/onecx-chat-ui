@@ -3,28 +3,103 @@ import { createChildSelectors } from '@onecx/ngrx-accelerator';
 import { NEW_AI_CHAT_ITEM } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
 import { Chat, Message } from 'src/app/shared/generated';
-import { chatFeature } from '../../chat.reducers';
+import { chatAssistantFeature } from '../../chat.reducers';
 import { initialState } from './chat-assistant.reducers';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 
-export const chatAssistantSelectors = createChildSelectors(
-  chatFeature.selectAssistant,
+const baseSelectors = createChildSelectors(
+  chatAssistantFeature.selectChatAssistantState,
   initialState
 );
 
+export const selectChatList = createSelector(
+  chatAssistantFeature.selectChatAssistantState,
+  (state) => state.chatList
+);
+
+export const selectChats = createSelector(
+  selectChatList,
+  (chatList) => chatList.chats
+);
+
+export const selectSelectedChatMode = createSelector(
+  selectChatList,
+  (chatList) => chatList.selectedChatMode
+);
+
+export const selectChat = createSelector(
+  chatAssistantFeature.selectChatAssistantState,
+  (state) => state.chat
+);
+
+export const selectChatId = createSelector(
+  selectChat,
+  (chat) => chat.chatId
+);
+
+export const selectMessages = createSelector(
+  selectChat,
+  (chat) => chat.messages
+);
+
+export const selectChatSettings = createSelector(
+  selectChat,
+  (chat) => chat.settings
+);
+
+export const selectShared = createSelector(
+  chatAssistantFeature.selectChatAssistantState,
+  (state) => state.shared
+);
+
+export const selectCurrentUser = createSelector(
+  selectShared,
+  (shared) => shared.currentUser
+);
+
+const selectCurrentChatFromState = createSelector(
+  selectChatId,
+  selectChats,
+  (chatId, chats) => chats.find((c) => c.id === chatId)
+);
+
+const selectUserFromState = selectCurrentUser;
+
+const selectTopicFromState = createSelector(
+  selectChatSettings,
+  (settings) => settings?.chatName ?? 'chat-assistant'
+);
+
+export const chatAssistantSelectors = {
+  ...baseSelectors,
+  selectCurrentChat: selectCurrentChatFromState,
+  selectCurrentMessages: selectMessages,
+  selectUser: selectUserFromState,
+  selectTopic: selectTopicFromState,
+  selectChat,
+  selectChatList,
+  selectShared,
+  selectChats,
+  selectChatId,
+  selectMessages,
+  selectChatSettings,
+  selectCurrentUser,
+  selectSelectedChatMode,
+};
+
 export const selectChatAssistantViewModel = createSelector(
-  chatAssistantSelectors.selectChats,
-  chatAssistantSelectors.selectCurrentChat,
-  chatAssistantSelectors.selectCurrentMessages,
-  chatFeature.selectAssistant,
+  selectChats,
+  selectCurrentChatFromState,
+  selectMessages,
+  selectSelectedChatMode,
   (
     chats: Chat[],
     currentChat: Chat | undefined,
-    currentMessages: Message[] | undefined,
-    state
+    currentMessages: Message[],
+    selectedChatMode: string | null
   ): ChatAssistantViewModel => {
     let chatTitleKey = 'CHAT.TITLE.DEFAULT';
-    switch (state.selectedChatMode) {
+    switch (selectedChatMode) {
       case 'ai':
         chatTitleKey = 'CHAT.TITLE.AI';
         break;
@@ -52,6 +127,7 @@ export const selectChatAssistantViewModel = createSelector(
         )
         .sort((a, b) => a.creationDate.getTime() - b.creationDate.getTime()),
       chatTitleKey,
+      selectedChatMode,
     };
   }
 );
