@@ -31,7 +31,7 @@ export class DirectChatSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  get recipientInputControl() {
-    return this.form.get('recipientInput');
+  get recipientInputControl(): FormControl {
+    return this.form.get('recipientInput') as FormControl;
   }
 }

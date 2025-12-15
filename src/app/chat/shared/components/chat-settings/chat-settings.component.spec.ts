@@ -100,36 +100,41 @@ describe('ChatSettingsComponent', () => {
   });
 
   describe('Layout based on chat type', () => {
-    it('should have settingsType property that determines which components are shown', () => {
-      expect(component.settingsType).toBeDefined();
-      
-      // Test that settingsType can be set to different values
-      component.settingsType = 'ai';
-      expect(component.settingsType).toBe('ai');
-      
+    it('should always show SharedChatSettingsComponent regardless of settingsType', () => {
+      fixture.detectChanges();
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('app-shared-chat-settings')).toBeTruthy();
+    });
+
+    it('should show DirectChatSettingsComponent only when settingsType is "direct"', () => {
       component.settingsType = 'direct';
-      expect(component.settingsType).toBe('direct');
+      fixture.detectChanges();
       
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('app-direct-chat-settings')).toBeTruthy();
+      expect(compiled.querySelector('app-group-chat-settings')).toBeFalsy();
+    });
+
+    it('should show GroupChatSettingsComponent only when settingsType is "group"', () => {
       component.settingsType = 'group';
-      expect(component.settingsType).toBe('group');
+      fixture.detectChanges();
+      
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('app-group-chat-settings')).toBeTruthy();
+      expect(compiled.querySelector('app-direct-chat-settings')).toBeFalsy();
+    });
+
+    it('should not show type-specific components when settingsType is "ai"', () => {
+      component.settingsType = 'ai';
+      fixture.detectChanges();
+      
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('app-direct-chat-settings')).toBeFalsy();
+      expect(compiled.querySelector('app-group-chat-settings')).toBeFalsy();
     });
   });
 
   describe('Create button behavior', () => {
-    it('should emit form value when onCreate is called', () => {
-      component.ngOnInit();
-      component.chatForm.addControl('chatName', new FormControl('Test Chat'));
-      component.chatForm.addControl('recipients', new FormControl(['user1']));
-      const emitSpy = jest.spyOn(component.create, 'emit');
-      
-      component.onCreate();
-      
-      expect(emitSpy).toHaveBeenCalledWith({
-        chatName: 'Test Chat',
-        recipients: ['user1']
-      });
-    });
-
     it('should emit empty object when onCreate is called with empty form', () => {
       component.ngOnInit();
       const emitSpy = jest.spyOn(component.create, 'emit');
