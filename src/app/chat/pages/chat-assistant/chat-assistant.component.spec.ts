@@ -309,7 +309,7 @@ describe('ChatAssistantComponent', () => {
   });
 
   describe('onCreateChat - pokrycie chatName trim/placeholder', () => {
-    it('should use trimmed chatName if provided', () => {
+    it('should use chatNamePlaceholder regardless of chatName value', () => {
       jest.spyOn(store, 'dispatch');
       component.currentChatMode = 'ai';
       component.chatNamePlaceholder = 'PLACEHOLDER';
@@ -320,7 +320,7 @@ describe('ChatAssistantComponent', () => {
       };
       component.onCreateChat(formValue as any);
       expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatCreateButtonClicked({
-        chatName: 'TestName',
+        chatName: 'PLACEHOLDER',
         chatMode: 'ai',
         recipientUserId: 'user1',
         participants: ['user1', 'user2'],
@@ -374,7 +374,7 @@ describe('ChatAssistantComponent', () => {
       };
       component.onCreateChat(formValue as any);
       expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatCreateButtonClicked({
-        chatName: 'TestName',
+        chatName: 'PLACEHOLDER',
         chatMode: 'ai',
         recipientUserId: 'user1',
         participants: ['user1', 'user2'],

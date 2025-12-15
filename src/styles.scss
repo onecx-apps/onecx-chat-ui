@@ -7,3 +7,10 @@
   --input-border-color: #0000001A;
   --trash-color: #B3261E;
 }
+
+.form-label {
+  display: block;
+  color: var(--gray-500);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}

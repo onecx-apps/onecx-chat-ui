@@ -69,13 +69,15 @@
       "DIRECT_SUBTITLE": "with a person",
       "GROUP_SUBTITLE": "work together"
     },
-    "INPUT": {
-      "CHAT_NAME": "Chat Name",
-      "RECIPIENT": "Recipient",
-      "RECIPIENTS": "Recipients",
-      "RECIPIENT_PLACEHOLDER": "E-Mail or Name...",
-      "DIRECT_CHAT_PLACEHOLDER": "Direct Chat {{date}}",
-      "GROUP_CHAT_PLACEHOLDER": "Group Chat {{date}}"
+    "SETTINGS": {
+      "INPUT": {
+        "CHAT_NAME": "Chat Name",
+        "RECIPIENT": "Recipient",
+        "RECIPIENTS": "Recipients",
+        "RECIPIENT_PLACEHOLDER": "E-Mail or Name...",
+        "DIRECT_CHAT_PLACEHOLDER": "Direct Chat {{date}}",
+        "GROUP_CHAT_PLACEHOLDER": "Group Chat {{date}}"
+      }
     }
   }
 }

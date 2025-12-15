@@ -103,9 +103,8 @@ export class ChatAssistantComponent implements OnChanges {
   }
 
   onCreateChat(formValue: ChatSettingsFormValue) {
-    const chatName = formValue.chatName?.trim() || this.chatNamePlaceholder;
     this.store.dispatch(ChatAssistantActions.chatCreateButtonClicked({
-      chatName,
+      chatName: this.chatNamePlaceholder,
       chatMode: this.currentChatMode || 'ai',
       recipientUserId: formValue.recipientInput,
       participants: formValue.recipients,

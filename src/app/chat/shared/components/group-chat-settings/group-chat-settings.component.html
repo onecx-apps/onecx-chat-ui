@@ -2,7 +2,7 @@
  <!-- Recipients Section -->
   <div class="mb-4">
     <label for="recipientInput" class="text-gray-500 text-sm mb-2 d-block" style="margin-bottom:6px !important;display:block;">
-      {{ 'CHAT.INPUT.RECIPIENT' | translate }}
+      {{ 'CHAT.SETTINGS.INPUT.RECIPIENT' | translate }}
     </label>
     <div class="flex align-items-center mb-2" style="position:relative;">
       <input id="recipientInput"
@@ -10,7 +10,7 @@
              class="recipient-input w-full p-2"
              style="padding-right:2.5rem; border-radius: 2px !important; border: 1px solid var(--input-border-color);"
              [formControl]="recipientInputControl"
-             [placeholder]="'CHAT.INPUT.RECIPIENT_PLACEHOLDER' | translate" />
+             [placeholder]="'CHAT.SETTINGS.INPUT.RECIPIENT_PLACEHOLDER' | translate" />
       @if (showAddButton) {
         <button type="button"
                 class="add-recipient-btn"

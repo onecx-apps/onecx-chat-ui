@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -10,9 +10,21 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './shared-chat-settings.component.html',
   styleUrl: './shared-chat-settings.component.scss'
 })
-export class SharedChatSettingsComponent {
+export class SharedChatSettingsComponent implements OnInit, OnDestroy {
   @Input() form!: FormGroup;
   @Input() chatNamePlaceholder = '';
+  
+  ngOnInit(): void {
+    if (!this.form.contains('chatName')) {
+      this.form.addControl('chatName', new FormControl('', Validators.required));
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.form?.contains('chatName')) {
+      this.form.removeControl('chatName');
+    }
+  }
   
   get chatNameControl() {
     return this.form.get('chatName');

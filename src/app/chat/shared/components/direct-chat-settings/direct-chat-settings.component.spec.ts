@@ -1,12 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DirectChatSettingsComponent } from './direct-chat-settings.component';
-import { TranslateService } from '@ngx-translate/core';
-
-class MockTranslateService {
-  get(key: any) { return key; }
-  instant(key: any) { return key; }
-}
+import { TranslateTestingModule } from 'ngx-translate-testing';
 
 describe('DirectChatSettingsComponent', () => {
   let component: DirectChatSettingsComponent;
@@ -15,10 +10,16 @@ describe('DirectChatSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DirectChatSettingsComponent, ReactiveFormsModule],
-      providers: [
-        { provide: TranslateService, useClass: MockTranslateService }
-      ]
+      imports: [
+        DirectChatSettingsComponent,
+        ReactiveFormsModule,
+        TranslateTestingModule.withTranslations(
+          'en',
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+          require('./../../../../../assets/i18n/en.json')
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+        ).withTranslations('de', require('./../../../../../assets/i18n/de.json')),
+      ],
     }).compileComponents();
   });
 

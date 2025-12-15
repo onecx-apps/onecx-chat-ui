@@ -1,19 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SharedChatSettingsComponent } from './shared-chat-settings.component';
-import { TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
-
-class MockTranslateService {
-  get(key: any) { return of(key); }
-  instant(key: any) { return key; }
-}
-
-import { Pipe, PipeTransform } from '@angular/core';
-@Pipe({ name: 'translate', standalone: true })
-class MockTranslatePipe implements PipeTransform {
-  transform(value: any) { return value; }
-}
+import { TranslateTestingModule } from 'ngx-translate-testing';
 
 describe('SharedChatSettingsComponent', () => {
   let component: SharedChatSettingsComponent;
@@ -22,41 +10,73 @@ describe('SharedChatSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SharedChatSettingsComponent, ReactiveFormsModule, MockTranslatePipe],
-      providers: [
-        { provide: TranslateService, useClass: MockTranslateService }
-      ]
+      imports: [
+        SharedChatSettingsComponent,
+        ReactiveFormsModule,
+        TranslateTestingModule.withTranslations(
+          'en',
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+          require('./../../../../../assets/i18n/en.json')
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+        ).withTranslations('de', require('./../../../../../assets/i18n/de.json')),
+      ],
     }).compileComponents();
-
-    TestBed.overrideComponent(SharedChatSettingsComponent, {
-      set: {
-        imports: [
-          ReactiveFormsModule,
-          MockTranslatePipe
-        ]
-      }
-    });
   });
 
   beforeEach(() => {
-    form = new FormGroup({ chatName: new FormControl('test name') });
+    form = new FormGroup({});
     fixture = TestBed.createComponent(SharedChatSettingsComponent);
     component = fixture.componentInstance;
     component.form = form;
     component.chatNamePlaceholder = 'placeholder';
-    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have chatNamePlaceholder input', () => {
-    expect(component.chatNamePlaceholder).toBe('placeholder');
+  describe('ngOnInit', () => {
+    it('should add chatName control on init if not present', () => {
+      expect(form.contains('chatName')).toBe(false);
+      component.ngOnInit();
+      expect(form.contains('chatName')).toBe(true);
+      expect(form.get('chatName')).toBeInstanceOf(FormControl);
+      expect(form.get('chatName')?.validator).toBeTruthy();
+    });
+
+    it('should not overwrite chatName if already present', () => {
+      const existing = new FormControl('existing name');
+      form.addControl('chatName', existing);
+      component.ngOnInit();
+      expect(form.get('chatName')).toBe(existing);
+      expect(form.get('chatName')?.value).toBe('existing name');
+    });
   });
 
-  it('chatNameControl getter should return the chatName control', () => {
-    expect(component.chatNameControl).toBe(form.get('chatName'));
-    expect(component.chatNameControl?.value).toBe('test name');
+  describe('ngOnDestroy', () => {
+    it('should remove chatName control on destroy if present', () => {
+      component.ngOnInit();
+      expect(form.contains('chatName')).toBe(true);
+      component.ngOnDestroy();
+      expect(form.contains('chatName')).toBe(false);
+    });
+
+    it('should not throw if chatName not present on destroy', () => {
+      expect(form.contains('chatName')).toBe(false);
+      expect(() => component.ngOnDestroy()).not.toThrow();
+    });
+  });
+
+  describe('chatNameControl', () => {
+    it('should return the chatName control', () => {
+      component.ngOnInit();
+      expect(component.chatNameControl).toBe(form.get('chatName'));
+    });
+  });
+
+  describe('chatNamePlaceholder', () => {
+    it('should have chatNamePlaceholder input', () => {
+      expect(component.chatNamePlaceholder).toBe('placeholder');
+    });
   });
 });

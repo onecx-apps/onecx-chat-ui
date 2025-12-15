@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedChatSettingsComponent } from '../shared-chat-settings/shared-chat-settings.component';
 import { DirectChatSettingsComponent } from '../direct-chat-settings/direct-chat-settings.component';
@@ -9,7 +9,6 @@ import { GroupChatSettingsComponent } from '../group-chat-settings/group-chat-se
 export type ChatSettingsType = 'ai' | 'direct' | 'group';
 
 export interface ChatSettingsFormValue {
-  chatName: string;
   recipientInput?: string;
   recipients?: string[];
 }
@@ -28,7 +27,7 @@ export interface ChatSettingsFormValue {
   templateUrl: './chat-settings.component.html',
   styleUrls: ['./chat-settings.component.scss'],
 })
-export class ChatSettingsComponent implements OnInit, OnChanges {
+export class ChatSettingsComponent implements OnInit {
   @Input() settingsType: ChatSettingsType = 'ai';
   @Input() chatNamePlaceholder = '';
   @Output() create = new EventEmitter<ChatSettingsFormValue>();
@@ -37,19 +36,10 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.initializeForm();
-    this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.chatForm && changes['chatNamePlaceholder']) {
-      this.chatForm.patchValue({ chatName: this.chatNamePlaceholder });
-    }
   }
 
   private initializeForm() {
-    this.chatForm = new FormGroup({
-      chatName: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-    });
+    this.chatForm = new FormGroup({});
   }
 
   onCreate(): void {
@@ -59,9 +49,5 @@ export class ChatSettingsComponent implements OnInit, OnChanges {
     }
     const formValue = this.chatForm.value as ChatSettingsFormValue;
     this.create.emit(formValue);
-  }
-
-  get chatNameControl() {
-    return this.chatForm.get('chatName') as FormControl;
   }
 }
