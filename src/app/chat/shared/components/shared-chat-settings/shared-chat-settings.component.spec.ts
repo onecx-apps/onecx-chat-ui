@@ -41,7 +41,6 @@ describe('SharedChatSettingsComponent', () => {
       component.ngOnInit();
       expect(form.contains('chatName')).toBe(true);
       expect(form.get('chatName')).toBeInstanceOf(FormControl);
-      expect(form.get('chatName')?.validator).toBeTruthy();
     });
 
     it('should not overwrite chatName if already present', () => {

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,15 +27,22 @@ export interface ChatSettingsFormValue {
   templateUrl: './chat-settings.component.html',
   styleUrls: ['./chat-settings.component.scss'],
 })
-export class ChatSettingsComponent implements OnInit {
+export class ChatSettingsComponent implements OnInit, AfterViewInit {
   @Input() settingsType: ChatSettingsType = 'ai';
   @Input() chatNamePlaceholder = '';
   @Output() create = new EventEmitter<ChatSettingsFormValue>();
 
   chatForm!: FormGroup;
 
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngOnInit() {
     this.initializeForm();
+  }
+
+  ngAfterViewInit() {
+    // Trigger change detection after child components have initialized
+    this.cdr.detectChanges();
   }
 
   private initializeForm() {
