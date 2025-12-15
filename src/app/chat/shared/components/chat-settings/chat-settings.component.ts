@@ -34,7 +34,7 @@ export class ChatSettingsComponent implements OnInit, AfterViewInit {
 
   chatForm!: FormGroup;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.initializeForm();
