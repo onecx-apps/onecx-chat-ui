@@ -8,6 +8,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing';
 import { ChatAssistantComponent } from './chat-assistant.component';
 import { initialState } from './chat-assistant.reducers';
 import { ChatAssistantActions } from './chat-assistant.actions';
+import { ChatType } from 'src/app/shared/generated';
 
 describe('ChatAssistantComponent', () => {
   let component: ChatAssistantComponent;
@@ -57,71 +58,71 @@ describe('ChatAssistantComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set currentChatMode and emit sidebarVisibleChange on close', () => {
+  it('should set selectedChatMode and emit sidebarVisibleChange on close', () => {
     jest.spyOn(store, 'dispatch');
     const spy = jest.spyOn(component.sidebarVisibleChange, 'emit');
     
-    component.onChatModeSelected('close');
+    component.selectChatMode('close');
     
     expect(component._sidebarVisible).toBe(false);
-    expect(component.currentChatMode).toBeNull();
+    expect(component.selectedChatMode).toBeNull();
     expect(spy).toHaveBeenCalledWith(false);
     expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
   });
 
-  it('should set currentChatMode to mode and dispatch chatModeSelected', () => {
+  it('should set selectedChatMode to mode and dispatch chatModeSelected', () => {
     jest.spyOn(store, 'dispatch');
     
-    component.onChatModeSelected('ai');
+    component.selectChatMode('ai');
     
-    expect(component.currentChatMode).toBe('ai');
+    expect(component.selectedChatMode).toBe('ai');
     expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeSelected({ mode: 'ai' }));
   });
 
   it('should handle different chat modes', () => {
     jest.spyOn(store, 'dispatch');
     
-    component.onChatModeSelected('direct');
+    component.selectChatMode('direct');
     
-    expect(component.currentChatMode).toBe('direct');
+    expect(component.selectedChatMode).toBe('direct');
     expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeSelected({ mode: 'direct' }));
   });
 
-  it('should reset currentChatMode and dispatch chatModeDeselected on onBackFromNewChat', () => {
+  it('should reset selectedChatMode and dispatch chatModeDeselected on goBack', () => {
     jest.spyOn(store, 'dispatch');
-    component.currentChatMode = 'ai';
+    component.selectedChatMode = 'ai';
     
-    component.onBackFromNewChat();
+    component.goBack();
     
-    expect(component.currentChatMode).toBeNull();
+    expect(component.selectedChatMode).toBeNull();
     expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeDeselected());
   });
 
   describe('closeSidebar', () => {
-    it('should close sidebar, emit event, dispatch action and reset currentChatMode', () => {
+    it('should close sidebar, emit event, dispatch action and reset selectedChatMode', () => {
       jest.spyOn(store, 'dispatch');
       jest.spyOn(component.sidebarVisibleChange, 'emit');
       component._sidebarVisible = true;
-      component.currentChatMode = 'ai';
+      component.selectedChatMode = 'ai';
       
       component.closeSidebar();
       
       expect(component._sidebarVisible).toBe(false);
-      expect(component.currentChatMode).toBe('ai'); // currentChatMode is not reset by closeSidebar
+      expect(component.selectedChatMode).toBeNull();
       expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
       expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
     });
 
-    it('should work when currentChatMode is already null', () => {
+    it('should work when selectedChatMode is already null', () => {
       jest.spyOn(store, 'dispatch');
       jest.spyOn(component.sidebarVisibleChange, 'emit');
       component._sidebarVisible = true;
-      component.currentChatMode = null;
+      component.selectedChatMode = null;
       
       component.closeSidebar();
       
       expect(component._sidebarVisible).toBe(false);
-      expect(component.currentChatMode).toBeNull();
+      expect(component.selectedChatMode).toBeNull();
       expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
       expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
     });
@@ -233,25 +234,137 @@ describe('ChatAssistantComponent', () => {
     });
   });
 
-  describe('sidebarVisible setter - pokrycie currentPage = initial', () => {
-    beforeEach(() => {
+  describe('menuItems observable', () => {
+    it('should create menu items with delete action', (done) => {
+      const mockViewModel = {
+        chats: [],
+        currentChat: { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat },
+        currentMessages: [],
+        chatTitleKey: 'CHAT.TITLE.AI'
+      };
+
+      store.setState({
+        chat: {
+          assistant: {
+            ...initialState,
+            currentChat: mockViewModel.currentChat
+          }
+        }
+      });
+
+      component.menuItems.subscribe(items => {
+        expect(items).toHaveLength(1);
+        expect(items[0].label).toBe('Chat löschen');
+        expect(items[0].icon).toBe('pi pi-trash');
+        expect(items[0].disabled).toBe(false);
+        expect(typeof items[0].command).toBe('function');
+        done();
+      });
+    });
+
+    it('should disable delete action when current chat id is "new"', (done) => {
+      const mockViewModel = {
+        chats: [],
+        currentChat: { id: 'new', topic: 'New Chat', type: ChatType.AiChat },
+        currentMessages: [],
+        chatTitleKey: 'CHAT.TITLE.AI'
+      };
+
+      store.setState({
+        chat: {
+          assistant: {
+            ...initialState,
+            currentChat: mockViewModel.currentChat
+          }
+        }
+      });
+
+      component.menuItems.subscribe(items => {
+        expect(items[0].disabled).toBe(true);
+        done();
+      });
+    });
+
+    it('should dispatch currentChatDeleted action when delete command is executed', () => {
       jest.spyOn(store, 'dispatch');
+      
+      const mockViewModel = {
+        chats: [],
+        currentChat: { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat },
+        currentMessages: [],
+        chatTitleKey: 'CHAT.TITLE.AI'
+      };
+
+      store.setState({
+        chat: {
+          assistant: {
+            ...initialState,
+            currentChat: mockViewModel.currentChat
+          }
+        }
+      });
+
+      component.menuItems.subscribe(items => {
+        if (items[0].command) {
+          items[0].command({});
+        }
+        expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.currentChatDeleted());
+      });
+    });
+  });
+
+  describe('sendMessage', () => {
+    it('should dispatch messageSent action with correct message', () => {
+      jest.spyOn(store, 'dispatch');
+      const testMessage = 'Hello, this is a test message';
+      
+      component.sendMessage(testMessage);
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.messageSent({
+          message: testMessage
+        })
+      );
     });
 
-    it('should set currentPage to initial if not set when sidebarVisible is true', () => {
-      component.currentPage = null;
-      component.sidebarVisible = true;
-      expect(component.currentPage).toBe('initial');
-      expect(component._sidebarVisible).toBe(true);
-      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelOpened());
+    it('should handle empty message', () => {
+      jest.spyOn(store, 'dispatch');
+      
+      component.sendMessage('');
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.messageSent({
+          message: ''
+        })
+      );
+    });
+  });
+
+  describe('chatSelected', () => {
+    it('should dispatch chatSelected action with correct chat', () => {
+      jest.spyOn(store, 'dispatch');
+      const testChat = { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat };
+      
+      component.chatSelected(testChat);
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.chatSelected({
+          chat: testChat
+        })
+      );
     });
 
-    it('should not change currentPage if already set', () => {
-      component.currentPage = 'newChat';
-      component.sidebarVisible = true;
-      expect(component.currentPage).toBe('newChat');
-      expect(component._sidebarVisible).toBe(true);
-      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelOpened());
+    it('should handle chat with different types', () => {
+      jest.spyOn(store, 'dispatch');
+      const humanChat = { id: 'chat2', topic: 'Human Chat', type: ChatType.HumanChat };
+      
+      component.chatSelected(humanChat);
+      
+      expect(store.dispatch).toHaveBeenCalledWith(
+        ChatAssistantActions.chatSelected({
+          chat: humanChat
+        })
+      );
     });
   });
 
@@ -305,80 +418,6 @@ describe('ChatAssistantComponent', () => {
       component.ngOnChanges(changes);
       
       expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
-    });
-  });
-
-  describe('onCreateChat - pokrycie chatName trim/placeholder', () => {
-    it('should use chatNamePlaceholder regardless of chatName value', () => {
-      jest.spyOn(store, 'dispatch');
-      component.currentChatMode = 'ai';
-      component.chatNamePlaceholder = 'PLACEHOLDER';
-      const formValue = {
-        chatName: '  TestName  ',
-        recipientInput: 'user1',
-        recipients: ['user1', 'user2'],
-      };
-      component.onCreateChat(formValue as any);
-      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatCreateButtonClicked({
-        chatName: 'PLACEHOLDER',
-        chatMode: 'ai',
-        recipientUserId: 'user1',
-        participants: ['user1', 'user2'],
-      }));
-    });
-
-    it('should use chatNamePlaceholder if chatName is empty or whitespace', () => {
-      jest.spyOn(store, 'dispatch');
-      component.currentChatMode = 'ai';
-      component.chatNamePlaceholder = 'PLACEHOLDER';
-      const formValue = {
-        chatName: '   ',
-        recipientInput: 'user1',
-        recipients: ['user1', 'user2'],
-      };
-      component.onCreateChat(formValue as any);
-      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatCreateButtonClicked({
-        chatName: 'PLACEHOLDER',
-        chatMode: 'ai',
-        recipientUserId: 'user1',
-        participants: ['user1', 'user2'],
-      }));
-    });
-
-    it('should use chatNamePlaceholder if chatName is undefined', () => {
-      jest.spyOn(store, 'dispatch');
-      component.currentChatMode = 'ai';
-      component.chatNamePlaceholder = 'PLACEHOLDER';
-      const formValue = {
-        chatName: undefined,
-        recipientInput: 'user1',
-        recipients: ['user1', 'user2'],
-      };
-      component.onCreateChat(formValue as any);
-      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatCreateButtonClicked({
-        chatName: 'PLACEHOLDER',
-        chatMode: 'ai',
-        recipientUserId: 'user1',
-        participants: ['user1', 'user2'],
-      }));
-    });
-
-    it('should use default chatMode "ai" if currentChatMode is null', () => {
-      jest.spyOn(store, 'dispatch');
-      component.currentChatMode = null;
-      component.chatNamePlaceholder = 'PLACEHOLDER';
-      const formValue = {
-        chatName: 'TestName',
-        recipientInput: 'user1',
-        recipients: ['user1', 'user2'],
-      };
-      component.onCreateChat(formValue as any);
-      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatCreateButtonClicked({
-        chatName: 'PLACEHOLDER',
-        chatMode: 'ai',
-        recipientUserId: 'user1',
-        participants: ['user1', 'user2'],
-      }));
     });
   });
 });

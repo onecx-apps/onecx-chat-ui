@@ -13,7 +13,7 @@ import {
 import { CalendarModule } from 'primeng/calendar';
 import { SidebarModule } from 'primeng/sidebar';
 import { SharedModule } from '../shared/shared.module';
-import { chatAssistantFeature, chatSearchFeature } from './chat.reducers';
+import { chatFeature } from './chat.reducers';
 import { routes } from './chat.routes';
 import { ChatAssistantComponent } from './pages/chat-assistant/chat-assistant.component';
 import { ChatAssistantEffects } from './pages/chat-assistant/chat-assistant.effects';
@@ -31,8 +31,7 @@ import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
     FormsModule,
     ReactiveFormsModule,
     CalendarModule,
-    StoreModule.forFeature(chatAssistantFeature),
-    StoreModule.forFeature(chatSearchFeature),
+    StoreModule.forFeature(chatFeature),
     EffectsModule.forFeature([ChatSearchEffects, ChatAssistantEffects]),
     TranslateModule,
     SidebarModule,

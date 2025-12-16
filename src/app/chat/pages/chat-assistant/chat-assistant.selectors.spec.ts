@@ -3,6 +3,7 @@ import * as fromSelectors from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 import { NEW_AI_CHAT_ITEM } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
+import { ChatAssistantState } from './chat-assistant.state';
 
 describe('ChatAssistant Selectors', () => {
   const mockChats = [
@@ -33,7 +34,14 @@ describe('ChatAssistant Selectors', () => {
     type: ChatType.AiChat
   };
 
-  const selectedChatMode = 'ai';
+  const baseMockState: ChatAssistantState = {
+    user: undefined,
+    chats: [],
+    currentChat: undefined,
+    currentMessages: undefined,
+    topic: '',
+    selectedChatMode: 'ai'
+  };
 
   describe('chatAssistantSelectors', () => {
     it('should exist and be defined', () => {
@@ -56,7 +64,7 @@ describe('ChatAssistant Selectors', () => {
         mockChats,
         mockCurrentChat,
         mockMessages,
-        selectedChatMode
+        baseMockState
       );
 
       const expected: ChatAssistantViewModel = {
@@ -81,43 +89,57 @@ describe('ChatAssistant Selectors', () => {
           }
         ] as ChatMessage[],
         chatTitleKey: 'CHAT.TITLE.AI',
-        selectedChatMode: 'ai'
       };
 
       expect(result).toEqual(expected);
     });
 
     it('should select the chat assistant view model with direct chat mode', () => {
+      const mockState = {
+        ...baseMockState,
+        selectedChatMode: 'direct'
+      };
+
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         mockMessages,
-        'direct'
+        mockState
       );
+
       expect(result.chatTitleKey).toBe('CHAT.TITLE.DIRECT');
-      expect(result.selectedChatMode).toBe('direct');
     });
 
     it('should select the chat assistant view model with group chat mode', () => {
+      const mockState = {
+        ...baseMockState,
+        selectedChatMode: 'group'
+      };
+
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         mockMessages,
-        'group'
+        mockState
       );
+
       expect(result.chatTitleKey).toBe('CHAT.TITLE.GROUP');
-      expect(result.selectedChatMode).toBe('group');
     });
 
     it('should use default title key for unknown chat mode', () => {
+      const mockState = {
+        ...baseMockState,
+        selectedChatMode: 'unknown'
+      };
+
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         mockMessages,
-        'unknown'
+        mockState
       );
+
       expect(result.chatTitleKey).toBe('CHAT.TITLE.DEFAULT');
-      expect(result.selectedChatMode).toBe('unknown');
     });
 
     it('should handle undefined currentChat by using NEW_AI_CHAT_ITEM', () => {
@@ -125,8 +147,9 @@ describe('ChatAssistant Selectors', () => {
         mockChats,
         undefined,
         mockMessages,
-        selectedChatMode
+        baseMockState
       );
+
       expect(result.currentChat).toEqual(NEW_AI_CHAT_ITEM);
     });
 
@@ -134,10 +157,11 @@ describe('ChatAssistant Selectors', () => {
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
-        [], // pass [] instead of undefined
-        selectedChatMode
+        undefined,
+        baseMockState
       );
-      expect(result.currentMessages).toEqual([]);
+
+      expect(result.currentMessages).toBeUndefined();
     });
 
     it('should handle empty currentMessages array', () => {
@@ -145,8 +169,9 @@ describe('ChatAssistant Selectors', () => {
         mockChats,
         mockCurrentChat,
         [],
-        selectedChatMode
+        baseMockState
       );
+
       expect(result.currentMessages).toEqual([]);
     });
 
@@ -163,13 +188,16 @@ describe('ChatAssistant Selectors', () => {
           creationDate: '2023-01-01T10:00:00Z'
         }
       ];
+
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         messagesWithMissingFields,
-        selectedChatMode
+        baseMockState
       );
+
       expect(result.currentMessages).toHaveLength(2);
+      
       expect(result.currentMessages?.[0]).toEqual({
         id: '',
         text: '',
@@ -178,7 +206,9 @@ describe('ChatAssistant Selectors', () => {
         creationDate: expect.any(Date),
         type: MessageType.Human
       });
+      
       expect(isNaN(result.currentMessages?.[0].creationDate.getTime() ?? 0)).toBe(true);
+      
       expect(result.currentMessages?.[1]).toEqual({
         id: 'msg2',
         text: 'Complete message',
@@ -213,12 +243,14 @@ describe('ChatAssistant Selectors', () => {
           creationDate: '2023-01-01T10:01:00Z'
         }
       ];
+
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         unsortedMessages,
-        selectedChatMode
+        baseMockState
       );
+
       expect(result.currentMessages?.[0].id).toBe('msg1');
       expect(result.currentMessages?.[1].id).toBe('msg2');
       expect(result.currentMessages?.[2].id).toBe('msg3');
@@ -229,21 +261,27 @@ describe('ChatAssistant Selectors', () => {
         mockChats,
         mockCurrentChat,
         mockMessages,
-        selectedChatMode
+        baseMockState
       );
+
       expect(result.chats?.[0]).toEqual(NEW_AI_CHAT_ITEM);
       expect(result.chats?.slice(1)).toEqual(mockChats);
     });
 
     it('should handle null selectedChatMode', () => {
+      const mockState = {
+        ...baseMockState,
+        selectedChatMode: null
+      };
+
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         mockMessages,
-        null
+        mockState
       );
+
       expect(result.chatTitleKey).toBe('CHAT.TITLE.DEFAULT');
-      expect(result.selectedChatMode).toBeNull();
     });
 
     it('should transform message type to uppercase for userNameKey', () => {
@@ -254,87 +292,15 @@ describe('ChatAssistant Selectors', () => {
         type: MessageType.Human,
         creationDate: '2023-01-01T10:00:00Z'
       }];
+
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         messageWithLowercaseType,
-        selectedChatMode
+        baseMockState
       );
+
       expect(result.currentMessages?.[0].userNameKey).toBe('CHAT.PARTICIPANT.HUMAN');
-    });
-  });
-
-  describe('Simple Selectors', () => {
-    const baseState = {
-      chatList: {
-        chats: [{ id: '1', type: ChatType.HumanChat }, { id: '2', type: ChatType.AiChat }],
-        isLoadingChats: false,
-        chatsError: null,
-        selectedChatMode: 'ai',
-      },
-      chat: {
-        chatId: '1',
-        messages: [{ id: 'msg1', type: MessageType.Human }],
-        settings: { chatName: 'TestName' },
-        isLoadingMessages: false,
-        messageError: null
-      },
-      shared: {
-        currentUser: { userId: 'u1', userName: 'User', email: 'user@x.com' }
-      }
-    };
-
-    it('selectChatList returns chatList', () => {
-      expect(fromSelectors.selectChatList.projector(baseState)).toEqual(baseState.chatList);
-    });
-
-    it('selectChats returns chats', () => {
-      expect(fromSelectors.selectChats.projector(baseState.chatList)).toEqual(baseState.chatList.chats);
-    });
-
-    it('selectSelectedChatMode returns selectedChatMode', () => {
-      expect(fromSelectors.selectSelectedChatMode.projector(baseState.chatList)).toBe('ai');
-    });
-
-    it('selectChat returns chat', () => {
-      expect(fromSelectors.selectChat.projector(baseState)).toEqual(baseState.chat);
-    });
-
-    it('selectChatId returns chatId', () => {
-      expect(fromSelectors.selectChatId.projector(baseState.chat)).toBe('1');
-    });
-
-    it('selectMessages returns messages', () => {
-      expect(fromSelectors.selectMessages.projector(baseState.chat)).toEqual(baseState.chat.messages);
-    });
-
-    it('selectChatSettings returns settings', () => {
-      expect(fromSelectors.selectChatSettings.projector(baseState.chat)).toEqual(baseState.chat.settings);
-    });
-
-    it('selectShared returns shared', () => {
-      expect(fromSelectors.selectShared.projector(baseState)).toEqual(baseState.shared);
-    });
-
-    it('selectCurrentUser returns currentUser', () => {
-      expect(fromSelectors.selectCurrentUser.projector(baseState.shared)).toEqual(baseState.shared.currentUser);
-    });
-
-    it('selectCurrentChatFromState finds chat by id', () => {
-      expect(fromSelectors.chatAssistantSelectors.selectCurrentChat.projector('1', baseState.chatList.chats)).toEqual(baseState.chatList.chats[0]);
-    });
-
-    it('selectCurrentChatFromState returns undefined if not found', () => {
-      expect(fromSelectors.chatAssistantSelectors.selectCurrentChat.projector('x', baseState.chatList.chats)).toBeUndefined();
-    });
-
-    it('selectTopicFromState returns chatName if set', () => {
-      expect(fromSelectors.chatAssistantSelectors.selectTopic.projector({ chatName: 'TestName' })).toBe('TestName');
-    });
-
-    it('selectTopicFromState returns default if chatName is undefined', () => {
-      expect(fromSelectors.chatAssistantSelectors.selectTopic.projector({})).toBe('chat-assistant');
-      expect(fromSelectors.chatAssistantSelectors.selectTopic.projector(null)).toBe('chat-assistant');
     });
   });
 });

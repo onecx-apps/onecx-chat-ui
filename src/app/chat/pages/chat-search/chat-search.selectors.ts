@@ -4,12 +4,12 @@ import {
   DataTableColumn,
   RowListGridData,
 } from '@onecx/portal-integration-angular';
-import { chatSearchFeature } from '../../chat.reducers';
+import { chatFeature } from '../../chat.reducers';
 import { initialState } from './chat-search.reducers';
 import { ChatSearchViewModel } from './chat-search.viewmodel';
 
 export const chatSearchSelectors = createChildSelectors(
-  chatSearchFeature.selectChatSearchState,
+  chatFeature.selectSearch,
   initialState
 );
 

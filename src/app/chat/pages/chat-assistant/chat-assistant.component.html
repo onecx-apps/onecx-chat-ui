@@ -4,37 +4,43 @@
   [position]="'right'"
   [styleClass]="'onecx-chat-sidebar p-0'"
 >
-  <div class="navigator-container h-full flex flex-column">
-    @if (currentPage === 'initial') {
-      <app-chat-initial-screen
-        (selectMode)="onChatModeSelected($event)"
-      ></app-chat-initial-screen>
-    }
-
-    @if (currentPage === 'newChat') {
-      @let chatMode = selectedChatMode$ | async;
-      @let translatedTitle = (chatMode === 'ai' ? 'CHAT.TITLE.AI' : (chatMode === 'direct' ? 'CHAT.TITLE.DIRECT' : (chatMode === 'group' ? 'CHAT.TITLE.GROUP' : 'CHAT.TITLE.AI'))) | translate;
-      <app-chat-header
-        [title]="translatedTitle"
-        [showBack]="true"
-        [showClose]="false"
-        (backClicked)="onBackFromNewChat()"
-      ></app-chat-header>
-      <div class="flex-grow-1 overflow-auto">
-        <app-chat-settings
-          [settingsType]="(chatMode === 'ai' || chatMode === 'direct' || chatMode === 'group') ? chatMode : 'ai'"
-          [chatNamePlaceholder]="chatNamePlaceholder"
-          (create)="onCreateChat($event)"
-        ></app-chat-settings>
-      </div>
-    }
-  </div>
+  @let vm = viewModel$ | async;
+  @if (vm) {
+    <div class="onecx-companion-container">
+      @if (!selectedChatMode) {
+        <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
+      } @else {
+        <div class="chat-interface" [@slideIn]>
+          <app-chat-header
+            [title]="vm.chatTitleKey | translate"
+            [showBack]="true"
+            [showClose]="false"
+            (backClicked)="goBack()"
+          ></app-chat-header>
+          @if (selectedChatMode === 'ai') {
+            <app-chat-list
+              [chats]="vm.chats"
+              [loading]="vm.chats === undefined"
+              [selectedChat]="vm.currentChat"
+              (chatSelected)="chatSelected($event)"
+              [menuItems]="(menuItems | async) ?? []"
+            ></app-chat-list>
+          }
+          <app-chat
+            [chatMessages]="vm.currentMessages ?? []"
+            (sendMessage)="sendMessage($event)"
+            (retrySendMessage)="sendMessage($event)"
+          ></app-chat>
+        </div>
+      }
+    </div>
+  }
 </app-chat-slider>
 <div class="layout-topbar-item">
   <p-button
     styleClass="chat-button p-button-rounded p-button-text"
-    [attr.aria-label]="'CHAT.TITLE.AI' | translate"
-    [pTooltip]="'CHAT.TITLE.AI' | translate"
+    [attr.aria-label]="'CHAT.TITLE_AI' | translate"
+    [pTooltip]="'CHAT.TITLE_AI' | translate"
     tooltipPosition="top"
     tooltipEvent="hover"
     (onClick)="_sidebarVisible = true"

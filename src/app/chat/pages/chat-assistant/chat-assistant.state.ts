@@ -6,32 +6,11 @@ export interface ChatUser {
   email: string;
 }
 
-export interface ChatPageState {
-  chatId: string | null;
-  messages: Message[];
-  isLoadingMessages: boolean;
-  messageError: string | null;
-  settings: {
-    chatName?: string;
-    chatMode?: string;
-    recipientUserId?: string;
-    participants?: string[];
-  } | null;
-}
-
-export interface ChatListPageState {
-  chats: Chat[];
-  isLoadingChats: boolean;
-  chatsError: string | null;
-  selectedChatMode: string | null; // 'ai', 'direct', 'group'
-}
-
-export interface SharedState {
-  currentUser: ChatUser | null;
-}
-
 export interface ChatAssistantState {
-  chat: ChatPageState;
-  chatList: ChatListPageState;
-  shared: SharedState;
+  user: ChatUser | undefined;
+  chats: Chat[];
+  currentChat: Chat | undefined;
+  currentMessages: Message[] | undefined;
+  topic: string;
+  selectedChatMode: string | null;
 }

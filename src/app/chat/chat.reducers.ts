@@ -1,15 +1,24 @@
-import { createFeature } from '@ngrx/store';
+import { combineReducers, createFeature } from '@ngrx/store';
+import { ChatState } from './chat.state';
 import { chatAssistantReducer } from './pages/chat-assistant/chat-assistant.reducers';
+import { ChatAssistantState } from './pages/chat-assistant/chat-assistant.state';
 import { chatSearchReducer } from './pages/chat-search/chat-search.reducers';
 
-// chatAssistant feature
-export const chatAssistantFeature = createFeature({
-  name: 'chatAssistant',
-  reducer: chatAssistantReducer,
+export const chatFeature = createFeature({
+  name: 'chat',
+  reducer: combineReducers<ChatState>({
+    search: chatSearchReducer,
+    assistant: chatAssistantReducer,
+  }),
 });
 
-// chatSearch feature
-export const chatSearchFeature = createFeature({
-  name: 'chatSearch',
-  reducer: chatSearchReducer,
+export interface GlobalChatAssistantState {
+  assistant: ChatAssistantState;
+}
+
+export const chatAssistantFeature = createFeature({
+  name: 'chat',
+  reducer: combineReducers<GlobalChatAssistantState>({
+    assistant: chatAssistantReducer,
+  }),
 });

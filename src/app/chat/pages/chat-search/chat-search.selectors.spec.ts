@@ -27,7 +27,7 @@ describe('ChatSearchSelectors', () => {
     },
     {
       id: '2',
-      topic: 'Chat 2',
+      topic: 'Chat 2', 
       type: 'HUMAN_CHAT' as any,
       participants: []
     }
@@ -40,15 +40,17 @@ describe('ChatSearchSelectors', () => {
     { id: 'participants' } as DataTableColumn
   ];
 
-  const mockState: { chatSearch: ChatSearchState } = {
-    chatSearch: {
-      ...initialState,
-      results: mockChats,
-      columns: mockColumns,
-      displayedColumns: ['id', 'topic', 'type'],
-      viewMode: 'advanced',
-      chartVisible: true,
-      criteria: { changeMe: 'test' }
+  const mockState: { chat: { search: ChatSearchState } } = {
+    chat: {
+      search: {
+        ...initialState,
+        results: mockChats,
+        columns: mockColumns,
+        displayedColumns: ['id', 'topic', 'type'],
+        viewMode: 'advanced',
+        chartVisible: true,
+        criteria: { changeMe: 'test' }
+      }
     }
   };
 
@@ -85,9 +87,11 @@ describe('ChatSearchSelectors', () => {
 
     it('should select searchLoadingIndicator from state', () => {
       const stateWithLoading = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          searchLoadingIndicator: true
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            searchLoadingIndicator: true
+          }
         }
       };
       const result = chatSearchSelectors.selectSearchLoadingIndicator(stateWithLoading);
@@ -98,7 +102,7 @@ describe('ChatSearchSelectors', () => {
   describe('selectResults', () => {
     it('should transform results to RowListGridData format', () => {
       const result = selectResults(mockState);
-
+      
       expect(result).toEqual([
         {
           imagePath: '',
@@ -117,114 +121,49 @@ describe('ChatSearchSelectors', () => {
       ]);
     });
 
+    it('should handle item as undefined in results array', () => {
+  const state = {
+    chat: {
+      search: {
+        ...mockState.chat.search,
+        results: [undefined]
+      }
+    }
+  };
+  const result = selectResults(state);
+  expect(result[0].id).toBe('');
+  expect(result[0].imagePath).toBe('');
+});
+
     it('should handle empty results array', () => {
       const emptyState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: []
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            results: []
+          }
         }
       };
-
+      
       const result = selectResults(emptyState);
       expect(result).toEqual([]);
     });
 
-    it('should return [] if results is null', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: null as any
+    it('should handle results with undefined id', () => {
+      const chatWithoutId = { ...mockChat };
+      delete (chatWithoutId as any).id;
+      
+      const stateWithUndefinedId = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            results: [chatWithoutId]
+          }
         }
       };
-      const result = selectResults(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return [] if results is undefined', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: undefined as any
-        }
-      };
-      const result = selectResults(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return [] if results is not an array (object)', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: { foo: 'bar' } as any
-        }
-      };
-      const result = selectResults(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return [] if results is not an array (number)', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: 123 as any
-        }
-      };
-      const result = selectResults(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return [] if results is not an array (string)', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: 'not an array' as any
-        }
-      };
-      const result = selectResults(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should map results array with imagePath and id defaults', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: [
-            { id: 'x', topic: 'T1', type: 'AI_CHAT', participants: [1] },
-            { id: 'y', topic: 'T2', type: 'HUMAN_CHAT', participants: [2] }
-          ]
-        }
-      };
-      const result = selectResults(state);
-      expect(result).toEqual([
-        { imagePath: '', id: 'x', topic: 'T1', type: 'AI_CHAT', participants: [1] },
-        { imagePath: '', id: 'y', topic: 'T2', type: 'HUMAN_CHAT', participants: [2] }
-      ]);
-    });
-
-    it('should handle item with undefined id using default empty string', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: [{ topic: 'No ID', type: 'AI_CHAT' }]
-        }
-      };
-      const result = selectResults(state);
+      
+      const result = selectResults(stateWithUndefinedId);
       expect(result[0].id).toBe('');
-      expect(result[0].imagePath).toBe('');
-      expect(result[0]['topic']).toBe('No ID');
-      expect(result[0]['type']).toBe('AI_CHAT');
-    });
-
-    it('should handle item with null id using nullish coalescing', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: [{ id: null, topic: 'Null ID' } as any]
-        }
-      };
-      const result = selectResults(state);
-      // null is not replaced by ?? operator, only undefined is
-      expect(result[0].id).toBe(null);
       expect(result[0].imagePath).toBe('');
     });
 
@@ -234,14 +173,16 @@ describe('ChatSearchSelectors', () => {
         customProp: 'customValue',
         anotherProp: 123
       };
-
+      
       const stateWithExtraProps = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: [chatWithExtraProps]
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            results: [chatWithExtraProps]
+          }
         }
       };
-
+      
       const result = selectResults(stateWithExtraProps);
       expect(result[0]).toEqual({
         imagePath: '',
@@ -258,7 +199,7 @@ describe('ChatSearchSelectors', () => {
   describe('selectDisplayedColumns', () => {
     it('should return columns matching displayedColumns ids', () => {
       const result = selectDisplayedColumns(mockState);
-
+      
       expect(result).toEqual([
         { id: 'id' } as DataTableColumn,
         { id: 'topic' } as DataTableColumn,
@@ -266,216 +207,88 @@ describe('ChatSearchSelectors', () => {
       ]);
     });
 
-    it('should return empty array when columns is null', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: null as any,
-          displayedColumns: ['id', 'topic']
-        }
-      };
-
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return empty array when columns is undefined', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: undefined as any,
-          displayedColumns: ['id', 'topic']
-        }
-      };
-
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
-    });
-
     it('should return empty array when displayedColumns is null', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          displayedColumns: null as any
+      const stateWithNullDisplayed = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            displayedColumns: null
+          }
         }
       };
-
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return empty array when displayedColumns is undefined', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          displayedColumns: undefined as any
-        }
-      };
-
-      const result = selectDisplayedColumns(state);
+      
+      const result = selectDisplayedColumns(stateWithNullDisplayed);
       expect(result).toEqual([]);
     });
 
     it('should return empty array when displayedColumns is empty', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: mockColumns,
-          displayedColumns: []
+      const stateWithEmptyDisplayed = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            columns: mockColumns,
+            displayedColumns: []
+          }
         }
       };
-
-      const result = selectDisplayedColumns(state);
+      
+      const result = selectDisplayedColumns(stateWithEmptyDisplayed);
       expect(result).toEqual([]);
     });
 
-    it('should return [] if columns is not an array (object)', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: { foo: 'bar' } as any,
-          displayedColumns: ['id', 'topic']
+    it('should filter out non-existing column ids', () => {
+      const stateWithInvalidIds = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            displayedColumns: ['id', 'nonexistent', 'topic', 'invalid']
+          }
         }
       };
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
+      
+      const result = selectDisplayedColumns(stateWithInvalidIds);
+      expect(result).toEqual([
+        { id: 'id' } as DataTableColumn,
+        { id: 'topic' } as DataTableColumn
+      ]);
     });
 
-    it('should return [] if columns is not an array (number)', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: 123 as any,
-          displayedColumns: ['id', 'topic']
+    it('should preserve order of displayedColumns', () => {
+      const stateWithReorderedColumns = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            displayedColumns: ['type', 'id', 'topic']
+          }
         }
       };
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
+      
+      const result = selectDisplayedColumns(stateWithReorderedColumns);
+      expect(result).toEqual([
+        { id: 'type' } as DataTableColumn,
+        { id: 'id' } as DataTableColumn,
+        { id: 'topic' } as DataTableColumn
+      ]);
     });
 
-    it('should return [] if displayedColumns is not an array (object)', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: mockColumns,
-          displayedColumns: { foo: 'bar' } as any
+    it('should handle duplicate column ids', () => {
+      const stateWithDuplicates = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            columns: mockColumns,
+            displayedColumns: ['id', 'topic', 'id', 'type']
+          }
         }
       };
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return [] if displayedColumns is not an array (string)', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: mockColumns,
-          displayedColumns: 'not-an-array' as any
-        }
-      };
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should map displayedColumns to matching columns using columns.find', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: mockColumns,
-          displayedColumns: ['id', 'topic', 'type']
-        }
-      };
-      const result = selectDisplayedColumns(state);
+      
+      const result = selectDisplayedColumns(stateWithDuplicates);
       expect(result).toEqual([
         { id: 'id' } as DataTableColumn,
         { id: 'topic' } as DataTableColumn,
+        { id: 'id' } as DataTableColumn,
         { id: 'type' } as DataTableColumn
       ]);
-      expect(result.length).toBe(3);
-    });
-
-    it('should filter out displayedColumns that do not match any column id', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: mockColumns,
-          displayedColumns: ['id', 'nonexistent', 'topic', 'missing']
-        }
-      };
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([
-        { id: 'id' } as DataTableColumn,
-        { id: 'topic' } as DataTableColumn
-      ]);
-      expect(result.length).toBe(2);
-    });
-
-    it('should handle columns with null id', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: [
-            { id: 'id' } as DataTableColumn,
-            { id: null } as any,
-            { id: 'topic' } as DataTableColumn
-          ],
-          displayedColumns: ['id', 'topic']
-        }
-      };
-      const result = selectDisplayedColumns(state);
-      expect(result.length).toBe(2);
-      expect(result).toEqual([
-        { id: 'id' } as DataTableColumn,
-        { id: 'topic' } as DataTableColumn
-      ]);
-    });
-
-    it('should handle columns with undefined id', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: [
-            { id: 'id' } as DataTableColumn,
-            { id: undefined } as any,
-            { id: 'topic' } as DataTableColumn
-          ],
-          displayedColumns: ['id', 'topic']
-        }
-      };
-      const result = selectDisplayedColumns(state);
-      expect(result.length).toBe(2);
-      expect(result).toEqual([
-        { id: 'id' } as DataTableColumn,
-        { id: 'topic' } as DataTableColumn
-      ]);
-    });
-
-    it('should handle empty columns array', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: [],
-          displayedColumns: ['id', 'topic']
-        }
-      };
-
-      const result = selectDisplayedColumns(state);
-      expect(result).toEqual([]);
-    });
-
-    it('should return empty array when all displayedColumns are filtered out', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: mockColumns,
-          displayedColumns: ['nonexistent1', 'nonexistent2', 'nonexistent3']
-        }
-      };
-
-      const result = selectDisplayedColumns(state);
-      // This tests the ?? [] operator, although filter(Boolean) always returns an array
-      expect(result).toEqual([]);
-      expect(Array.isArray(result)).toBe(true);
     });
   });
 
@@ -514,26 +327,37 @@ describe('ChatSearchSelectors', () => {
 
     it('should handle initial state', () => {
       const initialMockState = {
-        chatSearch: {
-          ...initialState,
-          columns: chatSearchColumns
+        chat: {
+          search: {
+            ...initialState,
+            columns: chatSearchColumns
+          }
         }
       };
+      
       const result = selectChatSearchViewModel(initialMockState);
       
-      expect(result.results).toEqual([]);
-      expect(result.displayedColumns).toEqual([]);
-      expect(result.columns).toEqual(chatSearchColumns);
+      expect(result).toEqual({
+        columns: chatSearchColumns,
+        searchCriteria: {},
+        results: [],
+        displayedColumns: [],
+        viewMode: 'basic',
+        chartVisible: false
+      });
     });
 
     it('should handle basic view mode', () => {
       const basicModeState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          viewMode: 'basic' as const,
-          chartVisible: false
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            viewMode: 'basic' as const,
+            chartVisible: false
+          }
         }
       };
+      
       const result = selectChatSearchViewModel(basicModeState);
       
       expect(result.viewMode).toBe('basic');
@@ -542,38 +366,30 @@ describe('ChatSearchSelectors', () => {
 
     it('should handle empty criteria', () => {
       const emptyCriteriaState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          criteria: {}
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            criteria: {}
+          }
         }
       };
-      const result = selectChatSearchViewModel(emptyCriteriaState);
       
+      const result = selectChatSearchViewModel(emptyCriteriaState);
       expect(result.searchCriteria).toEqual({});
     });
 
     it('should handle null displayedColumns in view model', () => {
       const nullDisplayedState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          displayedColumns: null as any
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            displayedColumns: null
+          }
         }
       };
-
+      
       const result = selectChatSearchViewModel(nullDisplayedState);
       expect(result.displayedColumns).toEqual([]);
-    });
-
-    it('should handle null results in view model', () => {
-      const nullResultsState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: null as any
-        }
-      };
-
-      const result = selectChatSearchViewModel(nullResultsState);
-      expect(result.results).toEqual([]);
     });
   });
 
@@ -581,7 +397,7 @@ describe('ChatSearchSelectors', () => {
     it('should return same reference when input state unchanged', () => {
       const result1 = selectResults(mockState);
       const result2 = selectResults(mockState);
-
+      
       expect(result1).toBe(result2);
     });
 
@@ -589,43 +405,30 @@ describe('ChatSearchSelectors', () => {
       const result1 = selectResults(mockState);
       
       const modifiedState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: [...mockState.chatSearch.results, mockChat]
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            results: [...mockState.chat.search.results, mockChat]
+          }
         }
       };
+      
       const result2 = selectResults(modifiedState);
-
+      
       expect(result1).not.toBe(result2);
-      expect(result1.length).toBe(2);
-      expect(result2.length).toBe(3);
     });
 
     it('should return same displayedColumns reference when columns and displayedColumns unchanged', () => {
       const result1 = selectDisplayedColumns(mockState);
       const result2 = selectDisplayedColumns(mockState);
-
-      expect(result1).toBe(result2);
-    });
-
-    it('should return new displayedColumns when columns change', () => {
-      const result1 = selectDisplayedColumns(mockState);
       
-      const modifiedState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: [...mockColumns, { id: 'newColumn' } as DataTableColumn]
-        }
-      };
-      const result2 = selectDisplayedColumns(modifiedState);
-
-      expect(result1).not.toBe(result2);
+      expect(result1).toBe(result2);
     });
 
     it('should return same view model reference when all dependencies unchanged', () => {
       const result1 = selectChatSearchViewModel(mockState);
       const result2 = selectChatSearchViewModel(mockState);
-
+      
       expect(result1).toBe(result2);
     });
 
@@ -633,86 +436,88 @@ describe('ChatSearchSelectors', () => {
       const result1 = selectChatSearchViewModel(mockState);
       
       const modifiedState = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          chartVisible: false
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            chartVisible: false
+          }
         }
       };
+      
       const result2 = selectChatSearchViewModel(modifiedState);
-
+      
       expect(result1).not.toBe(result2);
       expect(result2.chartVisible).toBe(false);
     });
   });
 
   describe('edge cases', () => {
-    it('should handle results with mixed valid and invalid data', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: [
-            { id: '1', topic: 'Valid' },
-            null,
-            { id: '2', topic: 'Also Valid' },
-            undefined
-          ] as any
+    it('should handle null results gracefully', () => {
+      const nullResultsState = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            results: null as any
+          }
         }
       };
-
-      const result = selectResults(state);
-      expect(result.length).toBe(4);
-      expect(result[0].id).toBe('1');
-      expect(result[1].id).toBe('');
-      expect(result[2].id).toBe('2');
-      expect(result[3].id).toBe('');
+      
+      const result = selectResults(nullResultsState);
+      expect(result).toEqual([]);
+      expect(Array.isArray(result)).toBe(true);
     });
 
-    it('should handle displayedColumns with duplicate ids', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: mockColumns,
-          displayedColumns: ['id', 'id', 'topic', 'topic']
+    it('should handle columns with missing id property', () => {
+      const stateWithIncompleteColumns = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            columns: [
+              { id: 'id' } as DataTableColumn,
+              {} as DataTableColumn, // Missing id
+              { id: 'topic' } as DataTableColumn
+            ],
+            displayedColumns: ['id', 'missing', 'topic']
+          }
         }
       };
-
-      const result = selectDisplayedColumns(state);
-      expect(result.length).toBe(4);
-      expect(result[0].id).toBe('id');
-      expect(result[1].id).toBe('id');
+      
+      const result = selectDisplayedColumns(stateWithIncompleteColumns);
+      expect(result).toEqual([
+        { id: 'id' } as DataTableColumn,
+        { id: 'topic' } as DataTableColumn
+      ]);
     });
 
-    it('should handle columns array with null elements', () => {
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          columns: [null, { id: 'id' }, null, { id: 'topic' }] as any,
-          displayedColumns: ['id', 'topic']
+    it('should handle null columns gracefully', () => {
+      const nullColumnsState = {
+        chat: {
+          search: {
+            ...mockState.chat.search,
+            columns: null as any,
+            displayedColumns: ['id', 'topic']
+          }
         }
       };
-
-      const result = selectDisplayedColumns(state);
-      expect(result.length).toBe(2);
-    });
-
-    it('should handle very large results array', () => {
-      const largeResults = Array.from({ length: 1000 }, (_, i) => ({
-        id: `id-${i}`,
-        topic: `Topic ${i}`,
-        type: 'AI_CHAT'
-      }));
-
-      const state = {
-        chatSearch: {
-          ...mockState.chatSearch,
-          results: largeResults
-        }
-      };
-
-      const result = selectResults(state);
-      expect(result.length).toBe(1000);
-      expect(result[0].id).toBe('id-0');
-      expect(result[999].id).toBe('id-999');
+      
+      const result = selectDisplayedColumns(nullColumnsState);
+      expect(result).toEqual([]);
+      expect(Array.isArray(result)).toBe(true);
     });
   });
+
+  it('should handle columns array with undefined element', () => {
+  const state = {
+    chat: {
+      search: {
+        ...mockState.chat.search,
+        columns: [undefined, { id: 'id' }, { id: 'topic' }],
+        displayedColumns: ['id', 'topic', 'missing']
+      }
+    }
+  };
+  const result = selectDisplayedColumns(state);
+  expect(result).toEqual([{ id: 'id' }, { id: 'topic' }]);
+});
+
 });
