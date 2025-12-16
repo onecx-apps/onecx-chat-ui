@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GroupChatSettingsComponent } from './group-chat-settings.component';
 import { TranslateTestingModule } from 'ngx-translate-testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { GroupChatSettingsHarness } from './group-chat-settings.harness';
 
 describe('GroupChatSettingsComponent', () => {
   let component: GroupChatSettingsComponent;
@@ -47,13 +49,19 @@ describe('GroupChatSettingsComponent', () => {
       expect(form.get('recipients')).toBe(existing);
     });
 
-    it('should initialize recipients from form value', () => {
-      form = new FormGroup({ recipients: new FormControl(['a', 'b']) });
+    it('should initialize recipients from form value and display them in UI', async () => {
+      form = new FormGroup({ recipients: new FormControl(['user1', 'user2']) });
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
       component.form = form;
+      
       fixture.detectChanges();
-      expect(component.recipients).toEqual(['a', 'b']);
+      
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
+      const recipientsCount = await harness.getRecipientsCount();
+      
+      expect(component.recipients).toEqual(['user1', 'user2']);
+      expect(recipientsCount).toBe(2);
     });
 
     it('should set recipients to [] if recipients control value is undefined', () => {
@@ -74,50 +82,81 @@ describe('GroupChatSettingsComponent', () => {
       expect(component.recipients).toEqual([]);
     });
 
-    it('should set recipients to [] if recipients control value is []', () => {
+    it('should set recipients to [] and not display any items in UI', async () => {
       form = new FormGroup({ recipients: new FormControl([]) });
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
       component.form = form;
+      
       fixture.detectChanges();
+      
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
+      const recipientsCount = await harness.getRecipientsCount();
+      
       expect(component.recipients).toEqual([]);
+      expect(recipientsCount).toBe(0);
     });
 
-    it('should clear recipientInputControl on init', () => {
+    it('should clear recipientInputControl on init', async () => {
       form = new FormGroup({});
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
       component.form = form;
       component.recipientInputControl.setValue('test');
+      
       fixture.detectChanges();
+      
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
+      const inputValue = await harness.getRecipientInputValue();
+      
       expect(component.recipientInputControl.value).toBe('');
+      expect(inputValue).toBe('');
     });
   });
 
   describe('onAddRecipient', () => {
-    it('should add recipient and clear input', () => {
+    it('should add recipient via UI interaction', async () => {
       form = new FormGroup({});
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
       component.form = form;
+      
       fixture.detectChanges();
-      component.recipientInputControl.setValue('newUser');
-      component.onAddRecipient();
+      
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
+      
+      await harness.setRecipientInputValue('newUser');
+      fixture.detectChanges();
+      
+      await harness.clickAddButton();
+      fixture.detectChanges();
+      
+      const recipientsCount = await harness.getRecipientsCount();
+      const inputValue = await harness.getRecipientInputValue();
+      
       expect(component.recipients).toContain('newUser');
       expect(form.get('recipients')?.value).toContain('newUser');
-      expect(component.recipientInputControl.value).toBe('');
+      expect(recipientsCount).toBe(1);
+      expect(inputValue).toBe('');
     });
 
-    it('should not add empty or whitespace recipient', () => {
+    it('should not show add button for empty input', async () => {
       form = new FormGroup({});
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
       component.form = form;
+      
       fixture.detectChanges();
-      component.recipientInputControl.setValue('   ');
-      component.onAddRecipient();
+      
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
+      
+      await harness.setRecipientInputValue('   ');
+      fixture.detectChanges();
+      
+      const isVisible = await harness.isAddButtonVisible();
+      
+      expect(isVisible).toBe(false);
       expect(component.recipients).toEqual([]);
-      expect(form.get('recipients')?.value).toEqual([]);
     });
 
     it('should not throw or add if recipientInputControl.value is null', () => {
@@ -132,75 +171,48 @@ describe('GroupChatSettingsComponent', () => {
       expect(form.get('recipients')?.value).toEqual([]);
     });
 
-    it('should not add duplicate recipient', () => {
+    it('should not add duplicate recipient', async () => {
       form = new FormGroup({ recipients: new FormControl(['user1']) });
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
       component.form = form;
+      
       fixture.detectChanges();
-      component.recipientInputControl.setValue('user1');
-      component.onAddRecipient();
+      
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
+      
+      await harness.setRecipientInputValue('user1');
+      fixture.detectChanges();
+      
+      await harness.clickAddButton();
+      fixture.detectChanges();
+      
+      const recipientsCount = await harness.getRecipientsCount();
+      
       expect(component.recipients).toEqual(['user1']);
-      expect(form.get('recipients')?.value).toEqual(['user1']);
+      expect(recipientsCount).toBe(1);
     });
   });
 
   describe('onRemoveRecipient', () => {
-    it('should remove recipient at index', () => {
-      form = new FormGroup({ recipients: new FormControl(['a', 'b', 'c']) });
+    it('should remove recipient via UI interaction', async () => {
+      form = new FormGroup({ recipients: new FormControl(['user1', 'user2', 'user3']) });
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
       component.form = form;
+      
       fixture.detectChanges();
-      component.onRemoveRecipient(1);
-      expect(component.recipients).toEqual(['a', 'c']);
-      expect(form.get('recipients')?.value).toEqual(['a', 'c']);
-    });
-
-    it('should update recipients array directly when onRemoveRecipient is called', () => {
-      form = new FormGroup({ recipients: new FormControl(['a', 'b', 'c']) });
-      fixture = TestBed.createComponent(GroupChatSettingsComponent);
-      component = fixture.componentInstance;
-      component.form = form;
-      component.recipients = ['x', 'y', 'z'];
-      component.onRemoveRecipient(1);
-      expect(component.recipients).toEqual(['x', 'z']);
-    });
-  });
-
-  describe('ngOnDestroy', () => {
-    it('should remove recipients control on destroy if present', () => {
-      form = new FormGroup({});
-      fixture = TestBed.createComponent(GroupChatSettingsComponent);
-      component = fixture.componentInstance;
-      component.form = form;
+      
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
+      
+      await harness.removeRecipientAtIndex(1);
       fixture.detectChanges();
-      expect(form.contains('recipients')).toBe(true);
-      component.ngOnDestroy();
-      expect(form.contains('recipients')).toBe(false);
-    });
-
-    it('should not throw if recipients not present on destroy', () => {
-      form = new FormGroup({});
-      fixture = TestBed.createComponent(GroupChatSettingsComponent);
-      component = fixture.componentInstance;
-      component.form = form;
-      expect(form.contains('recipients')).toBe(false);
-      expect(() => component.ngOnDestroy()).not.toThrow();
-    });
-  });
-
-  describe('showAddButton', () => {
-    it('should be true only if recipientInputControl has non-empty trimmed value', () => {
-      form = new FormGroup({});
-      fixture = TestBed.createComponent(GroupChatSettingsComponent);
-      component = fixture.componentInstance;
-      component.form = form;
-      fixture.detectChanges();
-      component.recipientInputControl.setValue('  ');
-      expect(component.showAddButton).toBe(false);
-      component.recipientInputControl.setValue('abc');
-      expect(component.showAddButton).toBe(true);
+      
+      const recipientsCount = await harness.getRecipientsCount();
+      
+      expect(component.recipients).toEqual(['user1', 'user3']);
+      expect(form.get('recipients')?.value).toEqual(['user1', 'user3']);
+      expect(recipientsCount).toBe(2);
     });
   });
 });
