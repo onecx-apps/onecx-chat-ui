@@ -1,7 +1,7 @@
 import { ComponentHarness } from '@angular/cdk/testing';
 
 export class GroupChatSettingsHarness extends ComponentHarness {
-  static hostSelector = 'app-group-chat-settings';
+  public static readonly hostSelector = 'app-group-chat-settings';
 
   getRecipientInput = this.locatorFor('input#recipientInput');
   getAddButton = this.locatorForOptional('button.add-recipient-btn');
