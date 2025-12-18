@@ -32,7 +32,11 @@
                     background: var(--surface-100);
                     border-left: 1px solid var(--input-border-color);
                     cursor: pointer;"
-             (click)="onAddRecipient()">
+             role="button"
+             tabindex="0"
+             (click)="onAddRecipient()"
+             (keydown.enter)="onAddRecipient()"
+             (keydown.space)="onAddRecipient()">
           <i class="pi pi-plus" style="color: var(--text-color-secondary);"></i>
         </div>
       
