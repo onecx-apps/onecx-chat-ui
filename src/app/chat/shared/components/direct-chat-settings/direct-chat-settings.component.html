@@ -24,14 +24,19 @@
                      outline: none;
                      color: var(--input-text-color);"
       />
-      <div style="display: flex; 
-                  align-items: center; 
-                  justify-content: center;
-                  padding: 0 1rem;
-                  background: var(--surface-200);
-                  border-left: 1px solid var(--input-border-color);">
+      <button type="button"
+              class="search-btn"
+              style="display: flex; 
+                     align-items: center; 
+                     justify-content: center;
+                     padding: 0 1rem;
+                     background: var(--surface-100);
+                     border: none;
+                     border-left: 1px solid var(--input-border-color);
+                     cursor: pointer;"
+              (click)="onSearch()">
         <i class="pi pi-search" style="color: var(--text-color-secondary);"></i>
-      </div>
+      </button>
     </div>
   </div>
 </div>

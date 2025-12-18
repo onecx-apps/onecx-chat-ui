@@ -25,21 +25,19 @@
                     outline: none;
                     color: var(--input-text-color);" />
       
-        <div style="display: flex; 
-                    align-items: center; 
-                    justify-content: center;
-                    padding: 0 1rem;
-                    background: var(--surface-100);
-                    border-left: 1px solid var(--input-border-color);
-                    cursor: pointer;"
-             role="button"
-             tabindex="0"
-             (click)="onAddRecipient()"
-             (keydown.enter)="onAddRecipient()"
-             (keydown.space)="onAddRecipient()">
+        <button type="button"
+                class="add-recipient-btn"
+                style="display: flex; 
+                       align-items: center; 
+                       justify-content: center;
+                       padding: 0 1rem;
+                       background: var(--surface-100);
+                       border: none;
+                       border-left: 1px solid var(--input-border-color);
+                       cursor: pointer;"
+                (click)="onAddRecipient()">
           <i class="pi pi-plus" style="color: var(--text-color-secondary);"></i>
-        </div>
-      
+        </button>
     </div>
    
     <!-- Recipients List (for group chats) -->

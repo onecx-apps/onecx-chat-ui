@@ -34,4 +34,8 @@ export class DirectChatSettingsComponent implements OnInit, OnDestroy {
   get recipientInputControl(): FormControl {
     return this.form.get('recipientInput') as FormControl;
   }
+
+  onSearch(): void {
+    // Placeholder for future search functionality
+  }
 }
