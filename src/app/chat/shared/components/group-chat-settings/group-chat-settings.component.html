@@ -1,24 +1,41 @@
 <div class="group-settings-section">
  <!-- Recipients Section -->
-  <div class="mb-4">
-    <label for="recipientInput" class="text-gray-500 text-sm mb-2 d-block" style="margin-bottom:6px !important;display:block;">
-      {{ 'CHAT.SETTINGS.INPUT.RECIPIENT' | translate }}
+  <div class="mb-4" style="position: relative; margin-top: 1rem;">
+    <label for="recipientInput" 
+            class="form-label"
+            style="position: absolute; 
+                  left: 0.75rem; 
+                  top: -0.65rem; 
+                  background: white; 
+                  padding: 0 0.5rem;
+                  pointer-events: none;
+                  z-index: 1;">
+      {{ 'CHAT.SETTINGS.INPUT.PARTICIPANT' | translate }}
     </label>
-    <div class="flex align-items-center mb-2" style="position:relative;">
+    <div style="position: relative; display: flex; align-items: stretch; border: 1px solid var(--input-border-color); border-radius: 0.5rem; overflow: hidden;">
       <input id="recipientInput"
              type="text"
-             class="recipient-input w-full p-2"
-             style="padding-right:2.5rem; border-radius: 2px !important; border: 1px solid var(--input-border-color);"
+             class="form-input"
              [formControl]="recipientInputControl"
-             [placeholder]="'CHAT.SETTINGS.INPUT.RECIPIENT_PLACEHOLDER' | translate" />
-      @if (showAddButton) {
-        <button type="button"
-                class="add-recipient-btn"
-                style="background:none;border:none;box-shadow:none;padding:0;position:absolute;right:8px;top:50%;transform:translateY(-50%);"
-                (click)="onAddRecipient()">
-          <i class="pi pi-plus"></i>
-        </button>
-      }
+             [placeholder]="'CHAT.SETTINGS.INPUT.RECIPIENT_PLACEHOLDER' | translate"
+             style="flex: 1; 
+                    padding: 0.75rem; 
+                    border: none;
+                    border-radius: 0;
+                    outline: none;
+                    color: var(--input-text-color);" />
+      
+        <div style="display: flex; 
+                    align-items: center; 
+                    justify-content: center;
+                    padding: 0 1rem;
+                    background: var(--surface-100);
+                    border-left: 1px solid var(--input-border-color);
+                    cursor: pointer;"
+             (click)="onAddRecipient()">
+          <i class="pi pi-plus" style="color: var(--text-color-secondary);"></i>
+        </div>
+      
     </div>
    
     <!-- Recipients List (for group chats) -->
@@ -33,7 +50,7 @@
                     class="remove-recipient-btn"
                     style="background:none;border:none;padding:4px;cursor:pointer;"
                     (click)="onRemoveRecipient(i)">
-              <i class="pi pi-trash"></i>
+              <i class="pi pi-minus-circle"></i>
             </button>
           </div>
         }

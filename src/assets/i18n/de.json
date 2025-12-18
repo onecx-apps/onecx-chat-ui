@@ -71,11 +71,11 @@
     "SETTINGS": {
       "INPUT": {
         "CHAT_NAME": "Chat Name",
-        "RECIPIENT": "Empfänger",
-        "RECIPIENTS": "Empfänger",
+        "PARTICIPANT": "Empfänger",
         "RECIPIENT_PLACEHOLDER": "E-Mail oder Name...",
-        "DIRECT_CHAT_PLACEHOLDER": "Direktchat {{date}}",
-        "GROUP_CHAT_PLACEHOLDER": "Gruppenchat {{date}}"
+        "AI_CHAT_PLACEHOLDER": "Mein neuer KI-Begleiter Chat",
+        "DIRECT_CHAT_PLACEHOLDER": "Mein neuer Direktchat",
+        "GROUP_CHAT_PLACEHOLDER": "Mein neuer Gruppenchat"
       }
     }
   }

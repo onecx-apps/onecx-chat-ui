@@ -21,10 +21,6 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
 
   recipientInputControl = new FormControl('');
   recipients: string[] = [];
-  
-  get showAddButton(): boolean {
-    return !!this.recipientInputControl.value && this.recipientInputControl.value.trim().length > 0;
-  }
 
   ngOnInit() {
     this.recipients = this.form.get('recipients')?.value || [];

@@ -1,10 +1,6 @@
 .remove-recipient-btn {
-  .pi-trash {
-    color: var(--trash-color, #B3261E);
+  .pi-minus-circle {
+    color: var(--trash-color);
     font-size: 1rem;
-  }
-  
-  &:hover .pi-trash {
-    color: darken(#B3261E, 10%);
   }
 }

@@ -1,12 +1,24 @@
-<div class="shared-settings mb-4">
-  <label for="chatNameInput" class="form-label">
+<div class="shared-settings mb-4" style="position: relative; margin-top: 1rem;">
+  <label for="chatNameInput" 
+         class="form-label"
+         style="position: absolute; 
+                left: 0.75rem; 
+                top: -0.65rem; 
+                background: white; 
+                padding: 0 0.5rem;
+                pointer-events: none;">
     {{ 'CHAT.SETTINGS.INPUT.CHAT_NAME' | translate }}
   </label>
   <input 
     id="chatNameInput"
     type="text"
-    class="form-input w-full p-2"
+    class="form-input"
     [formControl]="chatNameControl"
-    [placeholder]="chatNamePlaceholder" 
+    [placeholder]="chatNamePlaceholder"
+    style="padding: 0.75rem; 
+           border: 1px solid var(--input-border-color);
+           border-radius: 0.5rem;
+           outline: none;
+           color: var(--input-text-color);"
   />
 </div>

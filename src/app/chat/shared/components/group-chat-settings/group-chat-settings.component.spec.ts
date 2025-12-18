@@ -140,7 +140,7 @@ describe('GroupChatSettingsComponent', () => {
       expect(inputValue).toBe('');
     });
 
-    it('should not show add button for empty input', async () => {
+    it('should not add recipient when input is empty or whitespace', async () => {
       form = new FormGroup({});
       fixture = TestBed.createComponent(GroupChatSettingsComponent);
       component = fixture.componentInstance;
@@ -153,9 +153,9 @@ describe('GroupChatSettingsComponent', () => {
       await harness.setRecipientInputValue('   ');
       fixture.detectChanges();
       
-      const isVisible = await harness.isAddButtonVisible();
+      await harness.clickAddButton();
+      fixture.detectChanges();
       
-      expect(isVisible).toBe(false);
       expect(component.recipients).toEqual([]);
     });
 
