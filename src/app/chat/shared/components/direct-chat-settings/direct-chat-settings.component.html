@@ -11,7 +11,11 @@
         />
         <label for="recipientInput">{{ 'CHAT.SETTINGS.INPUT.PARTICIPANT' | translate }}</label>
       </span>
-      <p-inputGroupAddon class="cursor-pointer" (click)="onSearch()">
+      <p-inputGroupAddon 
+        class="cursor-pointer" 
+        (click)="onSearch()"
+        (keydown.enter)="onSearch()"
+        (keydown.space)="onSearch()">
         <i class="pi pi-search"></i>
       </p-inputGroupAddon>
     </p-inputGroup>
