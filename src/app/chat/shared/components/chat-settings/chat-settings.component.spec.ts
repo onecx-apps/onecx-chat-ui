@@ -95,10 +95,6 @@ describe('ChatSettingsComponent', () => {
     expect(component.settingsType).toBe('ai');
   });
 
-  it('should have default chatNamePlaceholder as empty string', () => {
-    expect(component.chatNamePlaceholder).toBe('');
-  });
-
   describe('Layout based on chat type', () => {
     it('should always show SharedChatSettingsComponent regardless of settingsType', () => {
       fixture.detectChanges();

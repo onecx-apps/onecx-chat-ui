@@ -28,7 +28,6 @@ describe('SharedChatSettingsComponent', () => {
     fixture = TestBed.createComponent(SharedChatSettingsComponent);
     component = fixture.componentInstance;
     component.form = form;
-    component.chatNamePlaceholder = 'placeholder';
   });
 
   it('should create', () => {
@@ -70,12 +69,6 @@ describe('SharedChatSettingsComponent', () => {
     it('should return the chatName control', () => {
       component.ngOnInit();
       expect(component.chatNameControl).toBe(form.get('chatName'));
-    });
-  });
-
-  describe('chatNamePlaceholder', () => {
-    it('should have chatNamePlaceholder input', () => {
-      expect(component.chatNamePlaceholder).toBe('placeholder');
     });
   });
 });
