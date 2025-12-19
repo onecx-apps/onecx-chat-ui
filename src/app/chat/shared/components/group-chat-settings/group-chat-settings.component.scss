@@ -1,6 +1,26 @@
-.remove-recipient-btn {
-  .pi-minus-circle {
-    color: var(--trash-color);
-    font-size: 1rem;
+:host ::ng-deep {
+  .remove-recipient-btn {
+    .pi-minus-circle {
+      color: var(--trash-color);
+      font-size: 1rem;
+    }
+  }
+
+  .p-inputgroup-addon {
+    background-color: var(--surface-100);
+    cursor: pointer;
+    
+    &:hover {
+      background-color: var(--surface-200);
+    }
+  }
+
+  .p-inputtext:enabled:focus {
+    border-color: var(--input-border-color);
+    box-shadow: none;
+  }
+
+  .p-inputtext:enabled:focus ~ label {
+    color: var(--text-color-secondary);
   }
 }

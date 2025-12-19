@@ -1,3 +1,10 @@
-.form-input {
-  width: 100%;
+:host ::ng-deep {
+  .p-inputtext:enabled:focus {
+    border-color: var(--input-border-color);
+    box-shadow: none;
+  }
+
+  .p-inputtext:enabled:focus ~ label {
+    color: var(--text-color-secondary);
+  }
 }

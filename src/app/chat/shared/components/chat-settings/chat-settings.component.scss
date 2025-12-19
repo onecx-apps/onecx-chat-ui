@@ -1,1 +1,19 @@
-// chat-settings.component.scss
+:host ::ng-deep {
+  .black-button.p-button {
+    border-color: #000 !important;
+    color: #000 !important;
+    background-color: transparent !important;
+    
+    &:enabled:hover {
+      background-color: var(--surface-100) !important;
+      border-color: #000 !important;
+      color: #000 !important;
+    }
+
+    &:disabled {
+      border-color: var(--surface-border) !important;
+      color: var(--text-color-secondary) !important;
+      opacity: 0.6;
+    }
+  }
+}

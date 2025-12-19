@@ -1,44 +1,22 @@
 <div class="group-settings-section">
- <!-- Recipients Section -->
-  <div class="mb-4" style="position: relative; margin-top: 1rem;">
-    <label for="recipientInput" 
-            class="form-label"
-            style="position: absolute; 
-                  left: 0.75rem; 
-                  top: -0.65rem; 
-                  background: white; 
-                  padding: 0 0.5rem;
-                  pointer-events: none;
-                  z-index: 1;">
-      {{ 'CHAT.SETTINGS.INPUT.PARTICIPANT' | translate }}
-    </label>
-    <div style="position: relative; display: flex; align-items: stretch; border: 1px solid var(--input-border-color); border-radius: 0.5rem; overflow: hidden;">
-      <input id="recipientInput"
-             type="text"
-             class="form-input"
-             [formControl]="recipientInputControl"
-             [placeholder]="'CHAT.SETTINGS.INPUT.RECIPIENT_PLACEHOLDER' | translate"
-             style="flex: 1; 
-                    padding: 0.75rem; 
-                    border: none;
-                    border-radius: 0;
-                    outline: none;
-                    color: var(--input-text-color);" />
-      
-        <button type="button"
-                class="add-recipient-btn"
-                style="display: flex; 
-                       align-items: center; 
-                       justify-content: center;
-                       padding: 0 1rem;
-                       background: var(--surface-100);
-                       border: none;
-                       border-left: 1px solid var(--input-border-color);
-                       cursor: pointer;"
-                (click)="onAddRecipient()">
-          <i class="pi pi-plus" style="color: var(--text-color-secondary);"></i>
-        </button>
-    </div>
+  <!-- Recipients Section -->
+  <div class="mb-3">
+    <p-inputGroup>
+      <span class="p-float-label">
+        <input 
+          id="recipientInput"
+          pInputText
+          type="text"
+          autocomplete="off"
+          [formControl]="recipientInputControl"
+        />
+        <label for="recipientInput">{{ 'CHAT.SETTINGS.INPUT.PARTICIPANT' | translate }}</label>
+      </span>
+      <p-inputGroupAddon class="cursor-pointer" (click)="onAddRecipient()">
+        <i class="pi pi-plus"></i>
+      </p-inputGroupAddon>
+    </p-inputGroup>
+  </div>
    
     <!-- Recipients List (for group chats) -->
     @if (recipients.length > 0) {
@@ -58,5 +36,4 @@
         }
       </div>
     }
-  </div>
 </div>

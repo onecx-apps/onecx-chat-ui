@@ -6,7 +6,6 @@
   <!-- Shared Settings (ALWAYS visible - used by all chat types) -->
   <app-shared-chat-settings
     [form]="chatForm"
-    [chatNamePlaceholder]="chatNamePlaceholder"
   ></app-shared-chat-settings>
 
   <!-- Type-Specific Settings (conditional based on chat mode) -->
@@ -22,19 +21,8 @@
   <div class="flex-grow-1"></div>
 
   <!-- Create Button -->
-<div class="create-btn-bar" 
-     style="position:absolute;bottom:0;left:0;right:0;padding:12px;display:flex;justify-content:flex-end;">
-  <button type="submit" 
-          class="create-btn py-2 px-4"
-          style="background-color: white;
-                 color: var(--text-color); 
-                 font-size: medium;
-                 border: 2px solid var(--text-color); 
-                 border-radius: 0.5rem !important; 
-                 padding: 1.5rem 5rem;
-                 cursor: pointer;"
-          [disabled]="chatForm.invalid">
-    {{ 'CHAT.ACTIONS.CREATE' | translate }}
-  </button>
-</div>
+  <div class="create-btn-bar" 
+       style="position:absolute;bottom:0;left:0;right:0;padding:12px;display:flex;justify-content:flex-end;">
+    <p-button type="submit" [label]="'CHAT.ACTIONS.CREATE' | translate" [outlined]="true" [disabled]="chatForm.invalid" styleClass="black-button" />
+  </div>
 </form>

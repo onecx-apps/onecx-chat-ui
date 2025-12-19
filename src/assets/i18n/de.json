@@ -71,11 +71,7 @@
     "SETTINGS": {
       "INPUT": {
         "CHAT_NAME": "Chat Name",
-        "PARTICIPANT": "Empfänger",
-        "RECIPIENT_PLACEHOLDER": "E-Mail oder Name...",
-        "AI_CHAT_PLACEHOLDER": "Mein neuer KI-Begleiter Chat",
-        "DIRECT_CHAT_PLACEHOLDER": "Mein neuer Direktchat",
-        "GROUP_CHAT_PLACEHOLDER": "Mein neuer Gruppenchat"
+        "PARTICIPANT": "Empfänger"
       }
     }
   }

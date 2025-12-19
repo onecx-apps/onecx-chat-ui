@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedChatSettingsComponent } from '../shared-chat-settings/shared-chat-settings.component';
 import { DirectChatSettingsComponent } from '../direct-chat-settings/direct-chat-settings.component';
 import { GroupChatSettingsComponent } from '../group-chat-settings/group-chat-settings.component';
+import { ButtonModule } from 'primeng/button';
 
 export type ChatSettingsType = 'ai' | 'direct' | 'group';
 
@@ -23,13 +24,13 @@ export interface ChatSettingsFormValue {
     SharedChatSettingsComponent,
     DirectChatSettingsComponent,
     GroupChatSettingsComponent,
+    ButtonModule,
   ],
   templateUrl: './chat-settings.component.html',
   styleUrls: ['./chat-settings.component.scss'],
 })
 export class ChatSettingsComponent implements OnInit, AfterViewInit {
   @Input() settingsType: ChatSettingsType = 'ai';
-  @Input() chatNamePlaceholder = '';
   @Output() create = new EventEmitter<ChatSettingsFormValue>();
 
   chatForm!: FormGroup;

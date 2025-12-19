@@ -72,11 +72,7 @@
     "SETTINGS": {
       "INPUT": {
         "CHAT_NAME": "Chat Name",
-        "PARTICIPANT": "Participant",
-        "RECIPIENT_PLACEHOLDER": "E-Mail or Name...",
-        "AI_CHAT_PLACEHOLDER": "My New AI Companion Chat",
-        "DIRECT_CHAT_PLACEHOLDER": "My New Direct Chat",
-        "GROUP_CHAT_PLACEHOLDER": "My New Group Chat"
+        "PARTICIPANT": "Participant"
       }
     }
   }

@@ -1,8 +1,10 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-direct-chat-settings',
@@ -10,8 +12,10 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    AutoCompleteModule,
     TranslateModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
   ],
   templateUrl: './direct-chat-settings.component.html',
   styleUrls: ['./direct-chat-settings.component.scss'],

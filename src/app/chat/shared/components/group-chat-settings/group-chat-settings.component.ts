@@ -1,8 +1,10 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-group-chat-settings',
@@ -10,8 +12,10 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MultiSelectModule,
     TranslateModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
   ],
   templateUrl: './group-chat-settings.component.html',
   styleUrls: ['./group-chat-settings.component.scss'],
