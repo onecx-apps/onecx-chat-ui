@@ -1,11 +1,4 @@
 :host ::ng-deep {
-  .remove-recipient-btn {
-    .pi-minus-circle {
-      color: var(--trash-color);
-      font-size: 1rem;
-    }
-  }
-
   .p-inputgroup-addon {
     background-color: var(--surface-100);
     cursor: pointer;

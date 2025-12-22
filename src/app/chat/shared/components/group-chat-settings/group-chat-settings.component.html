@@ -22,22 +22,21 @@
     </p-inputGroup>
   </div>
    
-    <!-- Recipients List (for group chats) -->
-    @if (recipients.length > 0) {
-      <div class="desktop-only">
-        @for (recipient of recipients; track recipient; let i = $index) {
-          <div class="flex align-items-center mb-1" 
-               [style.padding]="'4px 0'"
-               [style.border-bottom]="i < recipients.length - 1 ? '1px solid var(--input-border-color)' : 'none'">
-            <span class="flex-grow-1">{{ recipient }}</span>
-            <button type="button"
-                    class="remove-recipient-btn"
-                    style="background:none;border:none;padding:4px;cursor:pointer;"
-                    (click)="onRemoveRecipient(i)">
-              <i class="pi pi-minus-circle"></i>
-            </button>
-          </div>
-        }
-      </div>
-    }
+  <!-- Recipients List (for group chats) -->
+  @if (recipients.length > 0) {
+    <div>
+      @for (recipient of recipients; track recipient; let i = $index) {
+        <div class="flex align-items-center justify-content-between mb-2 p-2 border-bottom-1 border-gray-200">
+          <span class="flex-grow-1">{{ recipient }}</span>
+          <p-button 
+            icon="pi pi-minus-circle" 
+            [rounded]="true" 
+            [text]="true" 
+            severity="danger"
+            (onClick)="onRemoveRecipient(i)"
+          />
+        </div>
+      }
+    </div>
+  }
 </div>

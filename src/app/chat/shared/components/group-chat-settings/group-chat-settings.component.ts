@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-group-chat-settings',
@@ -16,6 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
     InputGroupModule,
     InputGroupAddonModule,
     InputTextModule,
+    ButtonModule,
   ],
   templateUrl: './group-chat-settings.component.html',
   styleUrls: ['./group-chat-settings.component.scss'],

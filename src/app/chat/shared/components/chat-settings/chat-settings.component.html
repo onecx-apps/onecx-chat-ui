@@ -1,7 +1,6 @@
 <form [formGroup]="chatForm" 
       (ngSubmit)="onCreate()"
-      class="new-chat-wrapper flex flex-column h-full bg-white p-3" 
-      style="min-height:95vh;height:95vh;box-sizing:border-box;display:flex;flex-direction:column;position:relative;overflow:visible;">
+      class="new-chat-wrapper flex flex-column h-full bg-white p-3">
 
   <!-- Shared Settings (ALWAYS visible - used by all chat types) -->
   <app-shared-chat-settings
@@ -21,8 +20,13 @@
   <div class="flex-grow-1"></div>
 
   <!-- Create Button -->
-  <div class="create-btn-bar" 
-       style="position:absolute;bottom:0;left:0;right:0;padding:12px;display:flex;justify-content:flex-end;">
-    <p-button type="submit" [label]="'CHAT.ACTIONS.CREATE' | translate" [outlined]="true" [disabled]="chatForm.invalid" styleClass="black-button" />
+  <div class="create-btn-bar flex justify-content-end p-3">
+    <p-button 
+      type="submit" 
+      [label]="'CHAT.ACTIONS.CREATE' | translate" 
+      [outlined]="true" 
+      severity="contrast"
+      [disabled]="chatForm.invalid" 
+    />
   </div>
 </form>
