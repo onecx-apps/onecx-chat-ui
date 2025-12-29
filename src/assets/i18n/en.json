@@ -47,7 +47,8 @@
       "SYSTEM": "System"
     },
     "ACTIONS": {
-      "DELETE": "Delete chat"
+      "DELETE": "Delete chat",
+      "CREATE": "Create"
     },
     "ERROR_MESSAGES": {
       "CREATE_CHAT": "Chat creation failed.",
@@ -67,6 +68,12 @@
       "AI_SUBTITLE": "smart answers",
       "DIRECT_SUBTITLE": "with a person",
       "GROUP_SUBTITLE": "work together"
+    },
+    "SETTINGS": {
+      "INPUT": {
+        "CHAT_NAME": "Chat Name",
+        "PARTICIPANT": "Participant"
+      }
     }
   }
 }
