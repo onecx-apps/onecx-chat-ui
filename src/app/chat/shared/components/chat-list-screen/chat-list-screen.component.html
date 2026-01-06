@@ -1,0 +1,56 @@
+<div class="flex flex-column h-screen">
+  <app-chat-header
+    [title]="'CHAT.INITIAL.GREETING' | translate"
+    [showClose]="true"
+    (closed)="selectMode.emit('close')"
+  ></app-chat-header>
+  <div class="flex flex-column flex-1 items-center text-center overflow-y-auto">
+    <input
+      pInputText
+      id="chat-search-input"
+      class="m-2"
+      type="text"
+      [placeholder]="'CHAT.LIST.SEARCH_PLACEHOLDER' | translate"
+    />
+    <p-tabView>
+      <p-tabPanel [header]="'CHAT.LIST.RELATED_CHATS' | translate">
+        @for (chat of chats; track chat.id) {
+          <p>{{ chat.id }}</p>
+        }
+      </p-tabPanel>
+      <p-tabPanel [header]="'CHAT.LIST.ALL_CHATS' | translate">
+        @for (chat of chats; track chat.id) {
+          <p>{{ chat.id }}</p>
+        }
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  <div class="chat-options">
+    <p-button
+      id="aiCompanionButton"
+      type="button"
+      [outlined]="true"
+      [styleClass]="'chat-button ai-companion'"
+      (onClick)="selectMode.emit('ai')"
+      [label]="'CHAT.LIST.AI' | translate"
+    />
+    <p-button
+      id="directChatButton"
+      type="button"
+      [outlined]="true"
+      [styleClass]="'chat-button direct-chat'"
+      (onClick)="selectMode.emit('direct')"
+      icon="pi pi-user"
+      [attr.aria-label]="'CHAT.TITLE.DIRECT' | translate"
+    />
+    <p-button
+      id="groupChatButton"
+      type="button"
+      [outlined]="true"
+      [styleClass]="'chat-button group-chat'"
+      (onClick)="selectMode.emit('group')"
+      icon="pi pi-users"
+      [attr.aria-label]="'CHAT.TITLE.GROUP' | translate"
+    />
+  </div>
+</div>
