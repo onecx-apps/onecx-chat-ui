@@ -27,9 +27,13 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
 
   recipientInputControl = new FormControl('');
   recipients: string[] = [];
+  private recipientsSet = new Set<string>();
 
   ngOnInit() {
-    this.recipients = this.form.get('recipients')?.value || [];
+    const existingRecipients = this.form.get('recipients')?.value || [];
+    this.recipientsSet = new Set(existingRecipients);
+    this.syncRecipientsFromSet();
+    
     if (!this.form.contains('recipients')) {
       this.form.addControl(
         'recipients',
@@ -53,15 +57,21 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
 
   onAddRecipient() {
     const value = this.recipientInputControl.value?.trim();
-    if (value && !this.recipients.includes(value)) {
-      this.recipients = [...this.recipients, value];
-      this.form.patchValue({ recipients: this.recipients });
+    if (value) {
+      this.recipientsSet.add(value);
+      this.syncRecipientsFromSet();
       this.recipientInputControl.setValue('');
     }
   }
 
   onRemoveRecipient(index: number) {
-    this.recipients = this.recipients.filter((_, i) => i !== index);
+    const recipientToRemove = this.recipients[index];
+    this.recipientsSet.delete(recipientToRemove);
+    this.syncRecipientsFromSet();
+  }
+
+  private syncRecipientsFromSet(): void {
+    this.recipients = Array.from(this.recipientsSet);
     this.form.patchValue({ recipients: this.recipients });
   }
 }
