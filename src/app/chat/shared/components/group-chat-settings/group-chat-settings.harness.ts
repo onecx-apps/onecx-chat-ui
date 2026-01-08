@@ -5,8 +5,8 @@ export class GroupChatSettingsHarness extends ComponentHarness {
 
   getRecipientInput = this.locatorFor('input#recipientInput');
   getAddButton = this.locatorFor('[data-testid="add-recipient-button"]');
-  getAllRecipientRows = this.locatorForAll('.flex.align-items-center.justify-content-between.mb-2');
-  getRemoveButtons = this.locatorForAll('p-button[severity="danger"] button');
+  getAllRecipientRows = this.locatorForAll('[data-testid="recipient-row"]');
+  getRemoveButtons = this.locatorForAll('[data-testid="remove-recipient-button"] button');
 
   async getRecipientInputValue(): Promise<string> {
     const input = await this.getRecipientInput();

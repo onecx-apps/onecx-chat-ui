@@ -27,13 +27,16 @@
   @if (recipients.length > 0) {
     <div>
       @for (recipient of recipients; track recipient; let i = $index) {
-        <div class="flex align-items-center justify-content-between mb-2 p-2 border-bottom-1 border-gray-200">
+        <div 
+          class="flex align-items-center justify-content-between mb-2 p-2 border-bottom-1 border-gray-200"
+          data-testid="recipient-row">
           <span class="flex-grow-1">{{ recipient }}</span>
           <p-button 
             icon="pi pi-minus-circle" 
             [rounded]="true" 
             [text]="true" 
             severity="danger"
+            data-testid="remove-recipient-button"
             (onClick)="onRemoveRecipient(i)"
           />
         </div>
