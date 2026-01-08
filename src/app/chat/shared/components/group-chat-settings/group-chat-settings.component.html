@@ -13,7 +13,8 @@
         <label for="recipientInput">{{ 'CHAT.SETTINGS.INPUT.PARTICIPANT' | translate }}</label>
       </span>
       <p-inputGroupAddon 
-        class="cursor-pointer" 
+        class="cursor-pointer"
+        data-testid="add-recipient-button"
         (click)="onAddRecipient()"
         (keydown.enter)="onAddRecipient()"
         (keydown.space)="onAddRecipient()">

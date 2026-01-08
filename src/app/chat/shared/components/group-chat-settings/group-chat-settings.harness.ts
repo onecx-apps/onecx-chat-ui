@@ -4,7 +4,7 @@ export class GroupChatSettingsHarness extends ComponentHarness {
   public static readonly hostSelector = 'app-group-chat-settings';
 
   getRecipientInput = this.locatorFor('input#recipientInput');
-  getAddButton = this.locatorFor('.p-inputgroup-addon .pi-plus');
+  getAddButton = this.locatorFor('[data-testid="add-recipient-button"]');
   getAllRecipientRows = this.locatorForAll('.flex.align-items-center.justify-content-between.mb-2');
   getRemoveButtons = this.locatorForAll('p-button[severity="danger"] button');
 
@@ -20,8 +20,8 @@ export class GroupChatSettingsHarness extends ComponentHarness {
   }
 
   async clickAddButton(): Promise<void> {
-    const addon = await this.locatorFor('.p-inputgroup-addon')();
-    await addon.click();
+    const button = await this.getAddButton();
+    await button.click();
   }
 
   async getRecipientsCount(): Promise<number> {

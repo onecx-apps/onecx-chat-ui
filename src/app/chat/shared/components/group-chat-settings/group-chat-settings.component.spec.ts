@@ -126,10 +126,7 @@ describe('GroupChatSettingsComponent', () => {
       const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
       
       await harness.setRecipientInputValue('newUser');
-      fixture.detectChanges();
-      
       await harness.clickAddButton();
-      fixture.detectChanges();
       
       const recipientsCount = await harness.getRecipientsCount();
       const inputValue = await harness.getRecipientInputValue();
@@ -151,10 +148,7 @@ describe('GroupChatSettingsComponent', () => {
       const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
       
       await harness.setRecipientInputValue('   ');
-      fixture.detectChanges();
-      
       await harness.clickAddButton();
-      fixture.detectChanges();
       
       expect(component.recipients).toEqual([]);
     });
@@ -182,10 +176,7 @@ describe('GroupChatSettingsComponent', () => {
       const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
       
       await harness.setRecipientInputValue('user1');
-      fixture.detectChanges();
-      
       await harness.clickAddButton();
-      fixture.detectChanges();
       
       const recipientsCount = await harness.getRecipientsCount();
       
@@ -206,7 +197,6 @@ describe('GroupChatSettingsComponent', () => {
       const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, GroupChatSettingsHarness);
       
       await harness.removeRecipientAtIndex(1);
-      fixture.detectChanges();
       
       const recipientsCount = await harness.getRecipientsCount();
       
