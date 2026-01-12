@@ -26,8 +26,11 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
   @Input() form!: FormGroup;
 
   recipientInputControl = new FormControl('');
-  recipients: string[] = [];
   private recipientsSet = new Set<string>();
+
+  get recipients(): string[] {
+    return Array.from(this.recipientsSet);
+  }
 
   ngOnInit() {
     const existingRecipients = this.form.get('recipients')?.value || [];
@@ -71,7 +74,6 @@ export class GroupChatSettingsComponent implements OnInit, OnDestroy {
   }
 
   private syncRecipientsFromSet(): void {
-    this.recipients = Array.from(this.recipientsSet);
-    this.form.patchValue({ recipients: this.recipients });
+    this.form.patchValue({ recipients: Array.from(this.recipientsSet) });
   }
 }
