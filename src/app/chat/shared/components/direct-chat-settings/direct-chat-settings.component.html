@@ -1,0 +1,23 @@
+<div class="direct-settings-section">
+  <div class="mb-3">
+    <p-inputGroup>
+      <span class="p-float-label">
+        <input 
+          id="recipientInput"
+          pInputText
+          type="text"
+          autocomplete="off"
+          [formControl]="recipientInputControl"
+        />
+        <label for="recipientInput">{{ 'CHAT.SETTINGS.INPUT.PARTICIPANT' | translate }}</label>
+      </span>
+      <p-inputGroupAddon 
+        class="cursor-pointer" 
+        (click)="onSearch()"
+        (keydown.enter)="onSearch()"
+        (keydown.space)="onSearch()">
+        <i class="pi pi-search"></i>
+      </p-inputGroupAddon>
+    </p-inputGroup>
+  </div>
+</div>
