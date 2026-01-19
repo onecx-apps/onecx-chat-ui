@@ -8,7 +8,16 @@
   @if (vm) {
     <div class="onecx-companion-container">
       @if (!selectedChatMode) {
-        <app-chat-initial-screen (selectMode)="selectChatMode($event)"></app-chat-initial-screen>
+        @if (vm.chats && vm.chats.length > 0) {
+          <app-chat-list-screen
+            (selectMode)="selectChatMode($event)"
+            [chats]="vm.chats"
+          ></app-chat-list-screen>
+        } @else {
+          <app-chat-initial-screen
+            (selectMode)="selectChatMode($event)"
+          ></app-chat-initial-screen>
+        }
       } @else {
         <div class="chat-interface" [@slideIn]>
           <app-chat-header
@@ -45,6 +54,9 @@
     tooltipEvent="hover"
     (onClick)="_sidebarVisible = true"
   >
-    <i class="pi pi-comments fs-xlarge p-button-icon" style="background: transparent; border: none;"></i>
+    <i
+      class="pi pi-comments fs-xlarge p-button-icon"
+      style="background: transparent; border: none"
+    ></i>
   </p-button>
 </div>

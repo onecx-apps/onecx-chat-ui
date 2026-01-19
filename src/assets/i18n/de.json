@@ -63,6 +63,12 @@
       "NO_CHATS": "Sie haben keine bestehenden Chats.",
       "CREATE_NEW": "Neuen Chat erstellen?"
     },
+    "LIST": {
+      "SEARCH_PLACEHOLDER": "Chats durchsuchen...",
+      "RELATED_CHATS": "Ähnliche Chats",
+      "ALL_CHATS": "Alle Chats",
+      "AI": "KI"
+    },
     "OPTION": {
       "AI_SUBTITLE": "intelligente Antworten",
       "DIRECT_SUBTITLE": "mit einer Person",
