@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChatSettingsComponent } from './chat-settings.component';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TranslateTestingModule } from 'ngx-translate-testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { ChatSettingsHarness } from './chat-settings.harness';
 
 describe('ChatSettingsComponent', () => {
   let component: ChatSettingsComponent;
@@ -37,55 +39,77 @@ describe('ChatSettingsComponent', () => {
     expect(component.chatForm).toBeInstanceOf(FormGroup);
   });
 
-  it('should mark all controls as touched and not emit if form is invalid on onCreate', () => {
+  it('should mark all controls as touched and not emit if form is invalid on onCreate', async () => {
     component.ngOnInit();
+    fixture.detectChanges();
+    
     const emitSpy = jest.spyOn(component.create, 'emit');
     component.chatForm.addControl('testControl', new FormControl('', Validators.required));
+    fixture.detectChanges();
     
+    // Call onCreate directly since button is disabled when form is invalid
     component.onCreate();
     
     expect(component.chatForm.get('testControl')?.touched).toBe(true);
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
-  it('should emit form value if form is valid on onCreate', () => {
+  it('should emit form value if form is valid on onCreate', async () => {
     component.ngOnInit();
+    fixture.detectChanges();
+    
     const emitSpy = jest.spyOn(component.create, 'emit');
     
-    component.onCreate();
+    const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ChatSettingsHarness);
+    await harness.clickCreateButton();
     
-    expect(emitSpy).toHaveBeenCalledWith({});
+    expect(emitSpy).toHaveBeenCalledWith({ chatName: '' });
   });
 
-  it('should emit correct data with recipients when onCreate is called', () => {
+  it('should emit correct data with recipients when onCreate is called', async () => {
     component.ngOnInit();
-    component.chatForm.addControl('recipients', new FormControl(['user1', 'user2']));
+    component.settingsType = 'group';
+    fixture.detectChanges();
+    
+    component.chatForm.patchValue({ recipients: ['user1', 'user2'] });
+    
     const emitSpy = jest.spyOn(component.create, 'emit');
     
-    component.onCreate();
+    const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ChatSettingsHarness);
+    await harness.clickCreateButton();
     
-    expect(emitSpy).toHaveBeenCalledWith({ recipients: ['user1', 'user2'] });
+    expect(emitSpy).toHaveBeenCalledWith({ chatName: '', recipients: ['user1', 'user2'] });
   });
 
-  it('should emit correct data with recipientInput when onCreate is called', () => {
+  it('should emit correct data with recipientInput when onCreate is called', async () => {
     component.ngOnInit();
-    component.chatForm.addControl('recipientInput', new FormControl('test@example.com'));
+    component.settingsType = 'direct';
+    fixture.detectChanges();
+    
+    component.chatForm.patchValue({ recipientInput: 'test@example.com' });
+    
     const emitSpy = jest.spyOn(component.create, 'emit');
     
-    component.onCreate();
+    const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ChatSettingsHarness);
+    await harness.clickCreateButton();
     
-    expect(emitSpy).toHaveBeenCalledWith({ recipientInput: 'test@example.com' });
+    expect(emitSpy).toHaveBeenCalledWith({ chatName: '', recipientInput: 'test@example.com' });
   });
 
-  it('should emit data with both recipients and recipientInput', () => {
+  it('should emit data with both recipients and recipientInput', async () => {
     component.ngOnInit();
+    fixture.detectChanges();
+    
     component.chatForm.addControl('recipients', new FormControl(['user1']));
     component.chatForm.addControl('recipientInput', new FormControl('user2@test.com'));
+    
     const emitSpy = jest.spyOn(component.create, 'emit');
     
-    component.onCreate();
+    const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ChatSettingsHarness);
+    await harness.clickCreateButton();
     
     expect(emitSpy).toHaveBeenCalledWith({ 
+      chatName: '',
       recipients: ['user1'],
       recipientInput: 'user2@test.com'
     });
@@ -131,13 +155,16 @@ describe('ChatSettingsComponent', () => {
   });
 
   describe('Create button behavior', () => {
-    it('should emit empty object when onCreate is called with empty form', () => {
+    it('should emit empty object when onCreate is called with empty form', async () => {
       component.ngOnInit();
+      fixture.detectChanges();
+      
       const emitSpy = jest.spyOn(component.create, 'emit');
       
-      component.onCreate();
+      const harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, ChatSettingsHarness);
+      await harness.clickCreateButton();
       
-      expect(emitSpy).toHaveBeenCalledWith({});
+      expect(emitSpy).toHaveBeenCalledWith({ chatName: '' });
     });
 
     it('should have form validity based on controls', () => {
