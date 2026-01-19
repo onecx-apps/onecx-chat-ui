@@ -1,0 +1,33 @@
+<form [formGroup]="chatForm" 
+      (ngSubmit)="onCreate()"
+      class="new-chat-wrapper flex flex-column h-full bg-white p-3">
+
+  <!-- Shared Settings (ALWAYS visible - used by all chat types) -->
+  <app-shared-chat-settings
+    [form]="chatForm"
+  ></app-shared-chat-settings>
+
+  <!-- Type-Specific Settings (conditional based on chat mode) -->
+  @if (settingsType === 'direct') {
+    <app-direct-chat-settings [form]="chatForm"></app-direct-chat-settings>
+  }
+
+  @if (settingsType === 'group') {
+    <app-group-chat-settings [form]="chatForm"></app-group-chat-settings>
+  }
+
+  <!-- Spacer -->
+  <div class="flex-grow-1"></div>
+
+  <!-- Create Button -->
+  <div class="create-btn-bar flex justify-content-end p-3">
+    <p-button 
+      type="submit"
+      data-testid="create-chat-button"
+      [label]="'CHAT.ACTIONS.CREATE' | translate" 
+      [outlined]="true" 
+      severity="contrast"
+      [disabled]="chatForm.invalid" 
+    />
+  </div>
+</form>
