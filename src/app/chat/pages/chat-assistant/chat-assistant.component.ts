@@ -56,7 +56,6 @@ export class ChatAssistantComponent implements OnChanges {
   menuItems: Observable<MenuItem[]>;
 
   _sidebarVisible = false;
-  selectedChatMode: string | null = null;
 
   @Input()
   set sidebarVisible(val: boolean) {
@@ -121,56 +120,18 @@ export class ChatAssistantComponent implements OnChanges {
       this._sidebarVisible = false;
       this.sidebarVisibleChange.emit(false);
       this.store.dispatch(ChatAssistantActions.chatPanelClosed());
-      this.selectedChatMode = null;
       return;
     }
-    this.store.dispatch(ChatAssistantActions.chatModeSelected({ mode }));
-    this.selectedChatMode = mode;
+    this.store.dispatch(ChatAssistantActions.newChatClicked({ mode }));
   }
 
   goBack() {
-    this.store.dispatch(ChatAssistantActions.chatModeDeselected());
-    this.selectedChatMode = null;
+    this.store.dispatch(ChatAssistantActions.backButtonClicked());
   }
 
   closeSidebar() {
     this._sidebarVisible = false;
     this.sidebarVisibleChange.emit(false);
     this.store.dispatch(ChatAssistantActions.chatPanelClosed());
-    this.selectedChatMode = null;
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    if (!this._sidebarVisible) {
-      return;
-    }
-
-    const clickedElement = event.target as HTMLElement;
-
-    // Check if clicked INSIDE sidebar - if so, do nothing
-    const isInsideSidebar =
-      clickedElement.closest('.p-sidebar') ||
-      clickedElement.closest('[role="complementary"]') ||
-      clickedElement.closest('app-chat-slider') ||
-      clickedElement.closest('app-chat-initial-screen') ||
-      clickedElement.closest('app-chat-list-screen') ||
-      clickedElement.closest('app-chat-option-button') ||
-      clickedElement.closest('app-chat-header');
-
-    if (isInsideSidebar) {
-      return;
-    }
-
-    // Check if clicked on chat TOGGLE button - if so, let the toggle manage the state
-    const isChatToggleButton =
-      clickedElement.closest('[aria-label*="Chat"]') ||
-      clickedElement.closest('.chat-toggle-button') ||
-      clickedElement.closest('.chat-button') ||
-      clickedElement.id === 'chat-toggle-button';
-
-    if (!isChatToggleButton) {
-      this.closeSidebar();
-    }
   }
 }

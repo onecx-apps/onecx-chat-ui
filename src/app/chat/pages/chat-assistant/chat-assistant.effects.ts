@@ -36,12 +36,11 @@ export class ChatAssistantEffects {
     );
   }
 
-  navigatedToChatAssistant = createEffect(() => {
+  chatAssistantAvailable = createEffect(() => {
     return this.actions$.pipe(
       ofType(routerNavigatedAction),
-      filterForNavigatedTo(this.router, ChatAssistantComponent),
       switchMap(() => {
-        return of(ChatAssistantActions.navigatedToChatAssistant());
+        return of(ChatAssistantActions.chatAssistantAvailable());
       }),
     );
   });
@@ -49,7 +48,7 @@ export class ChatAssistantEffects {
   loadAvailableChats$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(
-        ChatAssistantActions.navigatedToChatAssistant,
+        ChatAssistantActions.chatAssistantAvailable,
         ChatAssistantActions.chatPanelOpened,
         ChatAssistantActions.chatCreationSuccessful,
         ChatAssistantActions.messageSentForNewChat,

@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { MessageType } from 'src/app/shared/generated';
+import { ChatType, MessageType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantState } from './chat-assistant.state';
 
@@ -91,7 +91,7 @@ export const chatAssistantReducer = createReducer(
     ChatAssistantActions.chatCreationSuccessful,
     (state: ChatAssistantState, action) => {
       return {
-        ...state,
+        ...state,        
         currentChat: action.chat,
         currentMessages: [],
       };
@@ -112,8 +112,18 @@ export const chatAssistantReducer = createReducer(
     ...state,
     selectedChatMode: action.mode,
   })),
-  on(ChatAssistantActions.chatModeDeselected, (state) => ({
+  on(ChatAssistantActions.backButtonClicked, (state) => ({
     ...state,
     selectedChatMode: null,
-  }))
+    currentChat: undefined,
+    currentMessages: [],
+  })),
+  on(ChatAssistantActions.newChatClicked, (state, action) => ({
+    ...state,
+    currentChat: {
+      id: 'new',
+      type: ChatType.AiChat, // For now: only AI
+    },
+    currentMessages: [],
+  })),
 );

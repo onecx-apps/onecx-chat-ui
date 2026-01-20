@@ -4,7 +4,7 @@ import { Chat, Message } from 'src/app/shared/generated';
 export const ChatAssistantActions = createActionGroup({
   source: 'ChatAssistant',
   events: {
-    'navigated to chat assistant': emptyProps(),
+    'chat assistant available': emptyProps(),
     'chat panel opened': emptyProps(),
     'chat panel closed': emptyProps(),
     'chats loaded': props<{
@@ -57,6 +57,7 @@ export const ChatAssistantActions = createActionGroup({
       error: string | null;
     }>(),
     'chat mode selected': props<{ mode: string }>(),
-    'chat mode deselected': emptyProps(),
+    'new chat clicked': props<{mode : string}>(),
+    'back button clicked': emptyProps(),
   },
 });

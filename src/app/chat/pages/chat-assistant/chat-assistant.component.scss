@@ -10,3 +10,21 @@
     }
   }
 }
+
+.onecx-companion-container {
+  height: 100vh;
+}
+
+.chat-interface {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+app-chat-header {
+  height: 32px;
+}
+
+app-chat {
+  height: calc(100% - 32px);
+}

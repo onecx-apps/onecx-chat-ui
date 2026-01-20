@@ -27,6 +27,7 @@ import { Chat } from 'src/app/shared/generated';
 })
 export class ChatListScreenComponent {
   @Output() selectMode = new EventEmitter<string>();
+  @Output() chatSelected = new EventEmitter<Chat>();
   @Input() chats: Chat[] | undefined;
   logoUrl = '';
 }
