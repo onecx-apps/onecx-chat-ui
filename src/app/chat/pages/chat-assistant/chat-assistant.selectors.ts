@@ -1,6 +1,5 @@
 import { createSelector } from '@ngrx/store';
 import { createChildSelectors } from '@onecx/ngrx-accelerator';
-import { NEW_AI_CHAT_ITEM } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
 import { Chat, Message } from 'src/app/shared/generated';
 import { chatFeature } from '../../chat.reducers';
@@ -41,14 +40,14 @@ export const selectChatAssistantViewModel = createSelector(
       currentMessages: currentMessages
         ?.map(
           (m) =>
-            ({
-              ...m,
-              id: m.id ?? '',
-              text: m.text ?? '',
-              userName: m.userName ?? '',
-              userNameKey: `CHAT.PARTICIPANT.${m.type.toUpperCase()}`,
-              creationDate: new Date(m.creationDate ?? ''),
-            } as ChatMessage)
+          ({
+            ...m,
+            id: m.id ?? '',
+            text: m.text ?? '',
+            userName: m.userName ?? '',
+            userNameKey: `CHAT.PARTICIPANT.${m.type.toUpperCase()}`,
+            creationDate: new Date(m.creationDate ?? ''),
+          } as ChatMessage)
         )
         .sort((a, b) => a.creationDate.getTime() - b.creationDate.getTime()),
       chatTitleKey,

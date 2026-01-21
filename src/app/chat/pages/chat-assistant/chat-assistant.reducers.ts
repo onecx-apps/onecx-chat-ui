@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { ChatType, MessageType } from 'src/app/shared/generated';
+import { MessageType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantState } from './chat-assistant.state';
 
@@ -91,7 +91,7 @@ export const chatAssistantReducer = createReducer(
     ChatAssistantActions.chatCreationSuccessful,
     (state: ChatAssistantState, action) => {
       return {
-        ...state,        
+        ...state,
         currentChat: action.chat,
         currentMessages: [],
       };

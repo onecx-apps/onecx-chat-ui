@@ -17,12 +17,11 @@ import {
   SlotService,
 } from '@onecx/angular-remote-components';
 import {
-  AppConfigService,
-  PortalCoreModule,
+  PortalCoreModule
 } from '@onecx/portal-integration-angular';
+import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TabViewModule } from 'primeng/tabview';
-import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { ReplaySubject } from 'rxjs';
 import { ChatAssistantComponent } from 'src/app/chat/pages/chat-assistant/chat-assistant.component';
