@@ -18,7 +18,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { combineLatest, map, Observable } from 'rxjs';
 import { ChatListComponent } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatComponent } from 'src/app/shared/components/chat/chat.component';
-import { Chat } from 'src/app/shared/generated';
+import { Chat, ChatType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { selectChatAssistantViewModel } from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
@@ -122,7 +122,8 @@ export class ChatAssistantComponent implements OnChanges {
       this.store.dispatch(ChatAssistantActions.chatPanelClosed());
       return;
     }
-    this.store.dispatch(ChatAssistantActions.newChatClicked({ mode }));
+    let _mode = mode === 'ai' ? ChatType.AiChat : ChatType.HumanChat;
+    this.store.dispatch(ChatAssistantActions.newChatClicked({ mode: _mode }));
   }
 
   goBack() {

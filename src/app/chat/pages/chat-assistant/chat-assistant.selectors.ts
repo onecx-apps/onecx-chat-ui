@@ -17,13 +17,11 @@ export const selectChatAssistantViewModel = createSelector(
   chatAssistantSelectors.selectCurrentChat,
   chatAssistantSelectors.selectCurrentMessages,
   chatFeature.selectAssistant,
-  chatAssistantSelectors.selectSelectedChatMode,
   (
     chats: Chat[],
     currentChat: Chat | undefined,
     currentMessages: Message[] | undefined,
     state,
-    selectedChatMode: string | null
   ): ChatAssistantViewModel => {
     let chatTitleKey = 'CHAT.TITLE.DEFAULT';
     switch (state.selectedChatMode) {
@@ -54,7 +52,7 @@ export const selectChatAssistantViewModel = createSelector(
         )
         .sort((a, b) => a.creationDate.getTime() - b.creationDate.getTime()),
       chatTitleKey,
-      selectedChatMode
+      selectedChatMode: state.selectedChatMode,
     };
   }
 );

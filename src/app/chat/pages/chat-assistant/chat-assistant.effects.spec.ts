@@ -154,8 +154,7 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(routerAction);
 
       effects.chatAssistantAvailable.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatAssistantAvailable());
-        expect(result.type).toBe('[ChatAssistant] chat assistant available');
+        expect(result).toEqual(ChatAssistantActions.chatAssistantAvailable());        
         done();
       });
     });
@@ -172,8 +171,7 @@ describe('ChatAssistantEffects', () => {
       actions$ = of(routerAction);
 
       effects.chatAssistantAvailable.subscribe(action => {
-        expect(action).toEqual(ChatAssistantActions.chatAssistantAvailable());
-        expect(action.type).toBe('[ChatAssistant] navigated to chat assistant');
+        expect(action).toEqual(ChatAssistantActions.chatAssistantAvailable());        
         done();
       });
     });

@@ -68,7 +68,7 @@ describe('ChatAssistant Selectors', () => {
       );
 
       const expected: ChatAssistantViewModel = {
-        chats: [NEW_AI_CHAT_ITEM, ...mockChats],
+        chats: mockChats,
         currentChat: mockCurrentChat,
         currentMessages: [
           {
@@ -89,6 +89,7 @@ describe('ChatAssistant Selectors', () => {
           }
         ] as ChatMessage[],
         chatTitleKey: 'CHAT.TITLE.AI',
+        selectedChatMode: 'ai'
       };
 
       expect(result).toEqual(expected);
@@ -142,7 +143,7 @@ describe('ChatAssistant Selectors', () => {
       expect(result.chatTitleKey).toBe('CHAT.TITLE.DEFAULT');
     });
 
-    it('should handle undefined currentChat by using NEW_AI_CHAT_ITEM', () => {
+    it('should select selectedChatMode', () => {
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         undefined,
@@ -150,7 +151,7 @@ describe('ChatAssistant Selectors', () => {
         baseMockState
       );
 
-      expect(result.currentChat).toEqual(NEW_AI_CHAT_ITEM);
+      expect(result.selectedChatMode).toEqual('ai');
     });
 
     it('should handle undefined currentMessages', () => {
@@ -256,16 +257,15 @@ describe('ChatAssistant Selectors', () => {
       expect(result.currentMessages?.[2].id).toBe('msg3');
     });
 
-    it('should always include NEW_AI_CHAT_ITEM at the beginning of chats array', () => {
+    it('should contain chats array', () => {
       const result = fromSelectors.selectChatAssistantViewModel.projector(
         mockChats,
         mockCurrentChat,
         mockMessages,
-        baseMockState
+        baseMockState,
       );
-
-      expect(result.chats?.[0]).toEqual(NEW_AI_CHAT_ITEM);
-      expect(result.chats?.slice(1)).toEqual(mockChats);
+      
+      expect(result.chats).toEqual(mockChats);
     });
 
     it('should handle null selectedChatMode', () => {

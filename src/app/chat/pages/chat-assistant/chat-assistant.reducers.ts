@@ -122,7 +122,7 @@ export const chatAssistantReducer = createReducer(
     ...state,
     currentChat: {
       id: 'new',
-      type: ChatType.AiChat, // For now: only AI
+      type: action.mode
     },
     currentMessages: [],
   })),

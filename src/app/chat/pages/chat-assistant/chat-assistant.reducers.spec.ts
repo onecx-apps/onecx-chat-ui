@@ -299,6 +299,22 @@ describe('ChatAssistant Reducer', () => {
     });
   });
 
+
+  describe('newChatClicked action', () => {
+    it('should set currentChat to a new chat object when newChatClicked is dispatched', () => {
+      const action = ChatAssistantActions.newChatClicked({
+        mode: ChatType.AiChat
+      });
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result.currentChat).toEqual({
+        id: 'new',
+        type: ChatType.AiChat
+      });
+      expect(result.currentMessages).toEqual([]);
+    });
+  });
+
   describe('chatModeSelected action', () => {
     it('should set selectedChatMode when chatModeSelected is dispatched', () => {
       const action = ChatAssistantActions.chatModeSelected({
@@ -333,19 +349,21 @@ describe('ChatAssistant Reducer', () => {
   });
 
   describe('chatModeDeselected action', () => {
-    it('should set selectedChatMode to null when chatModeDeselected is dispatched', () => {
+    it('should reset chat when backButtonClicked is dispatched', () => {
       const stateWithMode: ChatAssistantState = {
         ...initialState,
         selectedChatMode: 'ai'
       };
 
-      const action = ChatAssistantActions.chatModeDeselected();
+      const action = ChatAssistantActions.backButtonClicked();
 
       const result = chatAssistantReducer(stateWithMode, action);
 
       expect(result).toEqual({
         ...stateWithMode,
-        selectedChatMode: null
+        selectedChatMode: null,
+        currentChat: undefined,
+        currentMessages: []
       });
     });
   });
