@@ -137,12 +137,12 @@ describe('ChatAssistantEffects', () => {
     });
   });
 
-  describe('navigationCompleted$', () => {
+  describe('chatInitialized$', () => {
     it('should be defined', () => {
-      expect(effects.navigationCompleted).toBeDefined();
+      expect(effects.chatInitialized).toBeDefined();
     });
 
-    it('should dispatch navigationCompleted action when router navigated action occurs', (done) => {
+    it('should dispatch chatInitialized action when router navigated action occurs', (done) => {
       // Test the actual effect execution with switchMap
       const routerAction = routerNavigatedAction({
         payload: {
@@ -153,8 +153,8 @@ describe('ChatAssistantEffects', () => {
       
       actions$ = of(routerAction);
 
-      effects.navigationCompleted.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.navigationCompleted());        
+      effects.chatInitialized.subscribe(result => {
+        expect(result).toEqual(ChatAssistantActions.chatInitialized());        
         done();
       });
     });
@@ -170,8 +170,8 @@ describe('ChatAssistantEffects', () => {
       
       actions$ = of(routerAction);
 
-      effects.navigationCompleted.subscribe(action => {
-        expect(action).toEqual(ChatAssistantActions.navigationCompleted());        
+      effects.chatInitialized.subscribe(action => {
+        expect(action).toEqual(ChatAssistantActions.chatInitialized());        
         done();
       });
     });
@@ -182,8 +182,8 @@ describe('ChatAssistantEffects', () => {
       chatInternalService.getChats.mockReturnValue(of({ stream: mockChats }));
     });
 
-    it('should load chats when navigationCompleted action is dispatched', (done) => {
-      const action = ChatAssistantActions.navigationCompleted();
+    it('should load chats when chatInitialized action is dispatched', (done) => {
+      const action = ChatAssistantActions.chatInitialized();
       actions$ = of(action);
 
       effects.loadAvailableChats$.subscribe(result => {
@@ -254,7 +254,7 @@ describe('ChatAssistantEffects', () => {
       const error = 'Failed to load chats';
       chatInternalService.getChats.mockReturnValue(throwError(() => error));
 
-      const action = ChatAssistantActions.navigationCompleted();
+      const action = ChatAssistantActions.chatInitialized();
       actions$ = of(action);
 
       effects.loadAvailableChats$.subscribe(result => {
@@ -266,7 +266,7 @@ describe('ChatAssistantEffects', () => {
     it('should handle empty chats response', (done) => {
       chatInternalService.getChats.mockReturnValue(of({ stream: undefined }));
 
-      const action = ChatAssistantActions.navigationCompleted();
+      const action = ChatAssistantActions.chatInitialized();
       actions$ = of(action);
 
       effects.loadAvailableChats$.subscribe(result => {
@@ -290,7 +290,7 @@ describe('ChatAssistantEffects', () => {
     it('should handle response without stream property', (done) => {
       chatInternalService.getChats.mockReturnValue(of({}));
 
-      const action = ChatAssistantActions.navigationCompleted();
+      const action = ChatAssistantActions.chatInitialized();
       actions$ = of(action);
 
       effects.loadAvailableChats$.subscribe(result => {
