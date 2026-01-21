@@ -17,12 +17,11 @@ import {
   SlotService,
 } from '@onecx/angular-remote-components';
 import {
-  AppConfigService,
-  PortalCoreModule,
+  PortalCoreModule
 } from '@onecx/portal-integration-angular';
+import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { TabViewModule } from 'primeng/tabview';
-import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { ReplaySubject } from 'rxjs';
 import { ChatAssistantComponent } from 'src/app/chat/pages/chat-assistant/chat-assistant.component';
@@ -72,9 +71,7 @@ export class OneCXChatPanelComponent
   implements ocxRemoteComponent, ocxRemoteWebcomponent
 {
   permissions: string[] = [];
-  bookmarkLoadingError = false;
   loading = true;
-  sidebarVisible = false;
 
   @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {
     this.ocxInitRemoteComponent(config);
@@ -82,7 +79,6 @@ export class OneCXChatPanelComponent
 
   constructor(
     @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
-    private readonly appConfigService: AppConfigService,
     private readonly chatInternal: ChatInternalService,
     private readonly userService: UserService,
     private readonly translateService: TranslateService, // private readonly bookmarkApiUtils: BookmarkAPIUtilsService
@@ -93,27 +89,7 @@ export class OneCXChatPanelComponent
   ocxInitRemoteComponent(config: RemoteComponentConfig): void {
     this.baseUrl.next(config.baseUrl);
     this.permissions = config.permissions;
-    // this.chatInternal.configuration = new Configuration({
-    //   basePath: Location.joinWithSlash(config.baseUrl, environment.apiPrefix),
-    // });
     this.chatInternal.overwriteBaseURL(config.baseUrl);
-    // this.bookmarkApiUtils.overwriteBaseURL(config.baseUrl)
-    // this.appConfigService.init(config.baseUrl);
-    // Load Chats
-    // this.bookmarkApiUtils.loadBookmarks(this.handleBookmarkLoadError).subscribe((result) => {
-    //   const bookmarks = result ?? []
-    //   this.privateBookmarks$.next(bookmarks.filter((bm) => bm.scope === BookmarkScopeEnum.Private))
-    //   this.publicBookmarks$.next(bookmarks.filter((bm) => bm.scope === BookmarkScopeEnum.Public))
-    //   this.loading = false
-    // })
   }
 
-  private readonly handleBookmarkLoadError = () => {
-    this.bookmarkLoadingError = true;
-    this.loading = false;
-  };
-
-  showSidebar() {
-    this.sidebarVisible = true;
-  }
 }

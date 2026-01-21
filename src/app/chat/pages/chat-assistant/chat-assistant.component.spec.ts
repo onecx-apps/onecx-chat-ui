@@ -26,7 +26,7 @@ describe('ChatAssistantComponent', () => {
           'en',
           // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
           require('./../../../../assets/i18n/en.json')
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
         ).withTranslations('de', require('./../../../../assets/i18n/de.json')),
       ],
       providers: [
@@ -45,7 +45,7 @@ describe('ChatAssistantComponent', () => {
       return this
     })
     global.MutationObserver = mutationObserverMock
-    
+
     global.origin = "";
 
     fixture = TestBed.createComponent(ChatAssistantComponent);
@@ -61,41 +61,30 @@ describe('ChatAssistantComponent', () => {
   it('should set selectedChatMode and emit sidebarVisibleChange on close', () => {
     jest.spyOn(store, 'dispatch');
     const spy = jest.spyOn(component.sidebarVisibleChange, 'emit');
-    
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
     component.selectChatMode('close');
-    
+
     expect(component._sidebarVisible).toBe(false);
-    expect(component.selectedChatMode).toBeNull();
+    expect(dispatchSpy).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
     expect(spy).toHaveBeenCalledWith(false);
     expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
   });
 
-  it('should set selectedChatMode to mode and dispatch chatModeSelected', () => {
+  it('should set selectedChatMode to ai mode and dispatch newChatClicked with ai', () => {
     jest.spyOn(store, 'dispatch');
-    
+
     component.selectChatMode('ai');
-    
-    expect(component.selectedChatMode).toBe('ai');
-    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeSelected({ mode: 'ai' }));
+
+    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.newChatClicked({ mode: ChatType.AiChat }));
   });
 
-  it('should handle different chat modes', () => {
+  it('should set selectedChatMode to direct mode and dispatch newChatClicked with human', () => {
     jest.spyOn(store, 'dispatch');
-    
+
     component.selectChatMode('direct');
-    
-    expect(component.selectedChatMode).toBe('direct');
-    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeSelected({ mode: 'direct' }));
-  });
 
-  it('should reset selectedChatMode and dispatch chatModeDeselected on goBack', () => {
-    jest.spyOn(store, 'dispatch');
-    component.selectedChatMode = 'ai';
-    
-    component.goBack();
-    
-    expect(component.selectedChatMode).toBeNull();
-    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatModeDeselected());
+    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.newChatClicked({ mode: ChatType.HumanChat }));
   });
 
   describe('closeSidebar', () => {
@@ -103,12 +92,10 @@ describe('ChatAssistantComponent', () => {
       jest.spyOn(store, 'dispatch');
       jest.spyOn(component.sidebarVisibleChange, 'emit');
       component._sidebarVisible = true;
-      component.selectedChatMode = 'ai';
-      
+
       component.closeSidebar();
-      
+
       expect(component._sidebarVisible).toBe(false);
-      expect(component.selectedChatMode).toBeNull();
       expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
       expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
     });
@@ -117,100 +104,12 @@ describe('ChatAssistantComponent', () => {
       jest.spyOn(store, 'dispatch');
       jest.spyOn(component.sidebarVisibleChange, 'emit');
       component._sidebarVisible = true;
-      component.selectedChatMode = null;
-      
+
       component.closeSidebar();
-      
+
       expect(component._sidebarVisible).toBe(false);
-      expect(component.selectedChatMode).toBeNull();
       expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
       expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelClosed());
-    });
-  });
-
-  describe('onDocumentClick', () => {
-    let mockEvent: MouseEvent;
-    let mockElement: HTMLElement;
-
-    beforeEach(() => {
-      component._sidebarVisible = true;
-      mockElement = document.createElement('div');
-    });
-
-    it('should not close sidebar when sidebar is not visible', () => {
-      component._sidebarVisible = false;
-      const spy = jest.spyOn(component, 'closeSidebar');
-      
-      mockEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(mockEvent, 'target', { value: mockElement, enumerable: true });
-      
-      component.onDocumentClick(mockEvent);
-      
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should not close sidebar when clicking inside sidebar', () => {
-      const sidebarElement = document.createElement('div');
-      sidebarElement.classList.add('p-sidebar');
-      mockElement.appendChild(sidebarElement);
-      
-      const spy = jest.spyOn(component, 'closeSidebar');
-      mockEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(mockEvent, 'target', { value: sidebarElement, enumerable: true });
-      
-      component.onDocumentClick(mockEvent);
-      
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should not close sidebar when clicking on chat toggle button', () => {
-      const buttonElement = document.createElement('button');
-      buttonElement.setAttribute('aria-label', 'Chat Assistant');
-      mockElement.appendChild(buttonElement);
-      
-      const spy = jest.spyOn(component, 'closeSidebar');
-      mockEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(mockEvent, 'target', { value: buttonElement, enumerable: true });
-      
-      component.onDocumentClick(mockEvent);
-      
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should close sidebar when clicking outside sidebar and not on toggle button', () => {
-      const spy = jest.spyOn(component, 'closeSidebar');
-      mockEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(mockEvent, 'target', { value: mockElement, enumerable: true });
-      
-      component.onDocumentClick(mockEvent);
-      
-      expect(spy).toHaveBeenCalled();
-    });
-
-    it('should not close sidebar when clicking inside app-chat-header', () => {
-      const headerElement = document.createElement('app-chat-header');
-      mockElement.appendChild(headerElement);
-      
-      const spy = jest.spyOn(component, 'closeSidebar');
-      mockEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(mockEvent, 'target', { value: headerElement, enumerable: true });
-      
-      component.onDocumentClick(mockEvent);
-      
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-    it('should not close sidebar when clicking inside app-chat-option-button', () => {
-      const buttonElement = document.createElement('app-chat-option-button');
-      mockElement.appendChild(buttonElement);
-      
-      const spy = jest.spyOn(component, 'closeSidebar');
-      mockEvent = new MouseEvent('click', { bubbles: true });
-      Object.defineProperty(mockEvent, 'target', { value: buttonElement, enumerable: true });
-      
-      component.onDocumentClick(mockEvent);
-      
-      expect(spy).not.toHaveBeenCalled();
     });
   });
 
@@ -221,14 +120,14 @@ describe('ChatAssistantComponent', () => {
 
     it('should dispatch chatPanelOpened action when sidebarVisible is set to true', () => {
       component.sidebarVisible = true;
-      
+
       expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.chatPanelOpened());
       expect(component._sidebarVisible).toBe(true);
     });
 
     it('should not dispatch action when sidebarVisible is set to false', () => {
       component.sidebarVisible = false;
-      
+
       expect(store.dispatch).not.toHaveBeenCalled();
       expect(component._sidebarVisible).toBe(false);
     });
@@ -287,7 +186,7 @@ describe('ChatAssistantComponent', () => {
 
     it('should dispatch currentChatDeleted action when delete command is executed', () => {
       jest.spyOn(store, 'dispatch');
-      
+
       const mockViewModel = {
         chats: [],
         currentChat: { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat },
@@ -317,9 +216,9 @@ describe('ChatAssistantComponent', () => {
     it('should dispatch messageSent action with correct message', () => {
       jest.spyOn(store, 'dispatch');
       const testMessage = 'Hello, this is a test message';
-      
+
       component.sendMessage(testMessage);
-      
+
       expect(store.dispatch).toHaveBeenCalledWith(
         ChatAssistantActions.messageSent({
           message: testMessage
@@ -329,9 +228,9 @@ describe('ChatAssistantComponent', () => {
 
     it('should handle empty message', () => {
       jest.spyOn(store, 'dispatch');
-      
+
       component.sendMessage('');
-      
+
       expect(store.dispatch).toHaveBeenCalledWith(
         ChatAssistantActions.messageSent({
           message: ''
@@ -344,9 +243,9 @@ describe('ChatAssistantComponent', () => {
     it('should dispatch chatSelected action with correct chat', () => {
       jest.spyOn(store, 'dispatch');
       const testChat = { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat };
-      
+
       component.chatSelected(testChat);
-      
+
       expect(store.dispatch).toHaveBeenCalledWith(
         ChatAssistantActions.chatSelected({
           chat: testChat
@@ -357,9 +256,9 @@ describe('ChatAssistantComponent', () => {
     it('should handle chat with different types', () => {
       jest.spyOn(store, 'dispatch');
       const humanChat = { id: 'chat2', topic: 'Human Chat', type: ChatType.HumanChat };
-      
+
       component.chatSelected(humanChat);
-      
+
       expect(store.dispatch).toHaveBeenCalledWith(
         ChatAssistantActions.chatSelected({
           chat: humanChat
@@ -371,7 +270,7 @@ describe('ChatAssistantComponent', () => {
   describe('ngOnChanges', () => {
     it('should emit sidebarVisibleChange when sidebarVisible changes', () => {
       jest.spyOn(component.sidebarVisibleChange, 'emit');
-      
+
       const changes: SimpleChanges = {
         sidebarVisible: {
           currentValue: true,
@@ -380,15 +279,15 @@ describe('ChatAssistantComponent', () => {
           isFirstChange: () => false
         }
       };
-      
+
       component.ngOnChanges(changes);
-      
+
       expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(true);
     });
 
     it('should not emit when sidebarVisible does not change', () => {
       jest.spyOn(component.sidebarVisibleChange, 'emit');
-      
+
       const changes: SimpleChanges = {
         otherProperty: {
           currentValue: 'new',
@@ -397,15 +296,15 @@ describe('ChatAssistantComponent', () => {
           isFirstChange: () => false
         }
       };
-      
+
       component.ngOnChanges(changes);
-      
+
       expect(component.sidebarVisibleChange.emit).not.toHaveBeenCalled();
     });
 
     it('should emit with false when sidebar is closed', () => {
       jest.spyOn(component.sidebarVisibleChange, 'emit');
-      
+
       const changes: SimpleChanges = {
         sidebarVisible: {
           currentValue: false,
@@ -414,10 +313,18 @@ describe('ChatAssistantComponent', () => {
           isFirstChange: () => false
         }
       };
-      
+
       component.ngOnChanges(changes);
-      
+
       expect(component.sidebarVisibleChange.emit).toHaveBeenCalledWith(false);
+    });
+
+    it('goBack should dispatch the correct action', () => {
+      jest.spyOn(store, 'dispatch');
+
+      component.goBack();
+
+      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.backButtonClicked());
     });
   });
 });

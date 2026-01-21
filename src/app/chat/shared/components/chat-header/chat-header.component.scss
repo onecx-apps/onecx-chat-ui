@@ -32,3 +32,17 @@
   outline: none;
   box-shadow: none;
 }
+
+#back-button {
+  position: absolute;
+  left: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#close-button {
+  position: absolute;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+}

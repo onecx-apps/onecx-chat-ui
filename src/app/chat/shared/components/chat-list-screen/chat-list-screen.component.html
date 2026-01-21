@@ -15,12 +15,22 @@
     <p-tabView>
       <p-tabPanel [header]="'CHAT.LIST.RELATED_CHATS' | translate">
         @for (chat of chats; track chat.id) {
-          <p>{{ chat.id }}</p>
+          <div 
+          class="shadow-2 p-3 mb-2 bg-white border-round cursor-pointer hover:shadow-4"
+          (click)="chatSelected.emit(chat)" 
+          (keydown.enter)="chatSelected.emit(chat)">
+          {{ chat.topic }}
+        </div>
         }
       </p-tabPanel>
       <p-tabPanel [header]="'CHAT.LIST.ALL_CHATS' | translate">
         @for (chat of chats; track chat.id) {
-          <p>{{ chat.id }}</p>
+          <div 
+          class="shadow-2 p-3 mb-2 bg-white border-round cursor-pointer hover:shadow-4"
+          (click)="chatSelected.emit(chat)" 
+          (keydown.enter)="chatSelected.emit(chat)">
+          {{ chat.topic }}
+        </div>
         }
       </p-tabPanel>
     </p-tabView>

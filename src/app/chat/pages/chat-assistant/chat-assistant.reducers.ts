@@ -112,8 +112,18 @@ export const chatAssistantReducer = createReducer(
     ...state,
     selectedChatMode: action.mode,
   })),
-  on(ChatAssistantActions.chatModeDeselected, (state) => ({
+  on(ChatAssistantActions.backButtonClicked, (state) => ({
     ...state,
     selectedChatMode: null,
-  }))
+    currentChat: undefined,
+    currentMessages: [],
+  })),
+  on(ChatAssistantActions.newChatClicked, (state, action) => ({
+    ...state,
+    currentChat: {
+      id: 'new',
+      type: action.mode
+    },
+    currentMessages: [],
+  })),
 );

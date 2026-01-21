@@ -4,7 +4,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
-import { filterForNavigatedTo } from '@onecx/ngrx-accelerator';
 import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
@@ -14,7 +13,6 @@ import {
   ParticipantType,
 } from '../../../shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
-import { ChatAssistantComponent } from './chat-assistant.component';
 import { chatAssistantSelectors } from './chat-assistant.selectors';
 import { ChatUser } from './chat-assistant.state';
 
@@ -36,12 +34,11 @@ export class ChatAssistantEffects {
     );
   }
 
-  navigatedToChatAssistant = createEffect(() => {
+  chatInitialized = createEffect(() => {
     return this.actions$.pipe(
       ofType(routerNavigatedAction),
-      filterForNavigatedTo(this.router, ChatAssistantComponent),
       switchMap(() => {
-        return of(ChatAssistantActions.navigatedToChatAssistant());
+        return of(ChatAssistantActions.chatInitialized());
       }),
     );
   });
@@ -49,7 +46,7 @@ export class ChatAssistantEffects {
   loadAvailableChats$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(
-        ChatAssistantActions.navigatedToChatAssistant,
+        ChatAssistantActions.chatInitialized,
         ChatAssistantActions.chatPanelOpened,
         ChatAssistantActions.chatCreationSuccessful,
         ChatAssistantActions.messageSentForNewChat,
