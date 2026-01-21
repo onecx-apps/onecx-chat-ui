@@ -37,7 +37,9 @@ export const ChatAssistantActions = createActionGroup({
     'chat creation failed': props<{
       error: string | null;
     }>(),
-    'current chat deleted': emptyProps(),
+    'delete chat clicked': props<{
+      chat: Chat;
+    }>(),
     'chat deletion successful': props<{
       chatId: string;
     }>(),

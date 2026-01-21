@@ -52,8 +52,7 @@ import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 export class ChatAssistantComponent implements OnChanges {
   environment = environment;
   viewModel$: Observable<ChatAssistantViewModel>;
-  menuItems: Observable<MenuItem[]>;
-
+  
   _sidebarVisible = false;
 
   @Input()
@@ -68,27 +67,8 @@ export class ChatAssistantComponent implements OnChanges {
 
   constructor(
     private readonly store: Store,
-    private translateService: TranslateService,
   ) {
     this.viewModel$ = this.store.select(selectChatAssistantViewModel);
-
-    this.menuItems = combineLatest([
-      this.viewModel$,
-      this.translateService.get(['CHAT.ACTIONS.DELETE']),
-    ]).pipe(
-      map(([viewModel, translations]) => {
-        return [
-          {
-            label: translations['CHAT.ACTIONS.DELETE'],
-            icon: 'pi pi-trash',
-            disabled: viewModel.currentChat?.id === 'new',
-            command: () => {
-              this.store.dispatch(ChatAssistantActions.currentChatDeleted());
-            },
-          },
-        ] as MenuItem[];
-      }),
-    );
   }
 
   sendMessage(message: string) {
@@ -102,6 +82,14 @@ export class ChatAssistantComponent implements OnChanges {
   chatSelected(chat: Chat) {
     this.store.dispatch(
       ChatAssistantActions.chatSelected({
+        chat,
+      }),
+    );
+  }
+
+  deleteChat(chat: Chat) {
+    this.store.dispatch(
+      ChatAssistantActions.deleteChatClicked({
         chat,
       }),
     );
