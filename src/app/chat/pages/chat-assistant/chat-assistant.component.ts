@@ -5,8 +5,7 @@ import {
   Input,
   OnChanges,
   Output,
-  SimpleChanges,
-  HostListener,
+  SimpleChanges
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -19,14 +18,14 @@ import { combineLatest, map, Observable } from 'rxjs';
 import { ChatListComponent } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatComponent } from 'src/app/shared/components/chat/chat.component';
 import { Chat, ChatType } from 'src/app/shared/generated';
-import { ChatAssistantActions } from './chat-assistant.actions';
-import { selectChatAssistantViewModel } from './chat-assistant.selectors';
-import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 import { environment } from 'src/environments/environment';
-import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
 import { ChatHeaderComponent } from '../../shared/components/chat-header/chat-header.component';
 import { ChatInitialScreenComponent } from '../../shared/components/chat-initial-screen/chat-initial-screen.component';
 import { ChatListScreenComponent } from '../../shared/components/chat-list-screen/chat-list-screen.component';
+import { ChatSliderComponent } from '../../shared/components/chat-silder/chat-slider.component';
+import { ChatAssistantActions } from './chat-assistant.actions';
+import { selectChatAssistantViewModel } from './chat-assistant.selectors';
+import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
 
 @Component({
   selector: 'app-chat-assistant',
@@ -122,7 +121,7 @@ export class ChatAssistantComponent implements OnChanges {
       this.store.dispatch(ChatAssistantActions.chatPanelClosed());
       return;
     }
-    let _mode = mode === 'ai' ? ChatType.AiChat : ChatType.HumanChat;
+    const _mode = mode === 'ai' ? ChatType.AiChat : ChatType.HumanChat;
     this.store.dispatch(ChatAssistantActions.newChatClicked({ mode: _mode }));
   }
 
