@@ -49,7 +49,7 @@ describe('ChatSearchSelectors', () => {
         displayedColumns: ['id', 'topic', 'type'],
         viewMode: 'advanced',
         chartVisible: true,
-        criteria: { changeMe: 'test' }
+        criteria: { topic: 'test' }
       }
     }
   };
@@ -82,7 +82,7 @@ describe('ChatSearchSelectors', () => {
 
     it('should select criteria from state', () => {
       const result = chatSearchSelectors.selectCriteria(mockState);
-      expect(result).toEqual({ changeMe: 'test' });
+      expect(result).toEqual({ topic: 'test' });
     });
 
     it('should select searchLoadingIndicator from state', () => {
@@ -298,7 +298,7 @@ describe('ChatSearchSelectors', () => {
       
       expect(result).toEqual({
         columns: mockColumns,
-        searchCriteria: { changeMe: 'test' },
+        searchCriteria: { topic: 'test' },
         results: [
           {
             imagePath: '',

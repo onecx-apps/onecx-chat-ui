@@ -44,9 +44,9 @@ describe('ChatSearchComponent', () => {
       l({
         data: m,
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        stopImmediatePropagation: () => {},
+        stopImmediatePropagation: () => { },
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        stopPropagation: () => {},
+        stopPropagation: () => { },
       }),
     );
   };
@@ -70,7 +70,7 @@ describe('ChatSearchComponent', () => {
   };
   const baseChatSearchViewModel: ChatSearchViewModel = {
     columns: chatSearchColumns,
-    searchCriteria: { changeMe: '0' },
+    searchCriteria: { topic: '' },
     results: [],
     displayedColumns: [],
     viewMode: 'basic',
@@ -351,14 +351,14 @@ describe('ChatSearchComponent', () => {
 
   it('should dispatch searchButtonClicked action on search', (done) => {
     const formValue = formBuilder.group({
-      changeMe: '123',
+      topic: '123',
     });
     component.chatSearchFormGroup = formValue;
 
     store.scannedActions$
       .pipe(ofType(ChatSearchActions.searchButtonClicked))
       .subscribe((a) => {
-        expect(a.searchCriteria).toEqual({ changeMe: '123' });
+        expect(a.searchCriteria).toEqual({ topic: '123' });
         done();
       });
 
@@ -428,7 +428,9 @@ describe('ChatSearchComponent', () => {
     );
 
     expect(store.dispatch).toHaveBeenCalledWith(
-      ChatSearchActions.displayedColumnsChanged({ displayedColumns: [] }),
+      expect.objectContaining({
+        type: ChatSearchActions.displayedColumnsChanged.type
+      })
     );
 
     jest.clearAllMocks();

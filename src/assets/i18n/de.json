@@ -1,4 +1,47 @@
 {
+  "CHAT_DETAILS": {
+    "HELP_ARTICLE_ID": "Hilfeartikel",
+    "BREADCRUMB": "Details",
+    "HEADER": "Chat Details",
+    "SUB_HEADER": "Anzeigen von Chat Details",
+    "ERROR_MESSAGES": {
+      "DETAILS_LOADING_FAILED": "Details konnten nicht geladen werden."
+    },
+    "GENERAL": {
+      "BACK": "Zurück",
+      "MORE": "Mehr",
+      "EDIT": "Bearbeiten",
+      "DELETE": "Löschen",
+      "CANCEL": "Abbrechen",
+      "SAVE": "Speichern"
+    },
+    "FORM": {
+      "ID": "ID",
+      "TOPIC": "Thema"
+    },
+    "CANCEL": {
+      "HEADER": "Abbruch bestätigen",
+      "MESSAGE": "Bitte bestätigen Sie, dass Sie die Bearbeitung abbrechen und die Änderungen zurücksetzen möchten.",
+      "CONFIRM": "Bestätigen"
+    },
+    "UPDATE": {
+      "SUCCESS": "Speichern erfolgreich",
+      "ERROR": "Speichern fehlgeschlagen",
+      "FORM": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "HEADER": "Update Chat"
+    },
+    "DELETE": {
+      "HEADER": "Chat löschen",
+      "MESSAGE": "Bitte bestätigen Sie, dass Sie dieses Chat löschen möchten.",
+      "CONFIRM": "Bestätigen",
+      "CANCEL": "Abbrechen",
+      "SUCCESS": "Chat erfolgreich gelöscht",
+      "ERROR": "Konnte Chat nicht löschen"
+    }
+  },
   "CHAT_SEARCH": {
     "HEADER": "Chat Suche",
     "SUB_HEADER": "Suchen und Anzeigen von Chat",
@@ -23,7 +66,24 @@
       "SEARCH_CONFIG_UPDATE_FAILED": "Suchkonfiguration konnte nicht aktualisiert werden.",
       "SEARCH_CONFIGS_LOADING_FAILED": "Suchkonfigurationen konnten nicht geladen werden."
     },
-    "INPUT_FIELDS": "ACTION S4: ADD TRANSLATION for your input fields",
+    "RESULTS": {
+      "TOPIC": "Thema",
+      "SUMMARY": "Zusammenfassung",
+      "TYPE": "Typ",
+      "CREATED_BY": "Erstellt von",
+      "CREATED_DATE": "Erstellungsdatum"
+    },
+    "CRITERIA": {
+      "TOPIC": "Thema",
+      "PARTICIPANT": "Teilnehmer",
+      "APP_ID": "Anwendungs-ID",
+      "TYPE": {
+        "PLACEHOLDER": "Typ auswählen",
+        "TITLE": "Typ",
+        "HUMAN_CHAT": "Personen-Chat",
+        "AI_CHAT": "KI-Chat"
+      }
+    },
     "PREDEFINED_GROUP": {
       "DEFAULT": "Standard",
       "EXTENDED": "Erweitert",

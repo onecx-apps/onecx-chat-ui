@@ -52,7 +52,7 @@ describe('ChatSearchReducer', () => {
   describe('routerNavigatedAction', () => {
     it('should update criteria and searchLoadingIndicator when router navigation has valid query params', () => {
       const queryParams = {
-        changeMe: 'test'
+        topic: 'test'
       };
 
       const action = routerNavigatedAction({
@@ -70,7 +70,7 @@ describe('ChatSearchReducer', () => {
 
       expect(result.searchLoadingIndicator).toBe(true);
       expect(result.criteria).toEqual(expect.objectContaining({
-        changeMe: 'test'
+        topic: 'test'
       }));
     });
 
@@ -100,7 +100,7 @@ describe('ChatSearchReducer', () => {
           routerState: {
             root: {
               queryParams: {
-                changeMe: 123 // number instead of string - should fail validation
+                topic: 123 // number instead of string - should fail validation
               }
             }
           } as any,
@@ -119,7 +119,7 @@ describe('ChatSearchReducer', () => {
       const currentState: ChatSearchState = {
         ...initialState,
         results: [mockChat],
-        criteria: { changeMe: 'test' },
+        criteria: { topic: 'test' },
         searchLoadingIndicator: true,
         chartVisible: true
       };
@@ -138,7 +138,7 @@ describe('ChatSearchReducer', () => {
       const currentState: ChatSearchState = {
         ...initialState,
         results: [mockChat],
-        criteria: { changeMe: 'test' },
+        criteria: { topic: 'test' },
         viewMode: 'advanced',
         chartVisible: true,
         displayedColumns: ['id', 'name']
@@ -156,7 +156,7 @@ describe('ChatSearchReducer', () => {
   describe('searchButtonClicked', () => {
     it('should set searchLoadingIndicator to true and update criteria', () => {
       const searchCriteria = {
-        changeMe: 'test search'
+        topic: 'test search'
       };
 
       const action = ChatSearchActions.searchButtonClicked({ searchCriteria });
@@ -172,10 +172,10 @@ describe('ChatSearchReducer', () => {
     it('should override previous criteria with new search criteria', () => {
       const currentState: ChatSearchState = {
         ...initialState,
-        criteria: { changeMe: 'old value' }
+        criteria: { topic: 'old value' }
       };
 
-      const newCriteria = { changeMe: 'new value' };
+      const newCriteria = { topic: 'new value' };
       const action = ChatSearchActions.searchButtonClicked({ searchCriteria: newCriteria });
       const result = chatSearchReducer(currentState, action);
 
@@ -205,7 +205,7 @@ describe('ChatSearchReducer', () => {
       const currentState: ChatSearchState = {
         ...initialState,
         searchLoadingIndicator: true,
-        criteria: { changeMe: 'test' },
+        criteria: { topic: 'test' },
         chartVisible: true
       };
 
@@ -218,7 +218,7 @@ describe('ChatSearchReducer', () => {
 
       expect(result.results).toEqual(results);
       expect(result.searchLoadingIndicator).toBe(true);
-      expect(result.criteria).toEqual({ changeMe: 'test' });
+      expect(result.criteria).toEqual({ topic: 'test' });
       expect(result.chartVisible).toBe(true);
     });
 
@@ -255,7 +255,7 @@ describe('ChatSearchReducer', () => {
         ...initialState,
         results: [mockChat],
         searchLoadingIndicator: true,
-        criteria: { changeMe: 'test' },
+        criteria: { topic: 'test' },
         chartVisible: true
       };
 
@@ -264,7 +264,7 @@ describe('ChatSearchReducer', () => {
 
       expect(result.results).toEqual([]);
       expect(result.searchLoadingIndicator).toBe(true);
-      expect(result.criteria).toEqual({ changeMe: 'test' });
+      expect(result.criteria).toEqual({ topic: 'test' });
       expect(result.chartVisible).toBe(true);
     });
 
@@ -401,7 +401,7 @@ describe('ChatSearchReducer', () => {
     it('should not mutate the original state', () => {
       const originalState = { ...initialState };
       const action = ChatSearchActions.searchButtonClicked({ 
-        searchCriteria: { changeMe: 'test' } 
+        searchCriteria: { topic: 'test' } 
       });
 
       chatSearchReducer(initialState, action);
@@ -445,7 +445,7 @@ describe('ChatSearchReducer', () => {
         payload: {
           routerState: {
             root: {
-              queryParams: { changeMe: 'value' }
+              queryParams: { topic: 'value' }
             }
           } as any,
           event: {} as any

@@ -1,5 +1,5 @@
 /**
- * onecx-chat-ui-bff
+ * onecx-chat-bff
  *
  * 
  *
@@ -101,7 +101,7 @@ export class ChatBffService {
     public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ChatPageResult>;
     public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ChatPageResult>>;
     public searchChats(chatSearchRequest?: ChatSearchRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ChatPageResult>>;
-    public searchChats(chatSearchRequest?: ChatSearchRequest, observe: any = 'body', reportProgress = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public searchChats(chatSearchRequest?: ChatSearchRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
 
         let localVarHeaders = this.defaultHeaders;
 
@@ -143,7 +143,7 @@ export class ChatBffService {
             }
         }
 
-        const localVarPath = `/chat/search`;
+        let localVarPath = `/chats/search`;
         return this.httpClient.request<ChatPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,

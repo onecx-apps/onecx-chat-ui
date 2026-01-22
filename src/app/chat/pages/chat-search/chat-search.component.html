@@ -13,14 +13,86 @@
     (viewModeChanged)="viewModeChanged($event)"
   >
     <form [formGroup]="chatSearchFormGroup">
-      // ACTION S3: Please specify here your desired search criterias, link to
-      documentation; TODO: add info how to handle dates in p-calendar ->
-      https://primeng.org/calendar#api.calendar.props.dateFormat
+      <div class="grid mt-0 p-fluid">
+        <div class="col-12 md:col-3">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="topic"
+              type="text"
+              formControlName="topic"
+              [pTooltip]="'CHAT_SEARCH.CRITERIA.TOPIC' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              [attr.aria-label]="'CHAT_SEARCH.CRITERIA.TOPIC' | translate"
+            />
+            <label for="topic" style="white-space: nowrap">
+              {{ 'CHAT_SEARCH.CRITERIA.TOPIC' | translate }}</label
+            >
+          </span>
+        </div>
+        <div class="col-12 md:col-3">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="participant"
+              type="text"
+              formControlName="participant"
+              [pTooltip]="'CHAT_SEARCH.CRITERIA.PARTICIPANT' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              [attr.aria-label]="'CHAT_SEARCH.CRITERIA.PARTICIPANT' | translate"
+            />
+            <label for="participant" style="white-space: nowrap">
+              {{ 'CHAT_SEARCH.CRITERIA.PARTICIPANT' | translate }}</label
+            >
+          </span>
+        </div>
+        <div class="col-12 md:col-3">
+          <span class="p-float-label">
+            <p-dropdown
+              id="type"
+              formControlName="type"
+              appendTo="body"
+              [options]="(type$ | async) ?? []"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="{{
+                'CHAT_SEARCH.CRITERIA.TYPE.PLACEHOLDER' | translate
+              }}"
+              display="chip"
+              [showClear]="true"
+            ></p-dropdown>
+            <label for="type">{{
+              'CHAT_SEARCH.CRITERIA.TYPE.TITLE' | translate
+            }}</label>
+          </span>
+        </div>
+        <div class="col-12 md:col-3">
+          <span class="p-float-label">
+            <input
+              pInputText
+              id="appId"
+              type="text"
+              formControlName="appId"
+              [pTooltip]="'CHAT_SEARCH.CRITERIA.APP_ID' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              [attr.aria-label]="'CHAT_SEARCH.CRITERIA.APP_ID' | translate"
+            />
+            <label for="appId" style="white-space: nowrap">
+              {{ 'CHAT_SEARCH.CRITERIA.APP_ID' | translate }}</label
+            >
+          </span>
+        </div>
+      </div>
     </form>
   </ocx-search-header>
   <ocx-content-container layout="horizontal">
     <ocx-content class="w-full">
       <ocx-interactive-data-view
+        (viewItem)="details($event)"
+        viewPermission="CHAT#VIEW"
         [data]="vm.results"
         [columns]="vm.columns"
         [listGridPaginator]="false"

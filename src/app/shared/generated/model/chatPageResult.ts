@@ -1,5 +1,5 @@
 /**
- * onecx-chat-ui-bff
+ * onecx-chat-bff
  *
  * 
  *
@@ -11,7 +11,7 @@ import { Chat } from './chat';
 
 
 export interface ChatPageResult { 
-    results: Array<Chat>;
+    stream: Array<Chat>;
     /**
      * The total elements in the resource.
      */
