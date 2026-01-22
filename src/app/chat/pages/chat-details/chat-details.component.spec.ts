@@ -165,10 +165,12 @@ describe('ChatDetailsComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    expect(breadcrumbService.setItems).toHaveBeenCalledTimes(1);
+    expect(breadcrumbService.setItems).toHaveBeenCalledTimes(2);
     const pageHeader = await chatDetails.getHeader();
-    const searchBreadcrumbItem = await pageHeader.getBreadcrumbItem('Details');
-    expect(await searchBreadcrumbItem!.getText()).toEqual('Details');
+    const searchBreadcrumbItem = await pageHeader.getBreadcrumbItem('Search');
+    expect(await searchBreadcrumbItem!.getText()).toEqual('Search');
+    const detailsBreadcrumbItem = await pageHeader.getBreadcrumbItem('Details');
+    expect(await detailsBreadcrumbItem!.getText()).toEqual('Details');
   });
 
   it('should display translated headers', async () => {
@@ -182,15 +184,10 @@ describe('ChatDetailsComponent', () => {
   it('should have 2 inline actions', async () => {
     const pageHeader = await chatDetails.getHeader();
     const inlineActions = await pageHeader.getInlineActionButtons();
-    expect(inlineActions.length).toBe(2);
+    expect(inlineActions.length).toBe(1);
 
     const backAction = await pageHeader.getInlineActionButtonByLabel('Back');
     expect(backAction).toBeTruthy();
-
-    const moreAction = await pageHeader.getInlineActionButtonByIcon(
-      PrimeIcons.ELLIPSIS_V,
-    );
-    expect(moreAction).toBeTruthy();
   });
 
   it('should dispatch navigateBackButtonClicked action on back button click', async () => {
