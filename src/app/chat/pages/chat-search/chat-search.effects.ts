@@ -1,3 +1,4 @@
+import { selectUrl } from 'src/app/shared/selectors/router.selectors';
 import { Injectable, SkipSelf } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -52,8 +53,6 @@ export class ChatSearchEffects {
           if (!results.success || !equal(criteria, results.data)) {
             const params = {
               ...criteria,
-              //TODO: Move to docs to explain how to only put the date part in the URL in case you have date and not datetime
-              //exampleDate: criteria.exampleDate?.toISOString()?.slice(0, 10)
             };
             this.router.navigate([], {
               relativeTo: this.route,
@@ -68,6 +67,22 @@ export class ChatSearchEffects {
     { dispatch: false },
   );
 
+  detailsButtonClicked$ = createEffect(
+    () => {
+      return this.actions$.pipe(
+        ofType(ChatSearchActions.detailsButtonClicked),
+        concatLatestFrom(() => this.store.select(selectUrl)),
+        tap(([action, currentUrl]) => {
+          let urlTree = this.router.parseUrl(currentUrl);
+          urlTree.queryParams = {};
+          urlTree.fragment = null;
+          this.router.navigate([urlTree.toString(), 'details', action.id]);
+        }),
+      );
+    },
+    { dispatch: false },
+  );
+
   searchByUrl$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(routerNavigatedAction),
@@ -75,7 +90,7 @@ export class ChatSearchEffects {
       filterOutQueryParamsHaveNotChanged(
         this.router,
         chatSearchCriteriasSchema,
-        false,
+        true,
       ),
       concatLatestFrom(() =>
         this.store.select(chatSearchSelectors.selectCriteria),
@@ -85,6 +100,7 @@ export class ChatSearchEffects {
   });
 
   performSearch(searchCriteria: Record<string, any>) {
+    console.log('performSearch');
     return this.chatService
       .searchChats({
         ...Object.entries(searchCriteria).reduce(
@@ -96,9 +112,9 @@ export class ChatSearchEffects {
         ),
       })
       .pipe(
-        map(({ results, totalElements }) =>
+        map(({ stream, totalElements }) =>
           ChatSearchActions.chatSearchResultsReceived({
-            results,
+            results: stream,
             totalNumberOfResults: totalElements ?? 0,
           }),
         ),

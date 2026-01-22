@@ -1,5 +1,5 @@
 /**
- * onecx-chat-ui-bff
+ * onecx-chat-bff
  *
  * 
  *

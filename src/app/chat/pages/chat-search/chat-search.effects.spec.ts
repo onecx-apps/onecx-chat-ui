@@ -47,7 +47,7 @@ describe('ChatSearchEffects', () => {
   ];
 
   const mockSearchCriteria: ChatSearchCriteria = {
-    changeMe: 'test'
+    topic: 'test'
   };
 
   const mockViewModel = {
@@ -155,7 +155,7 @@ describe('ChatSearchEffects', () => {
         action: 'resetButtonClicked', 
         createAction: () => ChatSearchActions.resetButtonClicked(),
         criteria: {},
-        routeParams: { changeMe: 'something' },
+        routeParams: { topic: 'something' },
         expectedParams: {},
         shouldNavigate: true
       },
@@ -206,7 +206,7 @@ describe('ChatSearchEffects', () => {
     it.each([
       {
         scenario: 'successful search',
-        mockResponse: { results: mockChats, totalElements: mockChats.length },
+        mockResponse: { stream: mockChats, totalElements: mockChats.length },
         searchError: null,
         expectedAction: ChatSearchActions.chatSearchResultsReceived({
           results: mockChats,
@@ -221,7 +221,7 @@ describe('ChatSearchEffects', () => {
       },
       {
         scenario: 'undefined totalElements',
-        mockResponse: { results: mockChats, totalElements: undefined },
+        mockResponse: { stream: mockChats, totalElements: undefined },
         searchError: null,
         expectedAction: ChatSearchActions.chatSearchResultsReceived({
           results: mockChats,
@@ -245,16 +245,16 @@ describe('ChatSearchEffects', () => {
 
     it('should transform Date objects to ISO strings in search criteria', (done) => {
       const dateValue = new Date('2023-01-01');
-      const searchCriteriaWithDate = { changeMe: 'test', exampleDate: dateValue };
+      const searchCriteriaWithDate = { topic: 'test', exampleDate: dateValue };
       
       store.overrideSelector(chatSearchSelectors.selectCriteria, searchCriteriaWithDate);
-      (chatService.searchChats as any).mockReturnValue(of({ results: mockChats, totalElements: mockChats.length }));
+      (chatService.searchChats as any).mockReturnValue(of({ stream: mockChats, totalElements: mockChats.length }));
 
       actions$ = of(createRouterAction());
 
       effects.searchByUrl$.subscribe(() => {
         expect(chatService.searchChats).toHaveBeenCalledWith({
-          changeMe: 'test',
+          topic: 'test',
           exampleDate: dateValue.toISOString()
         });
         done();
@@ -335,8 +335,8 @@ describe('ChatSearchEffects', () => {
     it.each([
       {
         scenario: 'successful search',
-        searchCriteria: { changeMe: 'test' },
-        mockResponse: { results: mockChats, totalElements: mockChats.length },
+        searchCriteria: { topic: 'test' },
+        mockResponse: { stream: mockChats, totalElements: mockChats.length },
         error: null,
         expectedAction: ChatSearchActions.chatSearchResultsReceived({
           results: mockChats,
@@ -345,7 +345,7 @@ describe('ChatSearchEffects', () => {
       },
       {
         scenario: 'service error',
-        searchCriteria: { changeMe: 'test' },
+        searchCriteria: { topic: 'test' },
         mockResponse: null,
         error: 'Service error',
         expectedAction: ChatSearchActions.chatSearchResultsLoadingFailed({ error: 'Service error' })
@@ -353,7 +353,7 @@ describe('ChatSearchEffects', () => {
       {
         scenario: 'empty criteria',
         searchCriteria: {},
-        mockResponse: { results: [], totalElements: 0 },
+        mockResponse: { stream: [], totalElements: 0 },
         error: null,
         expectedAction: ChatSearchActions.chatSearchResultsReceived({
           results: [],

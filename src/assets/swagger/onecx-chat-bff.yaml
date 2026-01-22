@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: onecx-chat-bff
-  version: "1.0"
+  version: '1.0'
 paths:
   /chats/{chatId}/messages:
     get:
@@ -17,14 +17,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Message"
+                  $ref: '#/components/schemas/Message'
     post:
       tags:
         - chatsInternal
@@ -41,9 +41,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateMessage"
+              $ref: '#/components/schemas/CreateMessage'
       responses:
-        "201":
+        '201':
           description: New message created
           headers:
             Location:
@@ -54,13 +54,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
-        "400":
+                $ref: '#/components/schemas/Message'
+        '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetailResponse"
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /chats/{chatId}/participants:
     get:
       tags:
@@ -75,14 +75,14 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Participant"
+                  $ref: '#/components/schemas/Participant'
     post:
       tags:
         - chatsInternal
@@ -99,9 +99,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AddParticipant"
+              $ref: '#/components/schemas/AddParticipant'
       responses:
-        "201":
+        '201':
           description: New Participant added
           headers:
             Location:
@@ -112,13 +112,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Participant"
-        "400":
+                $ref: '#/components/schemas/Participant'
+        '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetailResponse"
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /chats:
     get:
       tags:
@@ -126,13 +126,13 @@ paths:
       description: Return list of chats
       operationId: getChats
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: object
-                $ref: "#/components/schemas/GetChatsResponse"
+                $ref: '#/components/schemas/GetChatsResponse'
     post:
       tags:
         - chatsInternal
@@ -143,9 +143,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateChat"
+              $ref: '#/components/schemas/CreateChat'
       responses:
-        "201":
+        '201':
           description: New chat created
           headers:
             Location:
@@ -156,13 +156,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Chat"
-        "400":
+                $ref: '#/components/schemas/Chat'
+        '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetailResponse"
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /chats/{id}:
     get:
       tags:
@@ -176,13 +176,13 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Chat"
-        "404":
+                $ref: '#/components/schemas/Chat'
+        '404':
           description: Not found
     put:
       tags:
@@ -200,17 +200,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateChat"
+              $ref: '#/components/schemas/UpdateChat'
       responses:
-        "204":
+        '204':
           description: Chat updated
-        "400":
+        '400':
           description: Bad request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetailResponse"
-        "404":
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        '404':
           description: Chat not found
     delete:
       tags:
@@ -224,31 +224,29 @@ paths:
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: No Content
-  /chat/search:
+  /chats/search:
     post:
       operationId: searchChats
       tags:
         - ChatBffService
-      description:
-        This operation performs a search based on provided search criteria.
-        Search for chat results.
+      description: This operation performs a search based on provided search criteria. Search for chat results.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ChatSearchRequest"
+              $ref: '#/components/schemas/ChatSearchRequest'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ChatPageResult"
-        "400":
+                $ref: '#/components/schemas/ChatPageResult'
+        '400':
           description: Bad request
-        "500":
+        '500':
           description: Something went wrong
 components:
   schemas:
@@ -258,22 +256,35 @@ components:
         limit:
           type: integer
           maximum: 2500
-        id:
-          type: integer
-          format: int32
-        changeMe:
+        type:
+          $ref: '#/components/schemas/ChatType'
+        topic:
           type: string
-        # " ACTION S1: Add additional properties to the <feature>-bff.yaml"
+        participant:
+          type: string
+        appId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          maximum: 1000
+          type: integer
     ChatPageResult:
       type: object
       required:
-        - results
+        - stream
         - totalNumberOfResults
       properties:
-        results:
+        stream:
           type: array
           items:
-            $ref: "#/components/schemas/Chat"
+            $ref: '#/components/schemas/Chat'
         totalElements:
           type: integer
           format: int64
@@ -325,7 +336,7 @@ components:
         stream:
           type: array
           items:
-            $ref: "#/components/schemas/Message"
+            $ref: '#/components/schemas/Message'
     GetChatsResponse:
       type: object
       properties:
@@ -345,7 +356,7 @@ components:
         stream:
           type: array
           items:
-            $ref: "#/components/schemas/Chat"
+            $ref: '#/components/schemas/Chat'
     Chat:
       required:
         - type
@@ -355,17 +366,17 @@ components:
           format: int32
           type: integer
         creationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
           type: string
         modificationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
         id:
           type: string
         type:
-          $ref: "#/components/schemas/ChatType"
+          $ref: '#/components/schemas/ChatType'
         topic:
           type: string
         summary:
@@ -375,7 +386,7 @@ components:
         participants:
           type: array
           items:
-            $ref: "#/components/schemas/Participant"
+            $ref: '#/components/schemas/Participant'
     Message:
       required:
         - type
@@ -385,17 +396,17 @@ components:
           format: int32
           type: integer
         creationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
           type: string
         modificationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
         id:
           type: string
         type:
-          $ref: "#/components/schemas/MessageType"
+          $ref: '#/components/schemas/MessageType'
         text:
           type: string
         userName:
@@ -412,17 +423,17 @@ components:
           format: int32
           type: integer
         creationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
           type: string
         modificationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
         id:
           type: string
         type:
-          $ref: "#/components/schemas/ParticipantType"
+          $ref: '#/components/schemas/ParticipantType'
         userId:
           type: string
         userName:
@@ -443,11 +454,11 @@ components:
         params:
           type: array
           items:
-            $ref: "#/components/schemas/ProblemDetailParam"
+            $ref: '#/components/schemas/ProblemDetailParam'
         invalidParams:
           type: array
           items:
-            $ref: "#/components/schemas/ProblemDetailInvalidParam"
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
     ProblemDetailParam:
       type: object
       properties:
@@ -471,11 +482,11 @@ components:
           format: int32
           type: integer
         creationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
           type: string
         modificationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
         id:
@@ -483,7 +494,7 @@ components:
         text:
           type: string
         type:
-          $ref: "#/components/schemas/MessageType"
+          $ref: '#/components/schemas/MessageType'
         userName:
           type: string
         reliability:
@@ -498,17 +509,17 @@ components:
           format: int32
           type: integer
         creationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
           type: string
         modificationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
         id:
           type: string
         type:
-          $ref: "#/components/schemas/ParticipantType"
+          $ref: '#/components/schemas/ParticipantType'
         userId:
           type: string
         userName:
@@ -525,17 +536,17 @@ components:
           format: int32
           type: integer
         creationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
           type: string
         modificationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
         id:
           type: string
         type:
-          $ref: "#/components/schemas/ChatType"
+          $ref: '#/components/schemas/ChatType'
         topic:
           type: string
         summary:
@@ -545,7 +556,7 @@ components:
         participants:
           type: array
           items:
-            $ref: "#/components/schemas/Participant"
+            $ref: '#/components/schemas/Participant'
     UpdateChat:
       required:
         - name
@@ -555,17 +566,17 @@ components:
           format: int32
           type: integer
         creationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         creationUser:
           type: string
         modificationDate:
-          $ref: "#/components/schemas/OffsetDateTime"
+          $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
         id:
           type: string
         type:
-          $ref: "#/components/schemas/ChatType"
+          $ref: '#/components/schemas/ChatType'
         topic:
           type: string
         summary:
@@ -575,7 +586,7 @@ components:
         participants:
           type: array
           items:
-            $ref: "#/components/schemas/Participant"
+            $ref: '#/components/schemas/Participant'
     WebsocketHelper:
       required:
         - messageDTO

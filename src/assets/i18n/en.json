@@ -1,4 +1,47 @@
 {
+  "CHAT_DETAILS": {
+    "HELP_ARTICLE_ID": "Help Article",
+    "BREADCRUMB": "Details",
+    "HEADER": "Chat Details",
+    "SUB_HEADER": "Display of Chat Details",
+    "ERROR_MESSAGES": {
+      "DETAILS_LOADING_FAILED": "Loading details failed."
+    },
+    "GENERAL": {
+      "BACK": "Back",
+      "MORE": "More",
+      "EDIT": " Edit",
+      "DELETE": "Delete",
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
+    },
+    "FORM": {
+      "ID": "ID",
+      "TOPIC": "Topic"
+    },
+    "CANCEL": {
+      "HEADER": "Confirm cancel",
+      "MESSAGE": "Please confirm that you want to cancel editing and reset changes.",
+      "CONFIRM": "Confirm"
+    },
+    "UPDATE": {
+      "SUCCESS": "Update successful",
+      "ERROR": "Update failed",
+      "FORM": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "HEADER": "Update Chat"
+    },
+    "DELETE": {
+      "HEADER": "Delete Chat",
+      "MESSAGE": "Please confirm that you want to delete this Chat.",
+      "CONFIRM": "Confirm",
+      "CANCEL": "Cancel",
+      "SUCCESS": "Chat deleted successfully",
+      "ERROR": "Could not delete Chat"
+    }
+  },
   "CHAT_SEARCH": {
     "HEADER": "Chat Search",
     "SUB_HEADER": "Searching and displaying of Chat",
@@ -23,7 +66,24 @@
       "SEARCH_CONFIG_UPDATE_FAILED": "Update search configuration failed.",
       "SEARCH_CONFIGS_LOADING_FAILED": "Loading search configurations failed."
     },
-    "INPUT_FIELDS": "ACTION S4: ADD TRANSLATION for your input fields",
+    "RESULTS": {
+      "TOPIC": "Topic",
+      "SUMMARY": "Summary",
+      "TYPE": "Type",
+      "CREATED_BY": "Created By",
+      "CREATED_DATE": "Created Date"
+    },
+    "CRITERIA": {
+      "TOPIC": "Topic",
+      "PARTICIPANT": "Participant",
+      "APP_ID": "Application ID",
+      "TYPE": {
+        "PLACEHOLDER": "Select type",
+        "TITLE": "Type",
+        "HUMAN_CHAT": "Human Chat",
+        "AI_CHAT": "AI Chat"
+      }
+    },
     "PREDEFINED_GROUP": {
       "DEFAULT": "Default",
       "EXTENDED": "Extended",

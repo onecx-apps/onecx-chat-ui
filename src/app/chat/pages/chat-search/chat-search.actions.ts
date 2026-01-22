@@ -6,6 +6,10 @@ import { ChatSearchCriteria } from './chat-search.parameters';
 export const ChatSearchActions = createActionGroup({
   source: 'ChatSearch',
   events: {
+    'Details button clicked': props<{
+      id: number | string;
+    }>(),
+
     'Search button clicked': props<{
       searchCriteria: ChatSearchCriteria;
     }>(),

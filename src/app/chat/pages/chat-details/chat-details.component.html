@@ -1,0 +1,45 @@
+<ocx-portal-page
+  permission="CHAT#VIEW"
+  helpArticleId="CHAT_DETAILS"
+  *ngrxLet="viewModel$; let vm"
+>
+  <ocx-loading-indicator *ngIf="vm.detailsLoadingIndicator">
+  </ocx-loading-indicator>
+  <ocx-data-loading-error
+    *ngIf="!vm.detailsLoaded && !vm.detailsLoadingIndicator"
+  >
+  </ocx-data-loading-error>   
+  <div *ngIf="vm.detailsLoaded && !vm.detailsLoadingIndicator">
+    <ocx-page-header
+      [header]="'CHAT_DETAILS.HEADER' | translate"
+      [subheader]="'CHAT_DETAILS.SUB_HEADER' | translate"
+      [objectDetails]="(headerLabels$ | async) ?? []"
+      [actions]="(headerActions$ | async) ?? []"
+      [disableDefaultActions]="true"
+      [manualBreadcrumbs]="true"
+    >
+    </ocx-page-header>
+    <ocx-page-content>
+      <ng-container *ngIf="vm.details && vm.messages">
+        <div class="flex flex-column">
+          <div *ngFor="let message of vm.messages"
+            class="flex align-items-start gap-2 p-2 m-1 border-round border-700 border-1">
+            <p-avatar 
+              [label]="message.userName?.charAt(0)?.toUpperCase() ?? '?'" 
+              shape="circle"
+              size="normal"
+              [style]="{'background-color': message.type === 'HUMAN' ? '#3b82f6' : '#10b981', 'color': '#ffffff'}">
+            </p-avatar>
+            <div class="flex-1">
+              <div class="flex align-items-center gap-2 mb-1">
+                <span class="font-semibold text-sm">{{ message.userName }}</span>
+                <span class="text-xs text-color-secondary">{{ message.type }}</span>
+              </div>
+              <p class="m-0 text-sm">{{ message.text }}</p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ocx-page-content>
+  </div>
+</ocx-portal-page>

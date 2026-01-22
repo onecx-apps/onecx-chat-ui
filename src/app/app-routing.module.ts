@@ -6,7 +6,7 @@ import { addInitializeModuleGuard } from '@onecx/portal-integration-angular';
 
 export const routes: Routes = [
   {
-    matcher: startsWith('chat'),
+    matcher: startsWith(''),
     loadChildren: () =>
       import('./chat/chat.module').then((mod) => mod.ChatModule),
   },

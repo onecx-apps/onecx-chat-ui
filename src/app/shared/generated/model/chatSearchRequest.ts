@@ -1,5 +1,5 @@
 /**
- * onecx-chat-ui-bff
+ * onecx-chat-bff
  *
  * 
  *
@@ -7,11 +7,24 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ChatType } from './chatType';
 
 
 export interface ChatSearchRequest { 
     limit?: number;
-    id?: number;
-    changeMe?: string;
+    type?: ChatType;
+    topic?: string;
+    participant?: string;
+    appId?: string;
+    /**
+     * The number of page.
+     */
+    pageNumber?: number;
+    /**
+     * The size of page
+     */
+    pageSize?: number;
 }
+
+
 

@@ -1,3 +1,4 @@
+import { RowListGridData } from '@onecx/portal-integration-angular';
 import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -6,10 +7,11 @@ import {
   Action,
   BreadcrumbService,
   DataTableColumn,
+  enumToDropdownOptions,
   ExportDataService,
 } from '@onecx/portal-integration-angular';
 import { PrimeIcons } from 'primeng/api';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { ChatSearchActions } from './chat-search.actions';
 import {
   ChatSearchCriteria,
@@ -17,6 +19,8 @@ import {
 } from './chat-search.parameters';
 import { selectChatSearchViewModel } from './chat-search.selectors';
 import { ChatSearchViewModel } from './chat-search.viewmodel';
+import { ChatType } from 'src/app/shared/generated';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat-search',
@@ -25,7 +29,7 @@ import { ChatSearchViewModel } from './chat-search.viewmodel';
 })
 export class ChatSearchComponent implements OnInit {
   viewModel$: Observable<ChatSearchViewModel> = this.store.select(
-    selectChatSearchViewModel
+    selectChatSearchViewModel,
   );
 
   // ACTION S10: Update header actions
@@ -52,7 +56,7 @@ export class ChatSearchComponent implements OnInit {
         },
       ];
       return actions;
-    })
+    }),
   );
 
   // ACTION S9: Please select the column to be displayed in the diagram
@@ -60,22 +64,30 @@ export class ChatSearchComponent implements OnInit {
   diagramColumn$ = this.viewModel$.pipe(
     map(
       (vm) =>
-        vm.columns.find((e) => e.id === this.diagramColumnId) as DataTableColumn
-    )
+        vm.columns.find(
+          (e) => e.id === this.diagramColumnId,
+        ) as DataTableColumn,
+    ),
   );
 
   public chatSearchFormGroup: FormGroup = this.formBuilder.group({
     ...(Object.fromEntries(
-      chatSearchCriteriasSchema.keyof().options.map((k) => [k, null])
+      chatSearchCriteriasSchema.keyof().options.map((k) => [k, null]),
     ) as Record<keyof ChatSearchCriteria, unknown>),
   } satisfies Record<keyof ChatSearchCriteria, unknown>);
+
+  type$ = enumToDropdownOptions(
+    this.translateService,
+    ChatType,
+    'CHAT_SEARCH.CRITERIA.TYPE.',
+  );
 
   constructor(
     private readonly breadcrumbService: BreadcrumbService,
     private readonly store: Store,
     private readonly formBuilder: FormBuilder,
     @Inject(LOCALE_ID) public readonly locale: string,
-    private readonly exportDataService: ExportDataService
+    private readonly translateService: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -87,7 +99,7 @@ export class ChatSearchComponent implements OnInit {
       },
     ]);
     this.viewModel$.subscribe((vm) =>
-      this.chatSearchFormGroup.patchValue(vm.searchCriteria)
+      this.chatSearchFormGroup.patchValue(vm.searchCriteria),
     );
   }
 
@@ -103,16 +115,20 @@ export class ChatSearchComponent implements OnInit {
                 value.getDate(),
                 value.getHours(),
                 value.getMinutes(),
-                value.getSeconds()
-              )
+                value.getSeconds(),
+              ),
             )
           : value || undefined,
       }),
-      {}
+      {},
     );
     this.store.dispatch(
-      ChatSearchActions.searchButtonClicked({ searchCriteria })
+      ChatSearchActions.searchButtonClicked({ searchCriteria }),
     );
+  }
+
+  details({ id }: RowListGridData) {
+    this.store.dispatch(ChatSearchActions.detailsButtonClicked({ id }));
   }
 
   resetSearch() {
@@ -127,13 +143,13 @@ export class ChatSearchComponent implements OnInit {
     this.store.dispatch(
       ChatSearchActions.viewModeChanged({
         viewMode: viewMode,
-      })
+      }),
     );
   }
 
   onDisplayedColumnsChange(displayedColumns: DataTableColumn[]) {
     this.store.dispatch(
-      ChatSearchActions.displayedColumnsChanged({ displayedColumns })
+      ChatSearchActions.displayedColumnsChanged({ displayedColumns }),
     );
   }
 

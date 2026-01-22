@@ -4,12 +4,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LetDirective } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
+import { PortalCoreModule, providePortalDialogService } from '@onecx/portal-integration-angular';
+import { ChatDetailsComponent } from './pages/chat-details/chat-details.component';
+import { ChatDetailsEffects } from './pages/chat-details/chat-details.effects';
+
 import { StoreModule } from '@ngrx/store';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   addInitializeModuleGuard,
-  PortalCoreModule,
-} from '@onecx/portal-integration-angular';
+} from '@onecx/angular-integration-interface';
 import { CalendarModule } from 'primeng/calendar';
 import { SidebarModule } from 'primeng/sidebar';
 import { SharedModule } from '../shared/shared.module';
@@ -19,9 +22,13 @@ import { ChatAssistantComponent } from './pages/chat-assistant/chat-assistant.co
 import { ChatAssistantEffects } from './pages/chat-assistant/chat-assistant.effects';
 import { ChatSearchComponent } from './pages/chat-search/chat-search.component';
 import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
+import { CardModule } from 'primeng/card';
+import { AvatarModule } from 'primeng/avatar';
 
 @NgModule({
-  declarations: [ChatSearchComponent],
+
+  providers: [providePortalDialogService()],
+  declarations: [ChatDetailsComponent, ChatDetailsComponent, ChatSearchComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -32,10 +39,11 @@ import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
     ReactiveFormsModule,
     CalendarModule,
     StoreModule.forFeature(chatFeature),
-    EffectsModule.forFeature([ChatSearchEffects, ChatAssistantEffects]),
+    EffectsModule.forFeature([ChatDetailsEffects, ChatDetailsEffects, ChatSearchEffects, ChatAssistantEffects]),
     TranslateModule,
     SidebarModule,
+    AvatarModule,
     ChatAssistantComponent,
   ],
 })
-export class ChatModule {}
+export class ChatModule { }
