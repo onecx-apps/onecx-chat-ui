@@ -133,58 +133,8 @@ describe('ChatAssistantComponent', () => {
     });
   });
 
-  describe('menuItems observable', () => {
-    it('should create menu items with delete action', (done) => {
-      const mockViewModel = {
-        chats: [],
-        currentChat: { id: 'chat1', topic: 'Test Chat', type: ChatType.AiChat },
-        currentMessages: [],
-        chatTitleKey: 'CHAT.TITLE.AI'
-      };
-
-      store.setState({
-        chat: {
-          assistant: {
-            ...initialState,
-            currentChat: mockViewModel.currentChat
-          }
-        }
-      });
-
-      component.menuItems.subscribe(items => {
-        expect(items).toHaveLength(1);
-        expect(items[0].label).toBe('Chat löschen');
-        expect(items[0].icon).toBe('pi pi-trash');
-        expect(items[0].disabled).toBe(false);
-        expect(typeof items[0].command).toBe('function');
-        done();
-      });
-    });
-
-    it('should disable delete action when current chat id is "new"', (done) => {
-      const mockViewModel = {
-        chats: [],
-        currentChat: { id: 'new', topic: 'New Chat', type: ChatType.AiChat },
-        currentMessages: [],
-        chatTitleKey: 'CHAT.TITLE.AI'
-      };
-
-      store.setState({
-        chat: {
-          assistant: {
-            ...initialState,
-            currentChat: mockViewModel.currentChat
-          }
-        }
-      });
-
-      component.menuItems.subscribe(items => {
-        expect(items[0].disabled).toBe(true);
-        done();
-      });
-    });
-
-    it('should dispatch currentChatDeleted action when delete command is executed', () => {
+  describe('delete action', () => {
+    it('should dispatch deleteChatClicked action when delete command is executed', () => {
       jest.spyOn(store, 'dispatch');
 
       const mockViewModel = {
@@ -203,12 +153,11 @@ describe('ChatAssistantComponent', () => {
         }
       });
 
-      component.menuItems.subscribe(items => {
-        if (items[0].command) {
-          items[0].command({});
-        }
-        expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.currentChatDeleted());
-      });
+      component.deleteChat(mockViewModel.currentChat);
+
+      expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.deleteChatClicked({
+        chat: mockViewModel.currentChat
+      }));
     });
   });
 

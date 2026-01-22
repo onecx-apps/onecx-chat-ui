@@ -94,4 +94,53 @@ describe('ChatListScreenComponent', () => {
     header.triggerEventHandler('closed', null);
     expect(component.selectMode.emit).toHaveBeenCalledWith('close');
   });
+
+  it('should initialize items array in ngOnInit', () => {
+    component.ngOnInit();
+    expect(component.items).toBeDefined();
+    expect(component.items?.length).toBe(1);
+    expect(component.items?.[0].label).toBe('Delete');
+  });
+
+  it('should emit deleteChat when Delete context menu item is clicked', () => {
+    jest.spyOn(component.deleteChat, 'emit');
+    const testChat = { id: 'chat1', topic: 'Test Chat' } as any;
+    component.selectedChat = testChat;
+    component.ngOnInit();
+
+    component.onContextMenu(new MouseEvent('contextmenu'), testChat);
+    component.items?.[0].command!({
+      originalEvent: new MouseEvent('click'),
+      item: component.items[0],
+    });
+
+    expect(component.deleteChat.emit).toHaveBeenCalledWith(testChat);
+  });
+
+  it('should reset selectedChat on onHide', () => {
+    component.selectedChat = { id: 'chat1', topic: 'Test Chat' } as any;
+
+    component.onHide();
+
+    expect(component.selectedChat).toBeNull();
+  });
+
+  it('should display chat list when chats are provided', () => {
+    component.chats = [
+      { id: 'chat1', topic: 'Chat 1' } as any,
+      { id: 'chat2', topic: 'Chat 2' } as any,
+    ];
+    fixture.detectChanges();
+
+    expect(component.chats?.length).toBe(2);
+  });
+
+  it('should emit chatSelected when a chat item is clicked', () => {
+    jest.spyOn(component.chatSelected, 'emit');
+    const testChat = { id: 'chat1', topic: 'Test Chat' } as any;
+
+    component.chatSelected.emit(testChat);
+
+    expect(component.chatSelected.emit).toHaveBeenCalledWith(testChat);
+  });
 });

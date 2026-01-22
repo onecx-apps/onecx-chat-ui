@@ -26,7 +26,7 @@ export class ChatAssistantEffects {
     private _chatInternalService: ChatsInternal,
     private router: Router,
     private store: Store,
-  ) {}
+  ) { }
 
   get chatInternalService() {
     return (
@@ -103,12 +103,9 @@ export class ChatAssistantEffects {
 
   deleteChat$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(ChatAssistantActions.currentChatDeleted),
-      concatLatestFrom(() => [
-        this.store.select(chatAssistantSelectors.selectCurrentChat),
-      ]),
-      filter(([, chat]) => chat?.id !== undefined && chat.id !== 'new'),
-      switchMap(([, chat]) => {
+      ofType(ChatAssistantActions.deleteChatClicked),
+      filter(({ chat }) => chat?.id !== undefined && chat.id !== 'new'),
+      switchMap(({ chat }) => {
         return this.chatInternalService.deleteChat(chat?.id ?? '').pipe(
           map(() => {
             return ChatAssistantActions.chatDeletionSuccessful({

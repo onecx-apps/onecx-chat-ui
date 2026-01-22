@@ -12,6 +12,7 @@
           <app-chat-list-screen
             (selectMode)="selectChatMode($event)"
             (chatSelected)="chatSelected($event)"
+            (deleteChat)="deleteChat($event)"
             [chats]="vm.chats"
           ></app-chat-list-screen>
         } @else {
