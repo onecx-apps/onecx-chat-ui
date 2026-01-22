@@ -35,6 +35,7 @@ describe('ChatAssistant Selectors', () => {
   };
 
   const baseMockState: ChatAssistantState = {
+    chatInitialized: false,
     user: undefined,
     chats: [],
     currentChat: undefined,

@@ -33,6 +33,7 @@ describe('ChatAssistant Reducer', () => {
   describe('initial state', () => {
     it('should have correct initial state', () => {
       expect(initialState).toEqual({
+        chatInitialized: false,
         user: {
           userId: '123',
           userName: 'human',
