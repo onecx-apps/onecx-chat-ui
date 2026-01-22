@@ -13,4 +13,5 @@ export interface ChatAssistantState {
   currentMessages: Message[] | undefined;
   topic: string;
   selectedChatMode: string | null;
+  chatInitialized: boolean;
 }
