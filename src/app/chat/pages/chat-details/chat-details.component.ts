@@ -64,16 +64,7 @@ export class ChatDetailsComponent implements OnInit {
           actionCallback: () => {
             this.delete();
           },
-        },
-        {
-          titleKey: 'CHAT_DETAILS.GENERAL.MORE',
-          icon: PrimeIcons.ELLIPSIS_V,
-          show: 'always',
-          btnClass: '',
-          actionCallback: () => {
-            // TODO: add callback
-          },
-        },
+        }
       ];
       return actions;
     }),
@@ -85,13 +76,23 @@ export class ChatDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.breadcrumbService.setItems([
-      {
-        titleKey: 'CHAT_DETAILS.BREADCRUMB',
-        labelKey: 'CHAT_DETAILS.BREADCRUMB',
-        routerLink: '/chat',
-      },
-    ]);
+    const baseItems = [{
+      titleKey: 'CHAT_SEARCH.BREADCRUMB',
+      labelKey: 'CHAT_SEARCH.BREADCRUMB',
+      routerLink: '../../',
+    },
+    ]
+    this.breadcrumbService.setItems(baseItems);
+    this.viewModel$.pipe().subscribe((vm) => {
+      this.breadcrumbService.setItems([
+        ...baseItems,
+        {
+          titleKey: 'CHAT_DETAILS.BREADCRUMB',
+          labelKey: 'CHAT_DETAILS.BREADCRUMB',
+          routerLink: `./`,
+        },
+      ])
+    });
   }
 
   delete() {

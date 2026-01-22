@@ -26,7 +26,12 @@
     },
     "UPDATE": {
       "SUCCESS": "Speichern erfolgreich",
-      "ERROR": "Speichern fehlgeschlagen"
+      "ERROR": "Speichern fehlgeschlagen",
+      "FORM": {
+        "SAVE": "Save",
+        "CANCEL": "Cancel"
+      },
+      "HEADER": "Update Chat"
     },
     "DELETE": {
       "HEADER": "Chat löschen",

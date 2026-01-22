@@ -165,8 +165,6 @@ describe('ChatDetailsComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
 
-    console.log(fixture.debugElement.nativeElement.innerHTML);
-
     expect(breadcrumbService.setItems).toHaveBeenCalledTimes(1);
     const pageHeader = await chatDetails.getHeader();
     const searchBreadcrumbItem = await pageHeader.getBreadcrumbItem('Details');

@@ -99,8 +99,7 @@ export class ChatSearchEffects {
     );
   });
 
-  performSearch(searchCriteria: Record<string, any>) {
-    console.log('performSearch');
+  performSearch(searchCriteria: Record<string, any>) {    
     return this.chatService
       .searchChats({
         ...Object.entries(searchCriteria).reduce(

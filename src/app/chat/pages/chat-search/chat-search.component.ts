@@ -1,17 +1,17 @@
-import { RowListGridData } from '@onecx/portal-integration-angular';
 import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { isValidDate } from '@onecx/accelerator';
 import {
   Action,
   BreadcrumbService,
   DataTableColumn,
-  enumToDropdownOptions,
-  ExportDataService,
+  enumToDropdownOptions, RowListGridData
 } from '@onecx/portal-integration-angular';
 import { PrimeIcons } from 'primeng/api';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { ChatType } from 'src/app/shared/generated';
 import { ChatSearchActions } from './chat-search.actions';
 import {
   ChatSearchCriteria,
@@ -19,8 +19,6 @@ import {
 } from './chat-search.parameters';
 import { selectChatSearchViewModel } from './chat-search.selectors';
 import { ChatSearchViewModel } from './chat-search.viewmodel';
-import { ChatType } from 'src/app/shared/generated';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chat-search',
@@ -88,7 +86,7 @@ export class ChatSearchComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     @Inject(LOCALE_ID) public readonly locale: string,
     private readonly translateService: TranslateService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.breadcrumbService.setItems([
@@ -109,15 +107,15 @@ export class ChatSearchComponent implements OnInit {
         ...acc,
         [key]: isValidDate(value)
           ? new Date(
-              Date.UTC(
-                value.getFullYear(),
-                value.getMonth(),
-                value.getDate(),
-                value.getHours(),
-                value.getMinutes(),
-                value.getSeconds(),
-              ),
-            )
+            Date.UTC(
+              value.getFullYear(),
+              value.getMonth(),
+              value.getDate(),
+              value.getHours(),
+              value.getMinutes(),
+              value.getSeconds(),
+            ),
+          )
           : value || undefined,
       }),
       {},

@@ -22,13 +22,12 @@ import { ChatAssistantComponent } from './pages/chat-assistant/chat-assistant.co
 import { ChatAssistantEffects } from './pages/chat-assistant/chat-assistant.effects';
 import { ChatSearchComponent } from './pages/chat-search/chat-search.component';
 import { ChatSearchEffects } from './pages/chat-search/chat-search.effects';
-import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
 
 @NgModule({
 
   providers: [providePortalDialogService()],
-  declarations: [ChatDetailsComponent, ChatDetailsComponent, ChatSearchComponent],
+  declarations: [ChatDetailsComponent, ChatSearchComponent],
   imports: [
     CommonModule,
     SharedModule,
@@ -39,7 +38,7 @@ import { AvatarModule } from 'primeng/avatar';
     ReactiveFormsModule,
     CalendarModule,
     StoreModule.forFeature(chatFeature),
-    EffectsModule.forFeature([ChatDetailsEffects, ChatDetailsEffects, ChatSearchEffects, ChatAssistantEffects]),
+    EffectsModule.forFeature([ChatDetailsEffects, ChatSearchEffects, ChatAssistantEffects]),
     TranslateModule,
     SidebarModule,
     AvatarModule,
