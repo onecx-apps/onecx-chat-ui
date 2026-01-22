@@ -73,7 +73,7 @@ export class ChatSearchEffects {
         ofType(ChatSearchActions.detailsButtonClicked),
         concatLatestFrom(() => this.store.select(selectUrl)),
         tap(([action, currentUrl]) => {
-          let urlTree = this.router.parseUrl(currentUrl);
+          const urlTree = this.router.parseUrl(currentUrl);
           urlTree.queryParams = {};
           urlTree.fragment = null;
           this.router.navigate([urlTree.toString(), 'details', action.id]);

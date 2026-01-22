@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { LetDirective } from '@ngrx/component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
@@ -47,7 +47,9 @@ describe('ChatDetailsComponent', () => {
     listeners.forEach((l) =>
       l({
         data: m,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         stopImmediatePropagation: () => {},
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         stopPropagation: () => {},
       }),
     );
@@ -90,11 +92,14 @@ describe('ChatDetailsComponent', () => {
         BrowserAnimationsModule,        
         TranslateTestingModule.withTranslations(
           'en',
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           require('./../../../../assets/i18n/en.json'),
-        ).withTranslations('de', require('./../../../../assets/i18n/de.json')),
-        HttpClientTestingModule,
+        ).withTranslations('de', 
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          require('./../../../../assets/i18n/de.json')),        
       ],
       providers: [
+        provideHttpClientTesting(),
         provideMockStore({
           initialState: { chat: { details: initialState } },
         }),
