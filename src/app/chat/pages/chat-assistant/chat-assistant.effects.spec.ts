@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Actions } from '@ngrx/effects';
-import { routerNavigatedAction, RouterNavigatedPayload } from '@ngrx/router-store';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { routerNavigatedAction, RouterNavigatedPayload } from '@ngrx/router-store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -17,7 +17,6 @@ import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantEffects } from './chat-assistant.effects';
 import { chatAssistantSelectors } from './chat-assistant.selectors';
 import { ChatUser } from './chat-assistant.state';
-import { mock } from 'node:test';
 
 // Mock only the filterForNavigatedTo function from @onecx/ngrx-accelerator
 jest.mock('@onecx/ngrx-accelerator', () => ({
