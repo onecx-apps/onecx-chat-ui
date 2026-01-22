@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { concatLatestFrom } from '@ngrx/operators';
 import { routerNavigatedAction } from '@ngrx/router-store';
 import { Store } from '@ngrx/store';
-import { catchError, combineLatest, filter, map, of, switchMap } from 'rxjs';
+import { catchError, filter, map, of, switchMap } from 'rxjs';
 import { ChatInternalService } from 'src/app/shared/services/chat-internal.service';
 import {
   ChatsInternal,
