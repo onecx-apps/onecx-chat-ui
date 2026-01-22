@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Actions } from '@ngrx/effects';
-import { routerNavigatedAction, RouterNavigatedPayload } from '@ngrx/router-store';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { routerNavigatedAction, RouterNavigatedPayload } from '@ngrx/router-store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -150,11 +150,11 @@ describe('ChatAssistantEffects', () => {
           event: {} as RouterNavigatedPayload['event']
         }
       });
-      
+
       actions$ = of(routerAction);
 
       effects.chatInitialized.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatInitialized());        
+        expect(result).toEqual(ChatAssistantActions.chatInitialized());
         done();
       });
     });
@@ -167,11 +167,11 @@ describe('ChatAssistantEffects', () => {
           event: {} as RouterNavigatedPayload['event']
         }
       });
-      
+
       actions$ = of(routerAction);
 
       effects.chatInitialized.subscribe(action => {
-        expect(action).toEqual(ChatAssistantActions.chatInitialized());        
+        expect(action).toEqual(ChatAssistantActions.chatInitialized());
         done();
       });
     });
@@ -215,9 +215,9 @@ describe('ChatAssistantEffects', () => {
     });
 
     it('should load chats when messageSentForNewChat action is dispatched', (done) => {
-      const action = ChatAssistantActions.messageSentForNewChat({ 
-        chat: mockChat, 
-        message: 'Test message' 
+      const action = ChatAssistantActions.messageSentForNewChat({
+        chat: mockChat,
+        message: 'Test message'
       });
       actions$ = of(action);
 
@@ -360,13 +360,13 @@ describe('ChatAssistantEffects', () => {
       store.overrideSelector(chatAssistantSelectors.selectCurrentChat, mockChat);
     });
 
-    it('should delete chat when currentChatDeleted action is dispatched', (done) => {
-      const action = ChatAssistantActions.currentChatDeleted();
+    it('should delete chat when deleteChatClicked action is dispatched', (done) => {
+      const action = ChatAssistantActions.deleteChatClicked({ chat: mockChat });
       actions$ = of(action);
 
       effects.deleteChat$.subscribe(result => {
-        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: 'chat1' }));
-        expect(chatInternalService.deleteChat).toHaveBeenCalledWith('chat1');
+        expect(result).toEqual(ChatAssistantActions.chatDeletionSuccessful({ chatId: mockChat.id }));
+        expect(chatInternalService.deleteChat).toHaveBeenCalledWith(mockChat.id);
         done();
       });
     });
@@ -375,7 +375,7 @@ describe('ChatAssistantEffects', () => {
       const error = 'Failed to delete chat';
       chatInternalService.deleteChat.mockReturnValue(throwError(() => error));
 
-      const action = ChatAssistantActions.currentChatDeleted();
+      const action = ChatAssistantActions.deleteChatClicked({ chat: mockChat });
       actions$ = of(action);
 
       effects.deleteChat$.subscribe(result => {
@@ -384,18 +384,6 @@ describe('ChatAssistantEffects', () => {
       });
     });
 
-    it('should not delete when chat id is "new"', (done) => {
-      const newChat = { ...mockChat, id: 'new' };
-      store.overrideSelector(chatAssistantSelectors.selectCurrentChat, newChat);
-
-      const action = ChatAssistantActions.currentChatDeleted();
-      actions$ = of(action);
-
-      effects.deleteChat$.pipe(take(1)).subscribe({
-        next: () => fail('Should not emit'),
-        complete: () => done()
-      });
-    });
   });
 
   describe('updateChatTopic$', () => {
@@ -408,7 +396,7 @@ describe('ChatAssistantEffects', () => {
       const newTopic = 'Updated Topic';
       const updatedChat = { ...mockChat, topic: newTopic };
       chatInternalService.updateChat.mockReturnValue(of(updatedChat));
-      
+
       const action = ChatAssistantActions.updateCurrentChatTopic({ topic: newTopic });
       actions$ = of(action);
 
