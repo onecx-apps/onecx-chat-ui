@@ -37,6 +37,10 @@ export class ChatAssistantEffects {
   chatInitialized = createEffect(() => {
     return this.actions$.pipe(
       ofType(routerNavigatedAction),
+      concatLatestFrom(() => [
+        this.store.select(chatAssistantSelectors.selectChatInitialized),
+      ]),
+      filter(([action, chatInitialized]) => !chatInitialized),
       switchMap(() => {
         return of(ChatAssistantActions.chatInitialized());
       }),

@@ -33,6 +33,7 @@ describe('ChatAssistant Reducer', () => {
   describe('initial state', () => {
     it('should have correct initial state', () => {
       expect(initialState).toEqual({
+        chatInitialized: false,
         user: {
           userId: '123',
           userName: 'human',
@@ -49,6 +50,14 @@ describe('ChatAssistant Reducer', () => {
     it('should return initial state when no action is provided', () => {
       const result = chatAssistantReducer(undefined, { type: 'UNKNOWN' });
       expect(result).toEqual(initialState);
+    });
+  });
+
+  describe('chatInitialized action', () => {
+    it('should set chatInitialized to true when chatInitialized is dispatched', () => {
+      const action = ChatAssistantActions.chatInitialized();
+      const result = chatAssistantReducer(initialState, action);  
+      expect(result.chatInitialized).toBe(true);
     });
   });
 

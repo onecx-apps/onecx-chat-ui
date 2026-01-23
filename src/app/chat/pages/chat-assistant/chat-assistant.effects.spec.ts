@@ -175,6 +175,22 @@ describe('ChatAssistantEffects', () => {
         done();
       });
     });
+
+    it('should not dispatch chatInitialized action if already initialized', (done) => {      
+      store.overrideSelector(chatAssistantSelectors.selectChatInitialized, true);
+      const routerAction = routerNavigatedAction({
+        payload: {
+          routerState: { url: '/chat-assistant', root: {} as any },
+          event: {} as RouterNavigatedPayload['event']
+        }
+      });
+      actions$ = of(routerAction);
+
+      effects.chatInitialized.pipe(take(1)).subscribe({
+        next: () => fail('Should not emit'),
+        complete: () => done()
+      });
+    });
   });
 
   describe('loadAvailableChats$', () => {
