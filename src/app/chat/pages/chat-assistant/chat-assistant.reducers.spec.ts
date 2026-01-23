@@ -53,6 +53,14 @@ describe('ChatAssistant Reducer', () => {
     });
   });
 
+  describe('chatInitialized action', () => {
+    it('should set chatInitialized to true when chatInitialized is dispatched', () => {
+      const action = ChatAssistantActions.chatInitialized();
+      const result = chatAssistantReducer(initialState, action);  
+      expect(result.chatInitialized).toBe(true);
+    });
+  });
+
   describe('messageSentForNewChat action', () => {
     it('should set currentChat when messageSentForNewChat is dispatched', () => {
       const action = ChatAssistantActions.messageSentForNewChat({
