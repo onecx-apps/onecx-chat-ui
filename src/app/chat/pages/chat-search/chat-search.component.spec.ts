@@ -10,8 +10,10 @@ import { Store, StoreModule } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  AlwaysGrantPermissionChecker,
   BreadcrumbService,
   ColumnType,
+  HAS_PERMISSION_CHECKER,
   PortalCoreModule,
   UserService,
 } from '@onecx/portal-integration-angular';
@@ -25,6 +27,8 @@ import { initialState } from './chat-search.reducers';
 import { selectChatSearchViewModel } from './chat-search.selectors';
 import { ChatSearchViewModel } from './chat-search.viewmodel';
 import { firstValueFrom } from 'rxjs';
+import { provideUserServiceMock } from '@onecx/angular-integration-interface/mocks'
+import { getUTCDateWithoutTimezoneIssues } from '@onecx/accelerator';
 
 describe('ChatSearchComponent', () => {
   const origAddEventListener = window.addEventListener;
@@ -117,6 +121,11 @@ describe('ChatSearchComponent', () => {
         }),
         FormBuilder,
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        provideUserServiceMock(),
+        {
+          provide: HAS_PERMISSION_CHECKER,
+          useClass: AlwaysGrantPermissionChecker
+        }
       ],
     }).compileComponents();
 
@@ -349,16 +358,63 @@ describe('ChatSearchComponent', () => {
     expect(await searchBreadcrumbItem!.getText()).toEqual('Search');
   });
 
+  it('should dispatch detailsButtonClicked action on details clicked', async () => {
+    jest.spyOn(store, 'dispatch')
+    const results = [
+      {
+        id: '1',
+        imagePath: '',
+        changeMe: 'val_1'
+      }
+    ]
+    const columns = [
+      {
+        columnType: ColumnType.STRING,
+        id: 'changeMe',
+        nameKey: 'HELLO_SEARCH.RESULTS.HELLO',
+        filterable: true,
+        sortable: true,
+        predefinedGroupKeys: [
+          'HELLO_SEARCH.PREDEFINED_GROUP.DEFAULT',
+          'HELLO_SEARCH.PREDEFINED_GROUP.EXTENDED',
+          'HELLO_SEARCH.PREDEFINED_GROUP.FULL'
+        ]
+      }
+    ]
+    store.overrideSelector(selectChatSearchViewModel, {
+      ...baseChatSearchViewModel,
+      results: results,
+      columns: columns,
+      displayedColumns: columns
+    })
+    store.refreshState()
+    const interactiveDataView = await chatSearch.getSearchResults()
+    const dataView = await interactiveDataView.getDataView()
+    const dataTable = await dataView.getDataTable()
+    const editButtons = await dataTable!.getActionButtons()
+
+    await editButtons[0].click()
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      ChatSearchActions.detailsButtonClicked({ id: '1' })
+    )
+  })
+
   it('should dispatch searchButtonClicked action on search', (done) => {
+    const sampleDate = new Date(2024, 5, 1, 10, 0, 0)
     const formValue = formBuilder.group({
       topic: '123',
+      summary: sampleDate
     });
     component.chatSearchFormGroup = formValue;
 
     store.scannedActions$
       .pipe(ofType(ChatSearchActions.searchButtonClicked))
       .subscribe((a) => {
-        expect(a.searchCriteria).toEqual({ topic: '123' });
+        expect(a.searchCriteria).toEqual({
+          topic: '123',
+          summary: getUTCDateWithoutTimezoneIssues(sampleDate)
+        });
         done();
       });
 

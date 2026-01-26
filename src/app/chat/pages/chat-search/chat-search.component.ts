@@ -2,7 +2,7 @@ import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { isValidDate } from '@onecx/accelerator';
+import { getUTCDateWithoutTimezoneIssues, isValidDate } from '@onecx/accelerator';
 import {
   Action,
   BreadcrumbService,
@@ -105,18 +105,9 @@ export class ChatSearchComponent implements OnInit {
     const searchCriteria = Object.entries(formValue.getRawValue()).reduce(
       (acc: Partial<ChatSearchCriteria>, [key, value]) => ({
         ...acc,
-        [key]: isValidDate(value)
-          ? new Date(
-            Date.UTC(
-              value.getFullYear(),
-              value.getMonth(),
-              value.getDate(),
-              value.getHours(),
-              value.getMinutes(),
-              value.getSeconds(),
-            ),
-          )
-          : value || undefined,
+        [key]: isValidDate(value) ?
+          getUTCDateWithoutTimezoneIssues(value)
+          : value,
       }),
       {},
     );
