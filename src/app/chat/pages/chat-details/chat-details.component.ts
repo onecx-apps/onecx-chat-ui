@@ -59,8 +59,7 @@ export class ChatDetailsComponent implements OnInit {
           labelKey: 'CHAT_DETAILS.GENERAL.DELETE',
           icon: PrimeIcons.TRASH,
           show: 'asOverflow',
-          btnClass: '',
-          conditional: true,
+          btnClass: '',          
           actionCallback: () => {
             this.delete();
           },

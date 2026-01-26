@@ -7,11 +7,12 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Store } from '@ngrx/store';
 import { Observable, of, throwError } from 'rxjs';
 import { PortalMessageService, ExportDataService } from '@onecx/portal-integration-angular';
-import { ChatBffService, Chat } from '../../../shared/generated';
+import { ChatBffService, Chat, ChatType } from '../../../shared/generated';
 import { ChatSearchActions } from './chat-search.actions';
 import { ChatSearchEffects } from './chat-search.effects';
 import { chatSearchSelectors, selectChatSearchViewModel } from './chat-search.selectors';
 import { ChatSearchCriteria } from './chat-search.parameters';
+import { selectUrl } from 'src/app/shared/selectors/router.selectors';
 
 // Mock @onecx/ngrx-accelerator functions
 jest.mock('@onecx/ngrx-accelerator', () => ({
@@ -47,16 +48,17 @@ describe('ChatSearchEffects', () => {
   ];
 
   const mockSearchCriteria: ChatSearchCriteria = {
-    topic: 'test'
+    topic: 'test',
+    type: ChatType.AiChat
   };
 
   const mockViewModel = {
     columns: [],
     searchCriteria: mockSearchCriteria,
-    results: mockChats.map(chat => ({ 
-      imagePath: '', 
+    results: mockChats.map(chat => ({
+      imagePath: '',
       id: chat.id ?? '',
-      ...chat 
+      ...chat
     })),
     displayedColumns: [],
     viewMode: 'basic' as const,
@@ -68,7 +70,8 @@ describe('ChatSearchEffects', () => {
       searchChats: jest.fn()
     };
     const routerSpy = {
-      navigate: jest.fn()
+      navigate: jest.fn(),
+      parseUrl: jest.fn()
     };
     const routeSpy = {
       queryParams: of({}),
@@ -120,7 +123,7 @@ describe('ChatSearchEffects', () => {
 
     // Create effects instance manually
     effects = new ChatSearchEffects(actionsInstance, routeInstance, chatServiceInstance, routerInstance, storeInstance, messageServiceInstance, exportDataServiceInstance);
-    
+
     store = TestBed.inject(MockStore);
     chatService = chatServiceSpy as unknown as jest.Mocked<ChatBffService>;
     router = routerSpy as unknown as jest.Mocked<Router>;
@@ -152,7 +155,7 @@ describe('ChatSearchEffects', () => {
         shouldNavigate: true
       },
       {
-        action: 'resetButtonClicked', 
+        action: 'resetButtonClicked',
         createAction: () => ChatSearchActions.resetButtonClicked(),
         criteria: {},
         routeParams: { topic: 'something' },
@@ -170,7 +173,7 @@ describe('ChatSearchEffects', () => {
     ])('should handle $action correctly', (testCase, done) => {
       store.overrideSelector(chatSearchSelectors.selectCriteria, testCase.criteria);
       store.refreshState();
-      
+
       Object.defineProperty(route, 'queryParams', {
         value: of(testCase.routeParams),
         writable: true
@@ -246,7 +249,7 @@ describe('ChatSearchEffects', () => {
     it('should transform Date objects to ISO strings in search criteria', (done) => {
       const dateValue = new Date('2023-01-01');
       const searchCriteriaWithDate = { topic: 'test', exampleDate: dateValue };
-      
+
       store.overrideSelector(chatSearchSelectors.selectCriteria, searchCriteriaWithDate);
       (chatService.searchChats as any).mockReturnValue(of({ stream: mockChats, totalElements: mockChats.length }));
 
@@ -293,7 +296,7 @@ describe('ChatSearchEffects', () => {
       { visible: false, expectedStorage: 'false' }
     ])('should save $expectedStorage to localStorage and export data when chartVisibilityToggled', (testCase, done) => {
       store.overrideSelector(chatSearchSelectors.selectChartVisible, testCase.visible);
-      
+
       const action = ChatSearchActions.chartVisibilityToggled();
       actions$ = of(action);
 
@@ -372,6 +375,27 @@ describe('ChatSearchEffects', () => {
         expect(action).toEqual(testCase.expectedAction);
         done();
       });
+    });
+  });
+
+  describe('details button clicked', () => {
+    it('should navigate to chat details page with correct ID', (done) => {
+      const id = '12345';
+      const action = ChatSearchActions.detailsButtonClicked({ id });
+      const currentUrl = '/chat-search';
+      jest.mocked(router.parseUrl).mockReturnValue({
+        toString: () => currentUrl,
+        queryParams: {},
+        fragment: null
+      } as any);
+
+      actions$ = of(action);
+
+      effects.detailsButtonClicked$.subscribe(() => {
+        expect(router.navigate).toHaveBeenCalledWith([currentUrl.toString(), 'details', id]);
+        done();
+      }
+      );
     });
   });
 

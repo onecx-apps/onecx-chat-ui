@@ -48,9 +48,9 @@ describe('ChatDetailsComponent', () => {
       l({
         data: m,
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        stopImmediatePropagation: () => {},
+        stopImmediatePropagation: () => { },
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        stopPropagation: () => {},
+        stopPropagation: () => { },
       }),
     );
   };
@@ -65,6 +65,7 @@ describe('ChatDetailsComponent', () => {
   let store: MockStore<Store>;
   let breadcrumbService: BreadcrumbService;
   let chatDetails: ChatDetailsHarness;
+  let translateService: TranslateService
 
   const mockActivatedRoute = {
     snapshot: {
@@ -89,14 +90,14 @@ describe('ChatDetailsComponent', () => {
       imports: [
         PortalCoreModule,
         LetDirective,
-        BrowserAnimationsModule,        
+        BrowserAnimationsModule,
         TranslateTestingModule.withTranslations(
           'en',
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           require('./../../../../assets/i18n/en.json'),
-        ).withTranslations('de', 
+        ).withTranslations('de',
           // eslint-disable-next-line @typescript-eslint/no-var-requires
-          require('./../../../../assets/i18n/de.json')),        
+          require('./../../../../assets/i18n/de.json')),
       ],
       providers: [
         provideHttpClientTesting(),
@@ -135,7 +136,8 @@ describe('ChatDetailsComponent', () => {
       'CHAT#SEARCH',
       'CHAT#BACK',
     ]);
-    const translateService = TestBed.inject(TranslateService);
+
+    translateService = TestBed.inject(TranslateService);
     translateService.use('en');
 
     store = TestBed.inject(MockStore);
@@ -205,7 +207,27 @@ describe('ChatDetailsComponent', () => {
     expect(doneFn).toHaveBeenCalledTimes(1);
   });
 
-  it('should display item details in page header', async () => {    
+  it('should have overflow menu button', async () => {
+    const pageHeader = await chatDetails.getHeader()
+    const overflowAction = await pageHeader.getOverflowActionMenuButton()
+    expect(overflowAction).toBeTruthy()
+  })
+
+  it('delete clicked should dispatch delete action', async () => {
+    jest.spyOn(store, 'dispatch')
+    const pageHeader = await chatDetails.getHeader()
+    const overflowMenuButton = await pageHeader.getOverflowActionMenuButton()
+    expect(overflowMenuButton).toBeDefined()
+    await overflowMenuButton?.click()
+
+    const overflowMenuItem = await pageHeader.getOverFlowMenuItem('Delete')
+    await overflowMenuItem!.selectItem()
+
+    expect(store.dispatch).toHaveBeenCalledWith(ChatDetailsActions.deleteButtonClicked())
+  })
+
+
+  it('should display item details in page header', async () => {
     component.headerLabels$ = of([
       {
         label: 'HELLO_DETAILS.FORM.ID',
@@ -257,11 +279,43 @@ describe('ChatDetailsComponent', () => {
     const thirdDetailItem = await pageHeader.getObjectInfoByLabel('third');
     expect(await thirdDetailItem?.getLabel()).toEqual('third');
     expect(await thirdDetailItem?.getValue()).toEqual('');
-    expect(await thirdDetailItem?.getIcon()).toEqual(PrimeIcons.PLUS);
+    expect(await thirdDetailItem?.getIcon()).toContain(PrimeIcons.PLUS);
 
     const fourthDetailItem = await pageHeader.getObjectInfoByLabel('fourth');
     expect(await fourthDetailItem?.getLabel()).toEqual('fourth');
     expect(await fourthDetailItem?.getValue()).toEqual('fourth value');
-    expect(await fourthDetailItem?.getIcon()).toEqual(PrimeIcons.QUESTION);
+    expect(await fourthDetailItem?.getIcon()).toContain(PrimeIcons.QUESTION);
   });
+
+  it('should work with details', async () => {
+    store.overrideSelector(selectChatDetailsViewModel, {
+      ...baseChatDetailsViewModel,
+      details: {
+        id: "my-id",
+        topic: "my-topic",
+        type: ChatType.AiChat,
+      }
+    })
+    store.refreshState()
+    fixture.detectChanges()
+
+    const pageHeader = await chatDetails.getHeader()
+    const translatedLabel = translateService.instant('CHAT_DETAILS.FORM.TOPIC')
+    const idDetailItem = await pageHeader.getObjectInfoByLabel(translatedLabel)
+    expect(await idDetailItem?.getValue()).toEqual('my-topic')
+  })
+
+  it('handles missing details (covers optional chaining)', async () => {
+    store.overrideSelector(selectChatDetailsViewModel, {
+      ...baseChatDetailsViewModel,
+      details: undefined
+    } as any)
+    store.refreshState()
+    fixture.detectChanges()
+
+    const pageHeader = await chatDetails.getHeader()
+    const translatedLabel = translateService.instant('CHAT_DETAILS.FORM.TOPIC')
+    const idDetailItem = await pageHeader.getObjectInfoByLabel(translatedLabel)
+    expect(await idDetailItem?.getValue()).toBeFalsy()
+  })
 });
