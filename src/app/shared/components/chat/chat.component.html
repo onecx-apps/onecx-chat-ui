@@ -1,69 +1,69 @@
 <div class="chat-container flex flex-column h-full">
   <div class="chat-history-container flex-1 overflow-y-auto">
     <div class="chat-messages flex flex-column gap-4 p-2 align-items-stretch" #scrollContainer [scrollTop]="scrollContainer.scrollHeight">
-      <div
-        *ngFor="let message of chatMessages"
-        style="width: 98%"
-        [ngClass]="{
-          'align-self-start':
-            message.type === 'SYSTEM' || message.type === 'ASSISTANT',
-          'align-self-end': message.type === 'HUMAN'
-        }"
-      >
-        <p-card [styleClass]="message.type === 'HUMAN' ? 'bg-blue-100' : 'surface-200'">
-          @if (message.type !== 'HUMAN') {
-            <div class="flex gap-2">
-              <p-avatar
-                icon="pi pi-sparkles"
-                [style]="{ 'background-color': 'rgba(240, 220, 217, 0.3)', 'color': 'rgb(237, 106, 84, 1)' }"
-                size="large"
-                shape="circle"
-              ></p-avatar>
+      @for (let message of chatMessages; track message.id) {
+        <div
+          style="width: 98%"
+          [ngClass]="{
+            'align-self-start': message.type === 'SYSTEM' || message.type === 'ASSISTANT',
+            'align-self-end': message.type === 'HUMAN'
+          }"
+        >
+          <p-card [styleClass]="message.type === 'HUMAN' ? 'bg-blue-100' : 'surface-200'">
+            @if (message.type !== 'HUMAN') {
+              <div class="flex gap-2">
+                <p-avatar
+                  icon="pi pi-sparkles"
+                  [style]="{ 'background-color': 'rgba(240, 220, 217, 0.3)', 'color': 'rgb(237, 106, 84, 1)' }"
+                  size="large"
+                  shape="circle"
+                ></p-avatar>
 
-              <div class="flex-1">
-                <div class="mb-2 text-sm text-surface-600">
-                  <span>{{ 'CHAT.TITLE.AI' | translate }}</span>
-                  <span class="px-2">-</span>
+                <div class="flex-1">
+                  <div class="mb-2 text-sm text-surface-600">
+                    <span>{{ 'CHAT.TITLE.AI' | translate }}</span>
+                    <span class="px-2">-</span>
+                    <span>{{ message.creationDate | date : 'HH:mm' }}</span>
+                  </div>
+                  <ng-container *ngTemplateOutlet="messageContent; context: { $implicit: message, align: 'left' }"></ng-container>
+                </div>
+              </div>
+            }
+            @if (message.type === 'HUMAN') {
+              <div class="flex flex-column align-items-end">
+                <div class="mb-2 text-sm text-surface-600 text-right">
                   <span>{{ message.creationDate | date : 'HH:mm' }}</span>
                 </div>
-                <ng-container *ngTemplateOutlet="messageContent; context: { $implicit: message, align: 'left' }"></ng-container>
+                <ng-container *ngTemplateOutlet="messageContent; context: { $implicit: message, align: 'right' }"></ng-container>
               </div>
-            </div>
-          }
-          @if (message.type === 'HUMAN') {
-            <div class="flex flex-column align-items-end">
-              <div class="mb-2 text-sm text-surface-600 text-right">
-                <span>{{ message.creationDate | date : 'HH:mm' }}</span>
-              </div>
-              <ng-container *ngTemplateOutlet="messageContent; context: { $implicit: message, align: 'right' }"></ng-container>
-            </div>
-          }
-        </p-card>
-      </div>
+            }
+          </p-card>
+        </div>
+      }
     </div>
   </div>
 
   <ng-template #messageContent let-message let-align="align">
-    <div *ngIf="!message.isLoadingInfo" class="text-base" [ngClass]="{ 'message-text-user': align === 'right', 'text-left': align === 'left' }">
-      {{ message.text }}
-    </div>
-    <div *ngIf="message.isLoadingInfo">
+    @if (!message.isLoadingInfo) {
+      <div class="text-base" [ngClass]="{ 'message-text-user': align === 'right', 'text-left': align === 'left' }">
+        {{ message.text }}
+      </div>
+    }
+    @if (message.isLoadingInfo) {
       <p-progressBar mode="indeterminate" [style]="{ height: '6px' }" />
-    </div>
-    <div
-      *ngIf="message.isFailed"
-      class="flex align-items-center gap-1 error-message-text"
-      [ngClass]="{ 'justify-content-end': align === 'right' }"
-    >
-      <span class="pi pi-exclamation-triangle"></span>
-      <span>{{ 'CHAT.ERROR_MESSAGES.DELIVERY_FAILED' | translate }}</span>
-      <p-button
-        [label]="'CHAT.ACTIONS.RETRY' | translate"
-        [text]="true"
-        (onClick)="retrySending(message)"
-        severity="danger"
-      />
-    </div>
+    }
+    @if (message.isFailed) {
+      <div class="flex align-items-center gap-1 error-message-text" [ngClass]="{ 'justify-content-end': align === 'right' }">
+        <span class="pi pi-exclamation-triangle"></span>
+        <span>{{ 'CHAT.ERROR_MESSAGES.DELIVERY_FAILED' | translate }}</span>
+        <p-button
+          [label]="'CHAT.ACTIONS.RETRY' | translate"
+          [text]="true"
+          (onClick)="retrySending(message)"
+          severity="danger"
+        />
+      </div>
+    }
   </ng-template>
 
   <div class="p-2">
