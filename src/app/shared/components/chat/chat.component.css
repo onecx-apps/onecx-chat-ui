@@ -6,3 +6,12 @@
 :host ::ng-deep .p-card-content {
     padding: 0 !important;
 }
+
+:host ::ng-deep .p-button.p-button-text.p-button-icon-only {
+    background: transparent !important;
+}
+
+:host ::ng-deep .p-button.p-button-text.p-button-icon-only:focus {
+    outline: none !important;
+    border: none !important;
+}

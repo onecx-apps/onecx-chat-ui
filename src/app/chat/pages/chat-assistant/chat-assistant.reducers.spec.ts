@@ -1,4 +1,4 @@
-import { ChatType, MessageType } from 'src/app/shared/generated';
+import { ChatType, MessageType, ParticipantType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { chatAssistantReducer, initialState } from './chat-assistant.reducers';
 import { ChatAssistantState } from './chat-assistant.state';
@@ -224,7 +224,7 @@ describe('ChatAssistant Reducer', () => {
   });
 
   describe('chatSelected and chatCreationSuccessful actions', () => {
-    it('should set currentChat and clear messages when chatSelected is dispatched', () => {
+    it('should set currentChat, clear messages and set selectedChatMode for AI chat', () => {
       const stateWithMessages: ChatAssistantState = {
         ...initialState,
         currentMessages: mockMessages
@@ -238,10 +238,79 @@ describe('ChatAssistant Reducer', () => {
 
       expect(result).toEqual({
         ...stateWithMessages,
-        selectedChatMode: 'ai',
         currentChat: mockChat,
-        currentMessages: []
+        currentMessages: [],
+        selectedChatMode: 'ai'
       });
+    });
+
+    it('should set selectedChatMode to direct for HUMAN_CHAT with 1 participant', () => {
+      const directChat = {
+        ...mockChat,
+        type: ChatType.HumanChat,
+        participants: [{ id: 'user1', userId: 'user1', type: ParticipantType.Human }]
+      };
+
+      const action = ChatAssistantActions.chatSelected({
+        chat: directChat
+      });
+
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result.selectedChatMode).toBe('direct');
+    });
+
+    it('should set selectedChatMode to group for HUMAN_CHAT with 2+ participants', () => {
+      const groupChat = {
+        ...mockChat,
+        type: ChatType.HumanChat,
+        participants: [
+          { id: 'user1', userId: 'user1', type: ParticipantType.Human },
+          { id: 'user2', userId: 'user2', type: ParticipantType.Human }
+        ]
+      };
+
+      const action = ChatAssistantActions.chatSelected({
+        chat: groupChat
+      });
+
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result.selectedChatMode).toBe('group');
+    });
+
+    it('should set selectedChatMode to direct when HUMAN_CHAT has undefined participants', () => {
+      const chatWithUndefinedParticipants = {
+        ...mockChat,
+        type: ChatType.HumanChat,
+        participants: undefined
+      };
+
+      const action = ChatAssistantActions.chatSelected({
+        chat: chatWithUndefinedParticipants
+      });
+
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result.selectedChatMode).toBe('direct');
+      expect(result.currentChat).toEqual(chatWithUndefinedParticipants);
+    });
+
+    it('should set selectedChatMode to direct when HUMAN_CHAT has empty participants array', () => {
+      const chatWithEmptyParticipants = {
+        ...mockChat,
+        type: ChatType.HumanChat,
+        participants: []
+      };
+
+      const action = ChatAssistantActions.chatSelected({
+        chat: chatWithEmptyParticipants
+      });
+
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result.selectedChatMode).toBe('direct');
+      expect(result.currentChat).toEqual(chatWithEmptyParticipants);
     });
 
     it('should set currentChat and clear messages when chatCreationSuccessful is dispatched', () => {
@@ -258,9 +327,9 @@ describe('ChatAssistant Reducer', () => {
 
       expect(result).toEqual({
         ...stateWithMessages,
-        selectedChatMode: 'ai',
         currentChat: mockChat,
-        currentMessages: []
+        currentMessages: [],
+        selectedChatMode: 'ai'
       });
     });
   });

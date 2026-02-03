@@ -58,19 +58,14 @@
       <span class="pi pi-exclamation-triangle"></span>
       <span>
         {{ 'CHAT.ERROR_MESSAGES.DELIVERY_FAILED' | translate }}
-        <u class="cursor-pointer" (click)="retrySending(message)">{{ 'CHAT.ACTIONS.RETRY' | translate }}</u>
+        <u class="cursor-pointer" (click)="retrySending(message)" (keydown.enter)="retrySending(message)" role="button" tabindex="0">{{ 'CHAT.ACTIONS.RETRY' | translate }}</u>
       </span>
     </div>
   </ng-template>
 
   <div class="p-2">
     <form [formGroup]="formGroup" class="w-full">
-      <span class="p-input-icon-right w-full">
-        <i
-          class="pi pi-send"
-          [ngClass]="{'opacity-50 cursor-not-allowed': formGroup.status !== 'VALID' || sendMessageDisabled, 'cursor-pointer': formGroup.status === 'VALID' && !sendMessageDisabled}"
-          (click)="sendButtonClicked()"
-        ></i>
+      <div class="relative w-full">
         <input
           pInputText
           type="text"
@@ -78,9 +73,16 @@
           formControlName="message"
           [placeholder]="'CHAT.MESSAGE_PLACEHOLDER' | translate"
           (keydown.enter)="$event.preventDefault(); sendButtonClicked()"
-          class="w-full"
+          class="w-full pr-10"
         />
-      </span>
+        <p-button
+          [disabled]="formGroup.status !== 'VALID' || sendMessageDisabled"
+          icon="pi pi-send"
+          [text]="true"
+          (onClick)="sendButtonClicked()"
+          styleClass="absolute right-0 top-0"
+        />
+      </div>
     </form>
   </div>
 </div>

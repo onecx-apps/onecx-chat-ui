@@ -1,7 +1,6 @@
 import { ChatType, MessageType } from 'src/app/shared/generated';
 import * as fromSelectors from './chat-assistant.selectors';
 import { ChatAssistantViewModel } from './chat-assistant.viewmodel';
-import { NEW_AI_CHAT_ITEM } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatMessage } from 'src/app/shared/components/chat/chat.viewmodel';
 import { ChatAssistantState } from './chat-assistant.state';
 
