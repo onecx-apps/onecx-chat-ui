@@ -238,6 +238,7 @@ describe('ChatAssistant Reducer', () => {
 
       expect(result).toEqual({
         ...stateWithMessages,
+        selectedChatMode: 'ai',
         currentChat: mockChat,
         currentMessages: []
       });
@@ -257,6 +258,7 @@ describe('ChatAssistant Reducer', () => {
 
       expect(result).toEqual({
         ...stateWithMessages,
+        selectedChatMode: 'ai',
         currentChat: mockChat,
         currentMessages: []
       });
