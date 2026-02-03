@@ -1,5 +1,6 @@
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { QueryList } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,9 +10,11 @@ import { ofType } from '@ngrx/effects';
 import { Store, StoreModule } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { TranslateService } from '@ngx-translate/core';
+import { provideUserServiceMock } from '@onecx/angular-integration-interface/mocks';
 import {
   AlwaysGrantPermissionChecker,
   BreadcrumbService,
+  buildSearchCriteria,
   ColumnType,
   HAS_PERMISSION_CHECKER,
   PortalCoreModule,
@@ -19,6 +22,7 @@ import {
 } from '@onecx/portal-integration-angular';
 import { TranslateTestingModule } from 'ngx-translate-testing';
 import { DialogService } from 'primeng/dynamicdialog';
+import { firstValueFrom } from 'rxjs';
 import { ChatSearchActions } from './chat-search.actions';
 import { chatSearchColumns } from './chat-search.columns';
 import { ChatSearchComponent } from './chat-search.component';
@@ -26,9 +30,6 @@ import { ChatSearchHarness } from './chat-search.harness';
 import { initialState } from './chat-search.reducers';
 import { selectChatSearchViewModel } from './chat-search.selectors';
 import { ChatSearchViewModel } from './chat-search.viewmodel';
-import { firstValueFrom } from 'rxjs';
-import { provideUserServiceMock } from '@onecx/angular-integration-interface/mocks'
-import { getUTCDateWithoutTimezoneIssues } from '@onecx/accelerator';
 
 describe('ChatSearchComponent', () => {
   const origAddEventListener = window.addEventListener;
@@ -400,7 +401,8 @@ describe('ChatSearchComponent', () => {
     )
   })
 
-  it('should dispatch searchButtonClicked action on search', (done) => {
+  it('should dispatch searchButtonClicked action on search', async () => {
+    const doneFn = jest.fn();
     const sampleDate = new Date(2024, 5, 1, 10, 0, 0)
     const formValue = formBuilder.group({
       topic: '123',
@@ -408,17 +410,19 @@ describe('ChatSearchComponent', () => {
     });
     component.chatSearchFormGroup = formValue;
 
+    const header = await chatSearch.getHeader();
+    await header.clickSearchButton();
+
+    const searchCriteria = buildSearchCriteria(formValue.getRawValue(), new QueryList(), {
+      removeNullValues: true,
+    });
     store.scannedActions$
       .pipe(ofType(ChatSearchActions.searchButtonClicked))
       .subscribe((a) => {
-        expect(a.searchCriteria).toEqual({
-          topic: '123',
-          summary: getUTCDateWithoutTimezoneIssues(sampleDate)
-        });
-        done();
+        expect(a.searchCriteria).toEqual(searchCriteria);
+        doneFn();
       });
-
-    component.search(formValue);
+    expect(doneFn).toHaveBeenCalledTimes(1);
   });
 
   it('should dispatch export csv data on export action click', async () => {

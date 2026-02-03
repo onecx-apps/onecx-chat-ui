@@ -1,8 +1,8 @@
-import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit, QueryList } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { getUTCDateWithoutTimezoneIssues, isValidDate } from '@onecx/accelerator';
+import { buildSearchCriteria } from '@onecx/angular-accelerator';
 import {
   Action,
   BreadcrumbService,
@@ -102,15 +102,9 @@ export class ChatSearchComponent implements OnInit {
   }
 
   search(formValue: FormGroup) {
-    const searchCriteria = Object.entries(formValue.getRawValue()).reduce(
-      (acc: Partial<ChatSearchCriteria>, [key, value]) => ({
-        ...acc,
-        [key]: isValidDate(value) ?
-          getUTCDateWithoutTimezoneIssues(value)
-          : value,
-      }),
-      {},
-    );
+    const searchCriteria = buildSearchCriteria(formValue.getRawValue(), new QueryList(), {
+      removeNullValues: true,
+    });
     this.store.dispatch(
       ChatSearchActions.searchButtonClicked({ searchCriteria }),
     );
