@@ -52,14 +52,17 @@
     </div>
     <div
       *ngIf="message.isFailed"
-      class="flex align-items-center gap-2 mt-2 text-sm text-red-500"
+      class="flex align-items-center gap-1 error-message-text"
       [ngClass]="{ 'justify-content-end': align === 'right' }"
     >
       <span class="pi pi-exclamation-triangle"></span>
-      <span>
-        {{ 'CHAT.ERROR_MESSAGES.DELIVERY_FAILED' | translate }}
-        <u class="cursor-pointer" (click)="retrySending(message)" (keydown.enter)="retrySending(message)" role="button" tabindex="0">{{ 'CHAT.ACTIONS.RETRY' | translate }}</u>
-      </span>
+      <span>{{ 'CHAT.ERROR_MESSAGES.DELIVERY_FAILED' | translate }}</span>
+      <p-button
+        [label]="'CHAT.ACTIONS.RETRY' | translate"
+        [text]="true"
+        (onClick)="retrySending(message)"
+        severity="danger"
+      />
     </div>
   </ng-template>
 

@@ -15,3 +15,19 @@
     outline: none !important;
     border: none !important;
 }
+
+:host ::ng-deep .p-button.p-button-text.p-button-danger {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-width: auto !important;
+}
+
+:host ::ng-deep .p-button.p-button-text.p-button-danger:focus {
+    outline: none !important;
+    border: none !important;
+}
+
+.error-message-text {
+    color: rgb(var(--danger-button-bg-rgb)) !important;
+}

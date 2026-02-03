@@ -97,11 +97,15 @@ export const chatAssistantReducer = createReducer(
     ChatAssistantActions.chatSelected,
     ChatAssistantActions.chatCreationSuccessful,
     (state: ChatAssistantState, action) => {
-      const chatMode = action.chat.type === 'AI_CHAT' 
-        ? 'ai' 
-        : (action.chat.participants?.length ?? 0) > 1 
-          ? 'group' 
-          : 'direct';
+      let chatMode: string;
+      
+      if (action.chat.type === 'AI_CHAT') {
+        chatMode = 'ai';
+      } else if ((action.chat.participants?.length ?? 0) > 1) {
+        chatMode = 'group';
+      } else {
+        chatMode = 'direct';
+      }
       
       return {
         ...state,
