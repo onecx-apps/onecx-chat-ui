@@ -107,12 +107,14 @@
     },
     "ACTIONS": {
       "DELETE": "Chat löschen",
-      "CREATE": "Erstellen"
+      "CREATE": "Erstellen",
+      "RETRY": "Wiederholen"
     },
     "ERROR_MESSAGES": {
       "CREATE_CHAT": "Chat-Erstellung fehlgeschlagen.",
       "DELETE_CHAT": "Chat-Löschung fehlgeschlagen.",
-      "SEND_MESSAGE": "Nachricht senden fehlgeschlagen."
+      "SEND_MESSAGE": "Nachricht senden fehlgeschlagen.",
+      "DELIVERY_FAILED": "Zustellung fehlgeschlagen."
     },
     "SUCCESS_MESSAGES": {
       "CREATE_CHAT": "Chat erstellt.",

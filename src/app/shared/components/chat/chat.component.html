@@ -1,70 +1,86 @@
-<div class="chat-container">
-  <div class="chat-history-container">
-    <div class="chat-messages" #scrollContainer [scrollTop]="scrollContainer.scrollHeight"> 
+<div class="chat-container flex flex-column h-full">
+  <div class="chat-history-container flex-1 overflow-y-auto">
+    <div class="chat-messages flex flex-column gap-4 p-2 align-items-stretch" #scrollContainer [scrollTop]="scrollContainer.scrollHeight">
       <div
         *ngFor="let message of chatMessages"
-        class="message-bubble p-2 m-2 border-round"
+        style="width: 98%"
         [ngClass]="{
-          'message-left':
+          'align-self-start':
             message.type === 'SYSTEM' || message.type === 'ASSISTANT',
-          'message-right': message.type === 'HUMAN'
+          'align-self-end': message.type === 'HUMAN'
         }"
       >
-        <div>
-          <div class="message-info">
-            <span *ngIf="message.type !== 'HUMAN'" class="message-username">{{
-              message.userNameKey
-                ? (message.userNameKey | translate)
-                : message.userName
-            }}</span>
-            <span *ngIf="message.type !== 'HUMAN'" class="px-2">|</span>
-            <span class="message-date">{{
-              message.creationDate | date : 'short'
-            }}</span>
-          </div>
-          <div *ngIf="!message.isLoadingInfo" class="message-text">
-            {{ message.text }}
-          </div>
-          <div *ngIf="message.isLoadingInfo">
-            <p-progressBar mode="indeterminate" [style]="{ height: '6px' }" />
-          </div>
-          <div
-            *ngIf="message.isFailed"
-            class="flex align-items-center flex-row message-error"
-          >
-            <span class="pi pi-exclamation-triangle pr-2"></span>
-            <span
-              >Delivery failed.
-              <u class="retry-button" (click)="retrySending(message)">Retry</u></span
-            >
-          </div>
-        </div>
+        <p-card [styleClass]="message.type === 'HUMAN' ? 'bg-blue-100' : 'surface-200'">
+          @if (message.type !== 'HUMAN') {
+            <div class="flex gap-2">
+              <p-avatar
+                icon="pi pi-sparkles"
+                [style]="{ 'background-color': 'rgba(240, 220, 217, 0.3)', 'color': 'rgb(237, 106, 84, 1)' }"
+                size="large"
+                shape="circle"
+              ></p-avatar>
+
+              <div class="flex-1">
+                <div class="mb-2 text-sm text-surface-600">
+                  <span>{{ 'CHAT.TITLE.AI' | translate }}</span>
+                  <span class="px-2">-</span>
+                  <span>{{ message.creationDate | date : 'HH:mm' }}</span>
+                </div>
+                <ng-container *ngTemplateOutlet="messageContent; context: { $implicit: message, align: 'left' }"></ng-container>
+              </div>
+            </div>
+          }
+          @if (message.type === 'HUMAN') {
+            <div class="flex flex-column align-items-end">
+              <div class="mb-2 text-sm text-surface-600 text-right">
+                <span>{{ message.creationDate | date : 'HH:mm' }}</span>
+              </div>
+              <ng-container *ngTemplateOutlet="messageContent; context: { $implicit: message, align: 'right' }"></ng-container>
+            </div>
+          }
+        </p-card>
       </div>
     </div>
   </div>
-  <div class="chat-input-container">
-    <form [formGroup]="formGroup">
-      <div class="inner-container">
-        <div class="chat-input">
-          <input
-            pInputText
-            type="text"
-            id="chat-message-input"
-            class="w-full"
-            formControlName="message"
-            [placeholder]="'CHAT.MESSAGE_PLACEHOLDER' | translate"
-            (keydown.enter)="$event.preventDefault(); sendButtonClicked()"
-          />
-        </div>
-        <div class="chat-actions">
-          <p-button
-            [disabled]="formGroup.status !== 'VALID' || sendMessageDisabled"
-            icon="pi pi-send"
-            [text]="true"
-            (onClick)="sendButtonClicked()"
-          />
-        </div>
-      </div>
+
+  <ng-template #messageContent let-message let-align="align">
+    <div *ngIf="!message.isLoadingInfo" class="text-base" [ngClass]="{ 'message-text-user': align === 'right', 'text-left': align === 'left' }">
+      {{ message.text }}
+    </div>
+    <div *ngIf="message.isLoadingInfo">
+      <p-progressBar mode="indeterminate" [style]="{ height: '6px' }" />
+    </div>
+    <div
+      *ngIf="message.isFailed"
+      class="flex align-items-center gap-2 mt-2 text-sm text-red-500"
+      [ngClass]="{ 'justify-content-end': align === 'right' }"
+    >
+      <span class="pi pi-exclamation-triangle"></span>
+      <span>
+        {{ 'CHAT.ERROR_MESSAGES.DELIVERY_FAILED' | translate }}
+        <u class="cursor-pointer" (click)="retrySending(message)">{{ 'CHAT.ACTIONS.RETRY' | translate }}</u>
+      </span>
+    </div>
+  </ng-template>
+
+  <div class="p-2">
+    <form [formGroup]="formGroup" class="w-full">
+      <span class="p-input-icon-right w-full">
+        <i
+          class="pi pi-send"
+          [ngClass]="{'opacity-50 cursor-not-allowed': formGroup.status !== 'VALID' || sendMessageDisabled, 'cursor-pointer': formGroup.status === 'VALID' && !sendMessageDisabled}"
+          (click)="sendButtonClicked()"
+        ></i>
+        <input
+          pInputText
+          type="text"
+          id="chat-message-input"
+          formControlName="message"
+          [placeholder]="'CHAT.MESSAGE_PLACEHOLDER' | translate"
+          (keydown.enter)="$event.preventDefault(); sendButtonClicked()"
+          class="w-full"
+        />
+      </span>
     </form>
   </div>
 </div>

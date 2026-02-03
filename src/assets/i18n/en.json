@@ -108,12 +108,14 @@
     },
     "ACTIONS": {
       "DELETE": "Delete chat",
-      "CREATE": "Create"
+      "CREATE": "Create",
+      "RETRY": "Retry"
     },
     "ERROR_MESSAGES": {
       "CREATE_CHAT": "Chat creation failed.",
       "DELETE_CHAT": "Chat deletion failed.",
-      "SEND_MESSAGE": "Sending message failed."
+      "SEND_MESSAGE": "Sending message failed.",
+      "DELIVERY_FAILED": "Delivery failed."
     },
     "SUCCESS_MESSAGES": {
       "CREATE_CHAT": "Chat created.",
