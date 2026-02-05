@@ -380,7 +380,7 @@ describe('ChatAssistant Reducer', () => {
   });
 
   describe('chatModeSelected action', () => {
-    it('should set selectedChatMode, create new chat and reset messages when chatModeSelected is dispatched', () => {
+    it('should set selectedChatMode when chatModeSelected is dispatched', () => {
       const action = ChatAssistantActions.chatModeSelected({
         mode: 'ai'
       });
@@ -390,15 +390,10 @@ describe('ChatAssistant Reducer', () => {
       expect(result).toEqual({
         ...initialState,
         selectedChatMode: 'ai',
-        currentChat: {
-          id: 'new',
-          type: 'AI_CHAT'
-        },
-        currentMessages: [],
       });
     });
 
-    it('should update selectedChatMode, create new chat and reset messages when different mode is selected', () => {
+    it('should update selectedChatMode when different mode is selected', () => {
       const stateWithMode: ChatAssistantState = {
         ...initialState,
         selectedChatMode: 'ai'
@@ -413,9 +408,60 @@ describe('ChatAssistant Reducer', () => {
       expect(result).toEqual({
         ...stateWithMode,
         selectedChatMode: 'direct',
+      });
+    });
+  });
+
+  describe('newChatClicked action', () => {
+    it('should set selectedChatMode and create new chat when newChatClicked is dispatched with ai', () => {
+      const action = ChatAssistantActions.newChatClicked({
+        mode: 'ai'
+      });
+
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result).toEqual({
+        ...initialState,
+        selectedChatMode: 'ai',
         currentChat: {
           id: 'new',
-          type: 'HUMAN_CHAT'
+          type: ChatType.AiChat
+        },
+        currentMessages: [],
+      });
+    });
+
+    it('should set selectedChatMode and create new chat when newChatClicked is dispatched with direct', () => {
+      const action = ChatAssistantActions.newChatClicked({
+        mode: 'direct'
+      });
+
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result).toEqual({
+        ...initialState,
+        selectedChatMode: 'direct',
+        currentChat: {
+          id: 'new',
+          type: ChatType.HumanChat
+        },
+        currentMessages: [],
+      });
+    });
+
+    it('should set selectedChatMode and create new chat when newChatClicked is dispatched with group', () => {
+      const action = ChatAssistantActions.newChatClicked({
+        mode: 'group'
+      });
+
+      const result = chatAssistantReducer(initialState, action);
+
+      expect(result).toEqual({
+        ...initialState,
+        selectedChatMode: 'group',
+        currentChat: {
+          id: 'new',
+          type: ChatType.HumanChat
         },
         currentMessages: [],
       });

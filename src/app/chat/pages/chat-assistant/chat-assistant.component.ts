@@ -109,7 +109,10 @@ export class ChatAssistantComponent implements OnChanges {
       this.store.dispatch(ChatAssistantActions.chatPanelClosed());
       return;
     }
-    this.store.dispatch(ChatAssistantActions.chatModeSelected({ mode }));
+    
+    this.store.dispatch(ChatAssistantActions.newChatClicked({ 
+      mode: mode as 'ai' | 'direct' | 'group'
+    }));
   }
 
   goBack() {

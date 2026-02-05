@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { MessageType } from 'src/app/shared/generated';
+import { ChatType, MessageType } from 'src/app/shared/generated';
 import { ChatAssistantActions } from './chat-assistant.actions';
 import { ChatAssistantState } from './chat-assistant.state';
 
@@ -126,14 +126,19 @@ export const chatAssistantReducer = createReducer(
       };
     }
   ),
-  on(ChatAssistantActions.chatModeSelected, (state, action) => {
-    const chatType = action.mode === 'ai' ? 'AI_CHAT' : 'HUMAN_CHAT';
+  on(ChatAssistantActions.chatModeSelected, (state, action) => ({
+    ...state,
+    selectedChatMode: action.mode,
+  })),
+  on(ChatAssistantActions.newChatClicked, (state, action) => {
+    const chatType = action.mode === 'ai' ? ChatType.AiChat : ChatType.HumanChat;
+    
     return {
       ...state,
       selectedChatMode: action.mode,
       currentChat: {
         id: 'new',
-        type: chatType as any
+        type: chatType
       },
       currentMessages: [],
     };
