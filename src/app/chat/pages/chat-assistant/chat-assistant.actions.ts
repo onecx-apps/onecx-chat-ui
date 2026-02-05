@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Chat, ChatType, Message } from 'src/app/shared/generated';
+import { Chat, Message } from 'src/app/shared/generated';
 
 export const ChatAssistantActions = createActionGroup({
   source: 'ChatAssistant',
