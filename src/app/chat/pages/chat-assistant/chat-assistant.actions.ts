@@ -59,7 +59,6 @@ export const ChatAssistantActions = createActionGroup({
       error: string | null;
     }>(),
     'chat mode selected': props<{ mode: string }>(),
-    'new chat clicked': props<{ mode: ChatType }>(),
     'back button clicked': emptyProps(),
   },
 });

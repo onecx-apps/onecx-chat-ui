@@ -9,7 +9,7 @@
             'align-self-end': message.type === 'HUMAN'
           }"
         >
-          <p-card [styleClass]="message.type === 'HUMAN' ? 'bg-blue-100' : 'surface-200'">
+          <p-card [styleClass]="message.type === 'HUMAN' ? 'bg-blue-100 border-1 border-blue-300' : 'surface-100 border-1 border-surface-300'">
             @if (message.type !== 'HUMAN') {
               <div class="flex gap-2">
                 <p-avatar
@@ -79,7 +79,6 @@
           class="w-full pr-10"
         />
         <p-button
-          [disabled]="formGroup.status !== 'VALID' || sendMessageDisabled"
           icon="pi pi-send"
           [text]="true"
           (onClick)="sendButtonClicked()"

@@ -126,22 +126,22 @@ export const chatAssistantReducer = createReducer(
       };
     }
   ),
-  on(ChatAssistantActions.chatModeSelected, (state, action) => ({
-    ...state,
-    selectedChatMode: action.mode,
-  })),
+  on(ChatAssistantActions.chatModeSelected, (state, action) => {
+    const chatType = action.mode === 'ai' ? 'AI_CHAT' : 'HUMAN_CHAT';
+    return {
+      ...state,
+      selectedChatMode: action.mode,
+      currentChat: {
+        id: 'new',
+        type: chatType as any
+      },
+      currentMessages: [],
+    };
+  }),
   on(ChatAssistantActions.backButtonClicked, (state) => ({
     ...state,
     selectedChatMode: null,
     currentChat: undefined,
-    currentMessages: [],
-  })),
-  on(ChatAssistantActions.newChatClicked, (state, action) => ({
-    ...state,
-    currentChat: {
-      id: 'new',
-      type: action.mode
-    },
     currentMessages: [],
   })),
 );
