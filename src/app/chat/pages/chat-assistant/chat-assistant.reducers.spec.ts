@@ -224,7 +224,7 @@ describe('ChatAssistant Reducer', () => {
   });
 
   describe('chatSelected and chatCreationSuccessful actions', () => {
-    it('should set currentChat and clear messages when chatSelected is dispatched', () => {
+   it('should set currentChat and clear messages when chatSelected is dispatched', () => {
       const stateWithMessages: ChatAssistantState = {
         ...initialState,
         currentMessages: mockMessages
@@ -307,7 +307,6 @@ describe('ChatAssistant Reducer', () => {
       });
     });
   });
-
 
   describe('newChatClicked action', () => {
     it('should set currentChat to a new chat object when newChatClicked is dispatched', () => {

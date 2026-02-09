@@ -15,7 +15,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -28,7 +30,9 @@ import { ChatMessage } from './chat.viewmodel';
   standalone: true,
   imports: [
     CommonModule,
+    AvatarModule,
     ButtonModule,
+    CardModule,
     InputTextModule,
     ReactiveFormsModule,
     FormsModule,

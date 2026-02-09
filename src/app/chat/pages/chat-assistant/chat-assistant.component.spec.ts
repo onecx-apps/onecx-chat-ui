@@ -84,7 +84,7 @@ describe('ChatAssistantComponent', () => {
 
     component.selectChatMode('direct');
 
-    expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.newChatClicked({ mode: ChatType.HumanChat }));
+   expect(store.dispatch).toHaveBeenCalledWith(ChatAssistantActions.newChatClicked({ mode: ChatType.HumanChat }));
   });
 
   describe('closeSidebar', () => {

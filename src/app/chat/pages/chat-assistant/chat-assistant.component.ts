@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MenuItem, SharedModule } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { SidebarModule } from 'primeng/sidebar';
 import { TooltipModule } from 'primeng/tooltip';
-import { combineLatest, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ChatListComponent } from 'src/app/shared/components/chat-list/chat-list.component';
 import { ChatComponent } from 'src/app/shared/components/chat/chat.component';
 import { Chat, ChatType } from 'src/app/shared/generated';
@@ -109,6 +109,7 @@ export class ChatAssistantComponent implements OnChanges {
       this.store.dispatch(ChatAssistantActions.chatPanelClosed());
       return;
     }
+    
     const _mode = mode === 'ai' ? ChatType.AiChat : ChatType.HumanChat;
     this.store.dispatch(ChatAssistantActions.newChatClicked({ mode: _mode }));
   }

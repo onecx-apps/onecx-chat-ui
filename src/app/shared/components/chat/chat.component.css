@@ -1,81 +1,54 @@
-.chat-container {
-  max-height: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+/* Avatar shape circle */
+:host ::ng-deep .p-avatar {
+  border-radius: 50% !important;
 }
 
-/* Chat History */
-.chat-history-container {
-  height: calc(100% - 43px);
-  display: flex;
-  flex-direction: column;
+:host ::ng-deep .p-card-content {
+    padding: 0 !important;
 }
 
-.chat-messages {
-  flex: 1;
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
+:host ::ng-deep .p-button.p-button-text.p-button-icon-only {
+    background: transparent !important;
 }
 
-.message-left {
-  align-self: flex-start;
-  background-color: lightgrey;
+:host ::ng-deep .p-button.p-button-text.p-button-icon-only:focus {
+    outline: none !important;
+    border: none !important;
 }
 
-.message-right {
-  align-self: flex-end;
-  background-color: lightblue;
+:host ::ng-deep .p-button.p-button-text.p-button-danger {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-width: auto !important;
 }
 
-.message-bubble {
-  max-width: 60%;
-  word-wrap: break-word;
+:host ::ng-deep .p-button.p-button-text.p-button-danger:focus {
+    outline: none !important;
+    border: none !important;
 }
 
-.message-info {
-  font-size: 0.8em;
-  color: grey;
-  margin-bottom: 5px;
+:host ::ng-deep .p-card {
+    box-shadow: none !important;
+    border-radius: var(--border-radius-lg, 8px) !important;
 }
 
-.message-error {
-  font-size: 0.8em;
-  margin-top: 5px;
-  color: var(--error-color);  
+:host ::ng-deep .p-card.surface-100 {
+    border-color: var(--surface-300) !important;
 }
 
-.retry-button {
-  cursor: pointer;
+:host ::ng-deep .text-surface-600 {
+    color: var(--surface-600) !important;
 }
 
-.message-right .message-info {
-    color: var(--primary-color);
+:host ::ng-deep .p-inputtext {
+    border-radius: var(--border-radius-lg, 8px) !important;
 }
 
-.message-text {
-  font-size: 1em;
+:host ::ng-deep .p-button {
+    color: var(--surface-1000) !important;
 }
 
-
-/* Chat Input */
-.chat-input-container {    
-    padding: 1px;
-    margin-top: 4px;
-    background-color: white;
-    position: relative;
-    bottom: 0px;
-}
-.inner-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-.chat-input {
-    width: 100%
-}
-#chat-message-input {
-    border: 0px;
+.error-message-text {
+    color: rgb(var(--danger-button-bg-rgb)) !important;
 }
