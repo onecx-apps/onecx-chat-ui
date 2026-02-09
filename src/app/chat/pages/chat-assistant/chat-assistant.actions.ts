@@ -1,5 +1,5 @@
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import { Chat, Message } from 'src/app/shared/generated';
+import { Chat, ChatType, Message } from 'src/app/shared/generated';
 
 export const ChatAssistantActions = createActionGroup({
   source: 'ChatAssistant',
@@ -59,7 +59,7 @@ export const ChatAssistantActions = createActionGroup({
       error: string | null;
     }>(),
     'chat mode selected': props<{ mode: string }>(),
-    'new chat clicked': props<{ mode: 'ai' | 'direct' | 'group' }>(),
+    'new chat clicked': props<{ mode: ChatType }>(),
     'back button clicked': emptyProps(),
   },
 });
