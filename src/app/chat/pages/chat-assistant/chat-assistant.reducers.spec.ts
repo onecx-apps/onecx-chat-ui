@@ -356,8 +356,6 @@ describe('ChatAssistant Reducer', () => {
     });
   });
 
-
-
   describe('chatModeDeselected action', () => {
     it('should reset chat when backButtonClicked is dispatched', () => {
       const stateWithMode: ChatAssistantState = {

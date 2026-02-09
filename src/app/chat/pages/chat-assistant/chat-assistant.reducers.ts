@@ -97,7 +97,6 @@ export const chatAssistantReducer = createReducer(
     ChatAssistantActions.chatSelected,
     ChatAssistantActions.chatCreationSuccessful,
     (state: ChatAssistantState, action) => {
-      
       return {
         ...state,
         currentChat: action.chat,
