@@ -150,35 +150,32 @@ describe('ChatListScreenComponent', () => {
   });
 
   describe('formatLastMessageTime', () => {
-    it('should return time in h:mm a format for messages less than 1 day old', () => {
+    it('should return shortTime format for messages less than 1 day old', () => {
       const now = new Date();
       const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000).toISOString();
       
       const result = component.formatLastMessageTime(oneHourAgo);
       
-      expect(result).toMatch(/\d{1,2}:\d{2}\s(AM|PM)/);
+      expect(result).toBeTruthy();
+      expect(result).not.toContain('CHAT.TIME');
     });
 
-    it('should return "Yesterday" translation for messages from yesterday', () => {
+    it('should return CHAT.TIME.YESTERDAY translation key for messages from yesterday', () => {
       const now = new Date();
       const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
       
-      jest.spyOn(component['translate'], 'instant').mockReturnValue('Yesterday');
       const result = component.formatLastMessageTime(yesterday);
       
-      expect(result).toBe('Yesterday');
-      expect(component['translate'].instant).toHaveBeenCalledWith('CHAT.TIME.YESTERDAY');
+      expect(result).toBe('CHAT.TIME.YESTERDAY');
     });
 
-    it('should return translated day name for messages from last 7 days', () => {
+    it('should return CHAT.TIME.MONDAY for messages from last Monday', () => {
       const now = new Date();
-      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString();
+      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
       
-      jest.spyOn(component['translate'], 'instant').mockReturnValue('Wednesday');
-      const result = component.formatLastMessageTime(threeDaysAgo);
+      const result = component.formatLastMessageTime(threeDaysAgo.toISOString());
       
-      expect(result).toBe('Wednesday');
-      expect(component['translate'].instant).toHaveBeenCalled();
+      expect(result).toMatch(/^CHAT\.TIME\.(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)$/);
     });
 
     it('should return empty string when datePipe.transform returns empty for time format', () => {

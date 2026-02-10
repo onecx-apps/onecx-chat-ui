@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input, ViewChild, OnInit } from '@angu
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChatHeaderComponent } from '../chat-header/chat-header.component';
 import { ChatOptionButtonComponent } from '../chat-option-button/chat-option-button.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -45,7 +45,6 @@ export class ChatListScreenComponent implements OnInit {
 
   constructor(
     private readonly datePipe: DatePipe,
-    private readonly translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -75,16 +74,16 @@ export class ChatListScreenComponent implements OnInit {
     const messageDate = new Date(modificationDate);
     const diffDays = this.getDaysDifference(messageDate);
 
-    if (diffDays < 1) return this.datePipe.transform(messageDate, 'h:mm a') || '';
-    else if (diffDays < 2) return this.translate.instant('CHAT.TIME.YESTERDAY');
+    if (diffDays < 1) return this.datePipe.transform(messageDate, 'shortTime') || '';
+    else if (diffDays < 2) return 'CHAT.TIME.YESTERDAY';
     else if (diffDays < 7) {
       const dayName = this.datePipe.transform(messageDate, 'EEEE') || '';
       const dayKey = dayName.toUpperCase();
       if (!dayKey) return '';
-      return this.translate.instant(`CHAT.TIME.${dayKey}`);
+      return `CHAT.TIME.${dayKey}`;
     }
 
-    return this.datePipe.transform(messageDate, 'MM-dd') || '';
+    return this.datePipe.transform(messageDate, 'shortDate') || '';
   }
 
   private getDaysDifference(date: Date): number {
