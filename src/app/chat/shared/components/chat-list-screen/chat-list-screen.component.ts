@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Input, ViewChild, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ChatHeaderComponent } from '../chat-header/chat-header.component';
 import { ChatOptionButtonComponent } from '../chat-option-button/chat-option-button.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -11,7 +11,6 @@ import { Chat } from 'src/app/shared/generated';
 import { ContextMenu, ContextMenuModule } from 'primeng/contextmenu';
 import { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-chat-list-screen',
@@ -45,8 +44,8 @@ export class ChatListScreenComponent implements OnInit {
   logoUrl = '';
 
   constructor(
-    private datePipe: DatePipe,
-    private translate: TranslateService
+    private readonly datePipe: DatePipe,
+    private readonly translate: TranslateService
   ) {}
 
   ngOnInit() {
