@@ -169,7 +169,7 @@ describe('ChatListScreenComponent', () => {
       expect(result).toBe('CHAT.TIME.YESTERDAY');
     });
 
-    it('should return CHAT.TIME.MONDAY for messages from last Monday', () => {
+    it('should return translated day name for messages from last 7 days', () => {
       const now = new Date();
       const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
       
