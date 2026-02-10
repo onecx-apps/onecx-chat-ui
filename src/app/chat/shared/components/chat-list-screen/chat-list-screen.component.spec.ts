@@ -12,6 +12,8 @@ import {
 } from '@onecx/angular-accelerator/testing';
 import { ButtonModule } from 'primeng/button';
 import { TranslateTestingModule } from 'ngx-translate-testing';
+import { TranslateService } from '@ngx-translate/core';
+import { DatePipe } from '@angular/common';
 
 describe('ChatListScreenComponent', () => {
   let component: ChatListScreenComponent;
@@ -33,6 +35,7 @@ describe('ChatListScreenComponent', () => {
         ).withTranslations('de', require('../../../../../assets/i18n/de.json')),
       ],
       providers: [
+        DatePipe,
         {
           provide: AppStateService,
           useValue: {
@@ -56,6 +59,9 @@ describe('ChatListScreenComponent', () => {
     fixture = TestBed.createComponent(ChatListScreenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    const translateService = TestBed.inject(TranslateService);
+    translateService.use('en');
 
     loader = TestbedHarnessEnvironment.loader(fixture);
   });
@@ -150,62 +156,78 @@ describe('ChatListScreenComponent', () => {
   });
 
   describe('formatLastMessageTime', () => {
-    it('should return shortTime format for messages less than 1 day old', () => {
-      const now = new Date();
-      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000).toISOString();
-      
-      const result = component.formatLastMessageTime(oneHourAgo);
-      
-      expect(result).toBeTruthy();
-      expect(result).not.toContain('CHAT.TIME');
+    let datePipe: DatePipe;
+
+    beforeEach(() => {
+      datePipe = TestBed.inject(DatePipe);
     });
 
-    it('should return CHAT.TIME.YESTERDAY translation key for messages from yesterday', () => {
+    it('should return shortTime format for messages less than 1 day old', (done) => {
       const now = new Date();
-      const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
-      
-      const result = component.formatLastMessageTime(yesterday);
-      
-      expect(result).toBe('CHAT.TIME.YESTERDAY');
+      const oneHourAgoDate = new Date(now.getTime() - 60 * 60 * 1000);
+      const oneHourAgo = oneHourAgoDate.toISOString();
+      const expected = datePipe.transform(oneHourAgoDate, 'shortTime') || '';
+
+      component.formatLastMessageTime(oneHourAgo).subscribe(result => {
+        expect(result).toBe(expected);
+        done();
+      });
     });
 
-    it('should return translated day name for messages from last 7 days', () => {
+    it('should return "Yesterday" for messages from yesterday', (done) => {
       const now = new Date();
-      const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-      
-      const result = component.formatLastMessageTime(threeDaysAgo.toISOString());
-      
-      expect(result).toMatch(/^CHAT\.TIME\.(MONDAY|TUESDAY|WEDNESDAY|THURSDAY|FRIDAY|SATURDAY|SUNDAY)$/);
+      const yesterdayDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const yesterday = yesterdayDate.toISOString();
+
+      component.formatLastMessageTime(yesterday).subscribe(result => {
+        expect(result).toBe('Yesterday');
+        done();
+      });
     });
 
-    it('should return empty string when datePipe.transform returns empty for time format', () => {
+    it('should return day name for messages from 2-7 days ago', (done) => {
+      const now = new Date();
+      const threeDaysAgoDate = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+      const threeDaysAgo = threeDaysAgoDate.toISOString();
+      const dayName = datePipe.transform(threeDaysAgoDate, 'EEEE') || '';
+
+      component.formatLastMessageTime(threeDaysAgo).subscribe(result => {
+        expect(result).toBe(dayName);
+        done();
+      });
+    });
+
+    it('should return empty string when datePipe.transform returns empty for time format', (done) => {
       const now = new Date();
       const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000).toISOString();
       
       jest.spyOn(component['datePipe'], 'transform').mockReturnValue(null);
-      const result = component.formatLastMessageTime(oneHourAgo);
-      
-      expect(result).toBe('');
+      component.formatLastMessageTime(oneHourAgo).subscribe(result => {
+        expect(result).toBe('');
+        done();
+      });
     });
 
-    it('should return empty string when datePipe.transform returns empty for day name', () => {
+    it('should return empty string when datePipe.transform returns empty for day name', (done) => {
       const now = new Date();
       const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString();
       
       jest.spyOn(component['datePipe'], 'transform').mockReturnValue(null);
-      const result = component.formatLastMessageTime(twoDaysAgo);
-      
-      expect(result).toBe('');
+      component.formatLastMessageTime(twoDaysAgo).subscribe(result => {
+        expect(result).toBe('');
+        done();
+      });
     });
 
-    it('should return empty string when datePipe.transform returns empty for date format', () => {
+    it('should return empty string when datePipe.transform returns empty for date format', (done) => {
       const now = new Date();
       const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString();
       
       jest.spyOn(component['datePipe'], 'transform').mockReturnValue(null);
-      const result = component.formatLastMessageTime(tenDaysAgo);
-      
-      expect(result).toBe('');
+      component.formatLastMessageTime(tenDaysAgo).subscribe(result => {
+        expect(result).toBe('');
+        done();
+      });
     });
   });
 });
