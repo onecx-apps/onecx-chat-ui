@@ -137,13 +137,13 @@ describe('ChatListScreenComponent', () => {
   });
 
   it('should display chat list when chats are provided', () => {
-    component.chats = [
+    fixture.componentRef.setInput('chats', [
       { id: 'chat1', topic: 'Chat 1' } as any,
       { id: 'chat2', topic: 'Chat 2' } as any,
-    ];
+    ]);
     fixture.detectChanges();
 
-    expect(component.chats?.length).toBe(2);
+    expect(component.chats().length).toBe(2);
   });
 
   it('should emit chatSelected when a chat item is clicked', () => {
@@ -200,7 +200,7 @@ describe('ChatListScreenComponent', () => {
     it('should return empty string when datePipe.transform returns empty for time format', (done) => {
       const now = new Date();
       const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000).toISOString();
-      
+
       jest.spyOn(component['datePipe'], 'transform').mockReturnValue(null);
       component.formatLastMessageTime(oneHourAgo).subscribe(result => {
         expect(result).toBe('');
@@ -211,7 +211,7 @@ describe('ChatListScreenComponent', () => {
     it('should return empty string when datePipe.transform returns empty for day name', (done) => {
       const now = new Date();
       const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString();
-      
+
       jest.spyOn(component['datePipe'], 'transform').mockReturnValue(null);
       component.formatLastMessageTime(twoDaysAgo).subscribe(result => {
         expect(result).toBe('');
@@ -222,7 +222,7 @@ describe('ChatListScreenComponent', () => {
     it('should return empty string when datePipe.transform returns empty for date format', (done) => {
       const now = new Date();
       const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString();
-      
+
       jest.spyOn(component['datePipe'], 'transform').mockReturnValue(null);
       component.formatLastMessageTime(tenDaysAgo).subscribe(result => {
         expect(result).toBe('');

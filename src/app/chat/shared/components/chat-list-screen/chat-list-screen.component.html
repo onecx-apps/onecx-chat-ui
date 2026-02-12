@@ -34,19 +34,19 @@
           </div>
         </div>
         <span class="text-sm text-600 white-space-nowrap">
-          {{ formatLastMessageTime(chat.modificationDate) | async }}
+          {{ (formattedTimes$ | async)?.[chat.modificationDate] }}
         </span>
       </div>
     </ng-template>
 
     <p-tabView>
       <p-tabPanel [header]="'CHAT.LIST.RELATED_CHATS' | translate">
-        @for (chat of chats; track chat.id) {
+        @for (chat of chats(); track chat.id) {
           <ng-container *ngTemplateOutlet="chatItem; context: {$implicit: chat}"></ng-container>
         }
       </p-tabPanel>
       <p-tabPanel [header]="'CHAT.LIST.ALL_CHATS' | translate">
-        @for (chat of chats; track chat.id) {
+        @for (chat of chats(); track chat.id) {
           <ng-container *ngTemplateOutlet="chatItem; context: {$implicit: chat}"></ng-container>
         }
       </p-tabPanel>
